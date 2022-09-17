@@ -1,27 +1,28 @@
 #include "MineField.h"
-#include <gtest/gtest.h>
+#include <catch.hpp>
 
 using namespace asw;
 
 namespace {
 
-TEST(MineFieldTest, RowsAndColumns) {
+TEST_CASE(
+        "Rows and columns should reflect rows and columns from construction") {
     MineField mine_field{12, 34};
-    EXPECT_EQ(mine_field.rows(), 12);
-    EXPECT_EQ(mine_field.columns(), 34);
+    REQUIRE(mine_field.rows() == 12);
+    REQUIRE(mine_field.columns() == 34);
 }
 
-TEST(MineFieldTest, InitiallySetToCleared) {
+TEST_CASE("MineField is initially set to cleared") {
     MineField const mine_field{1, 2};
-    EXPECT_EQ((mine_field(0, 0)), MineField::Cell::Empty);
-    EXPECT_EQ((mine_field(0, 1)), MineField::Cell::Empty);
+    REQUIRE((mine_field(0, 0)) == MineField::Cell::Empty);
+    REQUIRE((mine_field(0, 1)) == MineField::Cell::Empty);
 }
 
-TEST(MineFieldTest, CanSetCells) {
+TEST_CASE("Cells in MineField can be changed") {
     MineField mine_field{1, 2};
     mine_field(0, 0) = MineField::Cell::Mine;
-    EXPECT_EQ((mine_field(0, 0)), MineField::Cell::Mine);
-    EXPECT_EQ((mine_field(0, 1)), MineField::Cell::Empty);
+    REQUIRE((mine_field(0, 0)) == MineField::Cell::Mine);
+    REQUIRE((mine_field(0, 1)) == MineField::Cell::Empty);
 }
 
 }  // namespace

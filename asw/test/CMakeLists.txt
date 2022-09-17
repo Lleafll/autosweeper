@@ -5,8 +5,10 @@ project(aswtest)
 add_executable(${PROJECT_NAME}
         MineFieldTest.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ../include/asw ../src)
-find_package(GTest CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main asw)
 
-include(GoogleTest)
-gtest_discover_tests(${PROJECT_NAME})
+find_package(Catch2 CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Catch2::Catch2WithMain asw)
+
+include(CTest)
+include(Catch)
+catch_discover_tests(${PROJECT_NAME})
