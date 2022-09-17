@@ -2,7 +2,7 @@
 
 #include "MineField.h"
 
-namespace asw {
+namespace msw {
 
 class PlayingField final {
 public:
@@ -37,4 +37,4 @@ private:
     [[nodiscard]] Cell cell(std::size_t row, std::size_t column) const;
 };
 
-}  // namespace asw
+}  // namespace msw

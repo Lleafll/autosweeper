@@ -5,7 +5,7 @@ project(aswtest)
 add_executable(${PROJECT_NAME}
         MineFieldTest.cpp
         PlayingFieldTest.cpp)
-target_include_directories(${PROJECT_NAME} PRIVATE ../include/asw ../src)
+target_include_directories(${PROJECT_NAME} PRIVATE ../include/msw ../src)
 
 find_package(Catch2 CONFIG REQUIRED)
 find_package(magic_enum CONFIG REQUIRED)

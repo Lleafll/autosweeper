@@ -3,7 +3,7 @@
 
 namespace stdv = std::views;
 
-namespace asw {
+namespace msw {
 
 namespace {
 
@@ -76,4 +76,4 @@ PlayingField::cell(std::size_t row, std::size_t column) const {
     return cells_[row + rows_ * column];
 }
 
-}  // namespace asw
+}  // namespace msw

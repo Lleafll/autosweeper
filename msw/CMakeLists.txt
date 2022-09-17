@@ -7,6 +7,6 @@ add_library(${PROJECT_NAME} STATIC
         src/PlayingField.cpp)
 target_include_directories(${PROJECT_NAME}
         PUBLIC include
-        PRIVATE include/asw src)
+        PRIVATE include/msw src)
 
 add_subdirectory(test)
