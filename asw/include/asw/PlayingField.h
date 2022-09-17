@@ -17,7 +17,6 @@ public:
         Seven,
         Eight,
         Hidden,
-        Flag,
         Mine
     };
 
