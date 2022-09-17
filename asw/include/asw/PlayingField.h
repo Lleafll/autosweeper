@@ -7,10 +7,7 @@ namespace asw {
 class PlayingField final {
 public:
     enum class Cell {
-        Hidden,
         Empty,
-        Flag,
-        Mine,
         One,
         Two,
         Three,
@@ -18,10 +15,13 @@ public:
         Five,
         Six,
         Seven,
-        Eight
+        Eight,
+        Hidden,
+        Flag,
+        Mine
     };
 
-    explicit PlayingField(MineField mines);
+    explicit PlayingField(MineField const& mines);
 
     [[nodiscard]] Cell operator()(std::size_t row, std::size_t column) const;
 
@@ -32,7 +32,7 @@ private:
 
     std::size_t const rows_;
     std::vector<Hidden> hidden_;
-    MineField mines_;
+    std::vector<Cell> cells_;
 
     [[nodiscard]] bool is_hidden(std::size_t row, std::size_t column) const;
 };

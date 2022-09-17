@@ -8,7 +8,8 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PRIVATE ../include/asw ../src)
 
 find_package(Catch2 CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Catch2::Catch2WithMain asw)
+find_package(magic_enum CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Catch2::Catch2WithMain magic_enum::magic_enum asw)
 
 include(CTest)
 include(Catch)
