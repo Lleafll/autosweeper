@@ -1,1 +1,32 @@
 #pragma once
+
+#include "MineField.h"
+
+namespace asw {
+
+class PlayingField final {
+public:
+    enum class Cell {
+        Hidden,
+        Empty,
+        Flag,
+        Mine,
+        One,
+        Two,
+        Three,
+        Four,
+        Five,
+        Six,
+        Seven,
+        Eight
+    };
+
+    explicit PlayingField(MineField mines);
+
+    [[nodiscard]] Cell operator()(std::size_t row, std::size_t column) const;
+
+private:
+    MineField mines_;
+};
+
+}  // namespace asw
