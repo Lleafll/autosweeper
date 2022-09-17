@@ -8,20 +8,12 @@ class MineField final {
 public:
     enum class Cell { Empty, Mine };
 
-    MineField(int const rows, int const columns)
-        : rows_{rows}, columns_{columns}, cells_(rows_ * columns_) {}
+    MineField(int rows, int columns);
 
-    [[nodiscard]] int rows() const { return rows_; }
-
-    [[nodiscard]] int columns() const { return columns_; }
-
-    [[nodiscard]] Cell& operator()(int const row, int const column) {
-        return cells_[row + rows_ * column];
-    }
-
-    [[nodiscard]] Cell operator()(int const row, int const column) const {
-        return cells_[row + rows_ * column];
-    }
+    [[nodiscard]] inline int rows() const { return rows_; }
+    [[nodiscard]] inline int columns() const { return columns_; }
+    [[nodiscard]] Cell& operator()(int row, int column);
+    [[nodiscard]] Cell operator()(int row, int column) const;
 
 private:
     int rows_;
