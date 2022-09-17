@@ -34,7 +34,7 @@ TEST_CASE("Correctly shows mines and proximity") {
     REQUIRE(field(1, 0) == PlayingField::Cell::Mine);
 }
 
-TEST_CASE("Signals when mine hit") {
+TEST_CASE("Signals when mine is hit") {
     PlayingField field{MineField{2, 1, {{1, 0}}}};
     REQUIRE_FALSE(field.reveal(0, 0));
     REQUIRE(field.reveal(1, 0));
