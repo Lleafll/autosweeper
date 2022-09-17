@@ -4,8 +4,7 @@ AccessModifierOffset: -4
 AlignAfterOpenBracket: AlwaysBreak
 AlignConsecutiveAssignments: None
 AlignOperands: Align
-AllowAllArgumentsOnNextLine: false
-AllowAllConstructorInitializersOnNextLine: false
+AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Always
 AllowShortCaseLabelsOnASingleLine: false
@@ -41,11 +40,12 @@ ContinuationIndentWidth: 8
 IndentCaseLabels: true
 IndentPPDirectives: None
 IndentWidth: 4
-KeepEmptyLinesAtTheStartOfBlocks: true
+KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 2
 NamespaceIndentation: None
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
+PackConstructorInitializers: CurrentLine
 PointerAlignment: Left
 ReflowComments: true
 SpaceAfterCStyleCast: true
