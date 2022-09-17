@@ -24,7 +24,7 @@ PlayingField::Cell calculate_proximity(
             if (r == row && c == column) {
                 continue;
             }
-            if(mines(r, c) == MineField::Cell::Mine) {
+            if (mines(r, c) == MineField::Cell::Mine) {
                 ++count;
             }
         }
@@ -58,16 +58,22 @@ PlayingField::Cell PlayingField::operator()(
     if (is_hidden(row, column)) {
         return Cell::Hidden;
     }
-    return cells_[row + rows_ * column];
+    return cell(row, column);
 }
 
-void PlayingField::reveal(std::size_t const row, std::size_t const column) {
+bool PlayingField::reveal(std::size_t const row, std::size_t const column) {
     hidden_[row + rows_ * column] = Hidden::No;
+    return cell(row, column) == Cell::Mine;
 }
 
 bool PlayingField::is_hidden(std::size_t const row, std::size_t const column)
         const {
     return hidden_[row + rows_ * column] == Hidden::Yes;
+}
+
+PlayingField::Cell
+PlayingField::cell(std::size_t row, std::size_t column) const {
+    return cells_[row + rows_ * column];
 }
 
 }  // namespace asw

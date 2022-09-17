@@ -25,7 +25,7 @@ public:
 
     [[nodiscard]] Cell operator()(std::size_t row, std::size_t column) const;
 
-    void reveal(std::size_t row, std::size_t column);
+    bool reveal(std::size_t row, std::size_t column);
 
 private:
     enum class Hidden : bool { Yes, No };
@@ -35,6 +35,7 @@ private:
     std::vector<Cell> cells_;
 
     [[nodiscard]] bool is_hidden(std::size_t row, std::size_t column) const;
+    [[nodiscard]] Cell cell(std::size_t row, std::size_t column) const;
 };
 
 }  // namespace asw
