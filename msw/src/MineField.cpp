@@ -1,6 +1,6 @@
 #include "MineField.h"
 
-namespace asw {
+namespace msw {
 
 MineField::MineField(std::size_t const rows, std::size_t const columns)
     : rows_{rows}, columns_{columns}, cells_(rows_ * columns_) {}
@@ -26,4 +26,4 @@ MineField::operator()(std::size_t const row, std::size_t const column) const {
     return cells_[row + rows_ * column];
 }
 
-}  // namespace asw
+}  // namespace msw
