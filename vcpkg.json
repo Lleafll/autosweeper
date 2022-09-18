@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "dependencies": [
     "catch2",
-    "magic-enum"
+    "magic-enum",
+    "mdspan"
   ]
 }

@@ -40,4 +40,15 @@ TEST_CASE("Signals when mine is hit") {
     REQUIRE(field.reveal(1, 0));
 }
 
+TEST_CASE("Correctly counts mines") {
+    PlayingField const field{MineField{2, 1, {{1, 0}}}};
+    REQUIRE(field.mine_count() == 1);
+}
+
+TEST_CASE("Correctly return rows and columns") {
+    PlayingField const field{MineField{2, 1, {{1, 0}}}};
+    REQUIRE(field.rows() == 2);
+    REQUIRE(field.columns() == 1);
+}
+
 }  // namespace

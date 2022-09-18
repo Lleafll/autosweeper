@@ -1,7 +1,5 @@
 #include "PlayingField.h"
-#include <ranges>
-
-namespace stdv = std::views;
+#include <algorithm>
 
 namespace asw {
 
@@ -49,8 +47,17 @@ std::vector<PlayingField::Cell> calculate_cells(MineField const& mines) {
 
 PlayingField::PlayingField(MineField const& mines)
     : rows_{mines.rows()},
+      columns_{mines.columns()},
       hidden_{mines.rows() * mines.columns(), Hidden::Yes},
       cells_{calculate_cells(mines)} {}
+
+std::size_t PlayingField::rows() const { return rows_; }
+
+std::size_t PlayingField::columns() const { return columns_; }
+
+int PlayingField::mine_count() const {
+    return static_cast<int>(std::ranges::count(cells_, Cell::Mine));
+}
 
 PlayingField::Cell PlayingField::operator()(
         std::size_t const row,
