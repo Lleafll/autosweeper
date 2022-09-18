@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace msw {
+namespace asw {
 
 class MineField final {
 public:
@@ -30,4 +30,4 @@ private:
     std::vector<Cell> cells_;
 };
 
-}  // namespace msw
+}  // namespace asw

@@ -2,7 +2,7 @@
 #include <catch.hpp>
 #include <magic_enum.hpp>
 
-using namespace msw;
+using namespace asw;
 
 template<>
 struct Catch::StringMaker<PlayingField::Cell> {

@@ -1,7 +1,7 @@
 #include "PlayingField.h"
 #include <algorithm>
 
-namespace msw {
+namespace asw {
 
 namespace {
 
@@ -83,4 +83,4 @@ PlayingField::cell(std::size_t row, std::size_t column) const {
     return cells_[row + rows_ * column];
 }
 
-}  // namespace msw
+}  // namespace asw

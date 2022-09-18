@@ -1,7 +1,7 @@
 #include "MineField.h"
 #include <catch.hpp>
 
-using namespace msw;
+using namespace asw;
 
 namespace {
 
