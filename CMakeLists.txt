@@ -5,4 +5,4 @@ project(asw)
 set(CMAKE_CXX_STANDARD 20)
 enable_testing()
 
-add_subdirectory(msw)
+add_subdirectory(asw)
