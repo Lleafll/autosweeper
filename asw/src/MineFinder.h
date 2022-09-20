@@ -5,7 +5,7 @@
 
 namespace asw {
 
-class ObviousMineFinder final {
+class MineFinder final {
 public:
     using View = std::experimental::mdspan<
             PlayingField::Cell,
@@ -18,7 +18,7 @@ public:
                     std::experimental::dynamic_extent,
                     std::experimental::dynamic_extent>>;
 
-    ObviousMineFinder(std::size_t rows, std::size_t columns);
+    MineFinder(std::size_t rows, std::size_t columns);
 
     [[nodiscard]] View view();
     [[nodiscard]] ConstView view() const;
@@ -29,6 +29,6 @@ private:
     std::vector<PlayingField::Cell> buffer_;
 };
 
-ObviousMineFinder evaluate(PlayingField const& field);
+MineFinder evaluate(PlayingField const& field);
 
 }  // namespace asw

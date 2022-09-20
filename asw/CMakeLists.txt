@@ -4,7 +4,7 @@ project(asw)
 
 add_library(${PROJECT_NAME} STATIC
         src/MineField.cpp
-        src/ObviousMineFinder.cpp
+        src/MineFinder.cpp
         src/PlayingField.cpp
         src/Solver.cpp)
 target_include_directories(${PROJECT_NAME}
