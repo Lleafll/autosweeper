@@ -1,4 +1,4 @@
-#include "Evaluation.h"
+#include "ObviousMineFinder.h"
 #include <catch.hpp>
 #include <magic_enum.hpp>
 

@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.21)
 project(asw)
 
 add_library(${PROJECT_NAME} STATIC
-        src/Evaluation.cpp
         src/MineField.cpp
+        src/ObviousMineFinder.cpp
         src/PlayingField.cpp
         src/Solver.cpp)
 target_include_directories(${PROJECT_NAME}

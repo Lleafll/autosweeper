@@ -1,25 +1,25 @@
-#include "Evaluation.h"
+#include "ObviousMineFinder.h"
 
 namespace stdex = std::experimental;
 
 namespace asw {
 
-Evaluation::Evaluation(const std::size_t rows, const std::size_t columns)
+ObviousMineFinder::ObviousMineFinder(const std::size_t rows, const std::size_t columns)
     : rows_{rows},
       columns_{columns},
       buffer_(rows * columns, PlayingField::Cell::Hidden) {}
 
-Evaluation::View Evaluation::view() {
+ObviousMineFinder::View ObviousMineFinder::view() {
     return View{buffer_.data(), rows_, columns_};
 }
 
-Evaluation::ConstView Evaluation::view() const {
+ObviousMineFinder::ConstView ObviousMineFinder::view() const {
     return ConstView{buffer_.data(), rows_, columns_};
 }
 namespace {
 
 void fill_in_bombs(
-        Evaluation::View& view,
+        ObviousMineFinder::View& view,
         std::size_t const row,
         std::size_t const column) {
     auto const cell = view(row, column);
@@ -65,10 +65,10 @@ void fill_in_bombs(
 
 }  // namespace
 
-Evaluation evaluate(PlayingField const& field) {
+ObviousMineFinder evaluate(PlayingField const& field) {
     auto const rows = field.rows();
     auto const columns = field.columns();
-    Evaluation evaluation{field.rows(), field.columns()};
+    ObviousMineFinder evaluation{field.rows(), field.columns()};
     auto view = evaluation.view();
     for (std::size_t row = 0; row < rows; ++row) {
         for (std::size_t column = 0; column < columns; ++column) {
