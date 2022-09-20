@@ -1,25 +1,27 @@
-#include "MineFinder.h"
+#include "PlayingFieldWithMines.h"
 
 namespace stdex = std::experimental;
 
 namespace asw {
 
-MineFinder::MineFinder(const std::size_t rows, const std::size_t columns)
+PlayingFieldWithMines::PlayingFieldWithMines(
+        std::size_t const rows,
+        std::size_t const columns)
     : rows_{rows},
       columns_{columns},
       buffer_(rows * columns, PlayingField::Cell::Hidden) {}
 
-MineFinder::View MineFinder::view() {
+PlayingFieldWithMines::View PlayingFieldWithMines::view() {
     return View{buffer_.data(), rows_, columns_};
 }
 
-MineFinder::ConstView MineFinder::view() const {
+PlayingFieldWithMines::ConstView PlayingFieldWithMines::view() const {
     return ConstView{buffer_.data(), rows_, columns_};
 }
 namespace {
 
 void fill_in_bombs(
-        MineFinder::View& view,
+        PlayingFieldWithMines::View& view,
         std::size_t const row,
         std::size_t const column) {
     auto const cell = view(row, column);
@@ -65,10 +67,10 @@ void fill_in_bombs(
 
 }  // namespace
 
-MineFinder evaluate(PlayingField const& field) {
+PlayingFieldWithMines find_mines(PlayingField const& field) {
     auto const rows = field.rows();
     auto const columns = field.columns();
-    MineFinder evaluation{field.rows(), field.columns()};
+    PlayingFieldWithMines evaluation{field.rows(), field.columns()};
     auto view = evaluation.view();
     for (std::size_t row = 0; row < rows; ++row) {
         for (std::size_t column = 0; column < columns; ++column) {

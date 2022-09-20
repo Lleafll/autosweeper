@@ -4,8 +4,9 @@ project(aswtest)
 
 add_executable(${PROJECT_NAME}
         MineFieldTest.cpp
-        MineFinderTest.cpp
+        PlayingFieldWithMinesTest.cpp
         PlayingFieldTest.cpp
+        SafeFieldTest.cpp
         SolverTest.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ../include/asw ../src)
 

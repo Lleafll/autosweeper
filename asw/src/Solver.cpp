@@ -1,5 +1,5 @@
 #include "Solver.h"
-#include "MineFinder.h"
+#include "PlayingFieldWithMines.h"
 #include <cassert>
 
 namespace stdex = std::experimental;
@@ -12,7 +12,7 @@ namespace {
 
 typedef int i;
 int count_surrounding_hidden_mines(
-        MineFinder::ConstView const& evaluation_view,
+        PlayingFieldWithMines::ConstView const& evaluation_view,
         auto& mine_probability,
         std::size_t const row,
         std::size_t const column) {
@@ -30,7 +30,7 @@ int count_surrounding_hidden_mines(
 Solver::Result Solver::next() {
     auto const rows = field_.rows();
     auto const columns = field_.columns();
-    auto const evaluation = evaluate(field_);
+    auto const evaluation = find_mines(field_);
     auto const evaluation_view = evaluation.view();
     std::vector<double> mine_probability_buffer(
             field_.rows() * field_.columns(), -1);
