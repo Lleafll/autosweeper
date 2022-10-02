@@ -8,6 +8,20 @@ namespace asw {
 
 namespace {
 
+auto proximity(
+        PlayingField::Mines const& mines,
+        std::size_t const row,
+        std::size_t const column) {
+    auto const min_row = row == 0 ? 0 : row - 1;
+    auto const max_row = row + 1 == mines.extent(0) ? row : row + 1;
+    auto const min_column = column == 0 ? 0 : column - 1;
+    auto const max_column = column + 1 == mines.extent(1) ? column : column + 1;
+    return stdex::submdspan(
+            mines,
+            std::pair{min_row, max_row + 1},
+            std::pair{min_column, max_column + 1});
+}
+
 Cell calculate_proximity(
         PlayingField::Mines const& mines,
         std::size_t const row,
@@ -15,16 +29,9 @@ Cell calculate_proximity(
     if (mines(row, column) == MineCell::Mine) {
         return Cell::Mine;
     }
-    auto const min_row = row == 0 ? 0 : row - 1;
-    auto const max_row = row + 1 == mines.extent(0) ? row : row + 1;
-    auto const min_column = column == 0 ? 0 : column - 1;
-    auto const max_column = column + 1 == mines.extent(1) ? column : column + 1;
     std::underlying_type_t<Cell> count = 0;
     indexed_for_each(
-            stdex::submdspan(
-                    mines,
-                    std::pair{min_row, max_row + 1},
-                    std::pair{min_column, max_column + 1}),
+            proximity(mines, row, column),
             [row, column, &count](
                     std::size_t const r,
                     std::size_t const c,
