@@ -61,11 +61,11 @@ TEST_CASE("mdspan conversion") {
                     .data(),
             2,
             2}};
-    field = field.reveal(0, 0).reveal(1, 0);
+    field = field.reveal(0, 0).reveal(0, 1);
     stdex::mdspan<Cell const, stdex::dextents<2>> const view = field;
     REQUIRE(view(0, 0) == Cell::One);
-    REQUIRE(view(0, 1) == Cell::Hidden);
-    REQUIRE(view(1, 0) == Cell::Mine);
+    REQUIRE(view(0, 1) == Cell::Mine);
+    REQUIRE(view(1, 0) == Cell::Hidden);
     REQUIRE(view(1, 1) == Cell::Hidden);
 }
 

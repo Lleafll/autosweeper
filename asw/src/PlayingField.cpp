@@ -1,4 +1,5 @@
 #include "PlayingField.h"
+#include "algorithm2d.h"
 #include <algorithm>
 
 namespace stdex = std::experimental;
@@ -38,12 +39,14 @@ calculate_cells(PlayingField::Mines const& mines) {
     auto const columns = mines.extent(1);
     auto cells = gsl::make_strict_not_null(
             std::make_shared<std::vector<Cell>>(rows * columns));
-    for (std::size_t row = 0; row < rows; ++row) {
-        for (std::size_t column = 0; column < columns; ++column) {
-            (*cells)[row + rows * column] =
-                    calculate_proximity(mines, row, column);
-        }
-    }
+    indexed_for_each(
+            stdex::mdspan{cells->data(), rows, columns},
+            [&mines](
+                    std::size_t const row,
+                    std::size_t const column,
+                    Cell& cell) {
+                cell = calculate_proximity(mines, row, column);
+            });
     return cells;
 }
 
