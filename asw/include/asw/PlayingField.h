@@ -1,43 +1,48 @@
 #pragma once
 
-#include "MineField.h"
+#include "Cell.h"
+#include <experimental/mdspan>
+#include <gsl/pointers>
+#include <memory>
+#include <vector>
 
 namespace asw {
 
 class PlayingField final {
 public:
-    enum class Cell {
-        Empty,
-        One,
-        Two,
-        Three,
-        Four,
-        Five,
-        Six,
-        Seven,
-        Eight,
-        Hidden,
-        Mine
-    };
+    using Mines = std::experimental::
+            mdspan<MineCell const, std::experimental::dextents<2>>;
+    using Cells =
+            std::experimental::mdspan<Cell, std::experimental::dextents<2>>;
+    using ConstCells = std::experimental::
+            mdspan<Cell const, std::experimental::dextents<2>>;
 
-    explicit PlayingField(MineField const& mines);
+    explicit PlayingField(Mines const& mines);
 
     [[nodiscard]] std::size_t rows() const;
     [[nodiscard]] std::size_t columns() const;
-    [[nodiscard]] int  mine_count() const;
+    [[nodiscard]] int mine_count() const;
     [[nodiscard]] Cell operator()(std::size_t row, std::size_t column) const;
-    bool reveal(std::size_t row, std::size_t column);
+    [[nodiscard]] PlayingField
+    reveal(std::size_t row, std::size_t column) const;
+
+    operator ConstCells() const;
 
 private:
-    enum class Hidden : bool { Yes, No };
+    std::size_t rows_;
+    std::size_t columns_;
+    std::vector<Cell> hidden_;
+    gsl::strict_not_null<std::shared_ptr<std::vector<Cell> const>> cells_;
 
-    std::size_t const rows_;
-    std::size_t const columns_;
-    std::vector<Hidden> hidden_;
-    std::vector<Cell> cells_;
+    PlayingField(
+            std::size_t rows,
+            std::size_t columns,
+            std::vector<Cell> hidden,
+            gsl::strict_not_null<std::shared_ptr<std::vector<Cell> const>>
+                    cells);
 
-    [[nodiscard]] bool is_hidden(std::size_t row, std::size_t column) const;
-    [[nodiscard]] Cell cell(std::size_t row, std::size_t column) const;
+    [[nodiscard]] ConstCells hidden() const;
+    [[nodiscard]] ConstCells cells() const;
 };
 
 }  // namespace asw

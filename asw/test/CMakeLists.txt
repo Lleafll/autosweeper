@@ -3,10 +3,8 @@ cmake_minimum_required(VERSION 3.21)
 project(aswtest)
 
 add_executable(${PROJECT_NAME}
-        MineFieldTest.cpp
-        PlayingFieldWithMinesTest.cpp
         PlayingFieldTest.cpp
-        SafeFieldTest.cpp
+        PredictMinesTest.cpp
         SolverTest.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ../include/asw ../src)
 

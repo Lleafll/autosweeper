@@ -5,6 +5,7 @@
   "dependencies": [
     "catch2",
     "magic-enum",
-    "mdspan"
+    "mdspan",
+    "ms-gsl"
   ]
 }

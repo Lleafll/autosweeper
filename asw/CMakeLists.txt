@@ -3,15 +3,14 @@ cmake_minimum_required(VERSION 3.21)
 project(asw)
 
 add_library(${PROJECT_NAME} STATIC
-        src/MineField.cpp
         src/PlayingField.cpp
-        src/PlayingFieldWithMines.cpp
-        src/SafeField.cpp
+        src/predict_mines.cpp
         src/Solver.cpp)
 target_include_directories(${PROJECT_NAME}
         PUBLIC include
         PRIVATE include/asw src)
+find_package(Microsoft.GSL CONFIG REQUIRED)
 find_package(mdspan CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE std::mdspan)
+target_link_libraries(${PROJECT_NAME} PUBLIC Microsoft.GSL::GSL std::mdspan)
 
 add_subdirectory(test)
