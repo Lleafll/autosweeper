@@ -20,16 +20,22 @@ Cell calculate_proximity(
     auto const min_column = column == 0 ? 0 : column - 1;
     auto const max_column = column + 1 == mines.extent(1) ? column : column + 1;
     std::underlying_type_t<Cell> count = 0;
-    for (std::size_t r = min_row; r <= max_row; ++r) {
-        for (std::size_t c = min_column; c <= max_column; ++c) {
-            if (r == row && c == column) {
-                continue;
-            }
-            if (mines(r, c) == MineCell::Mine) {
-                ++count;
-            }
-        }
-    }
+    indexed_for_each(
+            stdex::submdspan(
+                    mines,
+                    std::pair{min_row, max_row + 1},
+                    std::pair{min_column, max_column + 1}),
+            [row, column, &count](
+                    std::size_t const r,
+                    std::size_t const c,
+                    MineCell const mine) {
+                if (r == row && c == column) {
+                    return;
+                }
+                if (mine == MineCell::Mine) {
+                    ++count;
+                }
+            });
     return static_cast<Cell>(count);
 }
 
