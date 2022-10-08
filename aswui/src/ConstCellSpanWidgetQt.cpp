@@ -1,5 +1,6 @@
 #include "ConstCellSpanWidgetQt.h"
 #include "ConstCellSpanPresenter.h"
+#include <QHeaderView>
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <gsl/narrow>
@@ -12,6 +13,11 @@ public:
     explicit Impl(QWidget& widget)
         : presenter_{*this},
           table_{new QTableWidget{&widget}} {
+        table_->horizontalHeader()->hide();
+        table_->verticalHeader()->hide();
+        table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        table_->setFocusPolicy(Qt::NoFocus);
+        table_->setSelectionMode(QAbstractItemView::NoSelection);
         auto* const layout = new QVBoxLayout{&widget};
         layout->addWidget(table_);
     }
@@ -29,11 +35,16 @@ private:
 
     void set_column_count(int const columns) override {
         table_->setColumnCount(columns);
+        for (int i = 0; i < columns; ++i) {
+            table_->setColumnWidth(i, 10);
+        }
     }
 
     void
     set_cell(int const row, int const column, QString const& text) override {
-        table_->setItem(row, column, new QTableWidgetItem{text});
+        auto* const item = new QTableWidgetItem{text};
+        item->setTextAlignment(Qt::AlignCenter);
+        table_->setItem(row, column, item);
     }
 
 private:
