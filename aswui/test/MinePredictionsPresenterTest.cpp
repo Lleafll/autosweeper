@@ -25,10 +25,13 @@ class MockMinePredictionsView final : public MinePredictionsView {
 TEST_CASE("MockMinePredictionsView::set()") {
     MockMinePredictionsView view;
     MinePredictionsPresenter presenter{view};
-    SECTION("correctly resizes the field") {
+    SECTION("resizes the field") {
         presenter.set(23, 56, {});
         REQUIRE(view.set_row_count_call == 23);
         REQUIRE(view.set_column_count_call == 56);
+    }
+    SECTION("sets up field") {
+        presenter.set(2, 3, {});
     }
 }
 

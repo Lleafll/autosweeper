@@ -6,8 +6,7 @@ add_executable(${PROJECT_NAME}
         Algorithm2DTest.cpp
         CellTest.cpp
         PlayingFieldTest.cpp
-        PredictMinesTest.cpp
-        SolverTest.cpp)
+        PredictMinesTest.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ../include/asw ../src)
 
 find_package(Catch2 CONFIG REQUIRED)

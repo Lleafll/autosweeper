@@ -4,8 +4,7 @@ project(asw)
 
 add_library(${PROJECT_NAME} STATIC
         src/PlayingField.cpp
-        src/predict_mines.cpp
-        src/Solver.cpp)
+        src/predict_mines.cpp)
 target_include_directories(${PROJECT_NAME}
         PUBLIC include
         PRIVATE include/asw src)
