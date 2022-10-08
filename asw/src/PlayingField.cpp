@@ -46,14 +46,12 @@ Cell calculate_proximity(
     return static_cast<Cell>(count);
 }
 
-gsl::strict_not_null<std::shared_ptr<std::vector<Cell>>>
-calculate_cells(PlayingField::Mines const& mines) {
+std::vector<Cell> calculate_cells(PlayingField::Mines const& mines) {
     auto const rows = mines.extent(0);
     auto const columns = mines.extent(1);
-    auto cells = gsl::make_strict_not_null(
-            std::make_shared<std::vector<Cell>>(rows * columns));
+    std::vector<Cell> cells(rows * columns);
     indexed_for_each(
-            stdex::mdspan{cells->data(), rows, columns},
+            stdex::mdspan{cells.data(), rows, columns},
             [&mines](
                     std::size_t const row,
                     std::size_t const column,
@@ -81,7 +79,7 @@ std::size_t PlayingField::columns() const {
 }
 
 int PlayingField::mine_count() const {
-    return static_cast<int>(std::ranges::count(*cells_, Cell::Mine));
+    return static_cast<int>(std::ranges::count(cells_, Cell::Mine));
 }
 
 Cell PlayingField::operator()(std::size_t const row, std::size_t const column)
@@ -89,27 +87,13 @@ Cell PlayingField::operator()(std::size_t const row, std::size_t const column)
     return hidden()(row, column);
 }
 
-PlayingField
-PlayingField::reveal(std::size_t const row, std::size_t const column) const {
-    auto hidden = hidden_;
-    stdex::mdspan{hidden.data(), rows_, columns_}(row, column) =
+void PlayingField::reveal(std::size_t const row, std::size_t const column) {
+    stdex::mdspan{hidden_.data(), rows_, columns_}(row, column) =
             cells()(row, column);
-    return {rows_, columns_, std::move(hidden), cells_};
 }
 
-PlayingField::operator ConstCellSpan() const {
+ConstCellSpan PlayingField::cspan() const {
     return hidden();
-}
-
-PlayingField::PlayingField(
-        std::size_t const rows,
-        std::size_t const columns,
-        std::vector<Cell> hidden,
-        gsl::strict_not_null<std::shared_ptr<std::vector<Cell> const>> cells)
-    : rows_{rows},
-      columns_{columns},
-      hidden_{std::move(hidden)},
-      cells_{std::move(cells)} {
 }
 
 ConstCellSpan PlayingField::hidden() const {
@@ -117,7 +101,7 @@ ConstCellSpan PlayingField::hidden() const {
 }
 
 ConstCellSpan PlayingField::cells() const {
-    return stdex::mdspan{cells_->data(), rows_, columns_};
+    return stdex::mdspan{cells_.data(), rows_, columns_};
 }
 
 }  // namespace asw

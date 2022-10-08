@@ -18,7 +18,7 @@ TEST_CASE("All fields are hidden initially") {
 TEST_CASE("Can reveal field") {
     PlayingField field{
             MineCellArray<2, 1>{MineCell::Empty, MineCell::Empty}.cspan()};
-    field = field.reveal(1, 0);
+    field.reveal(1, 0);
     REQUIRE(field(0, 0) == Cell::Hidden);
     REQUIRE(field(1, 0) == Cell::Empty);
 }
@@ -26,7 +26,8 @@ TEST_CASE("Can reveal field") {
 TEST_CASE("Correctly shows mines and proximity") {
     PlayingField field{
             MineCellArray<2, 1>{MineCell::Empty, MineCell::Mine}.cspan()};
-    field = field.reveal(0, 0).reveal(1, 0);
+    field.reveal(0, 0);
+    field.reveal(1, 0);
     REQUIRE(field(0, 0) == Cell::One);
     REQUIRE(field(1, 0) == Cell::Mine);
 }
@@ -48,8 +49,9 @@ TEST_CASE("mdspan conversion") {
     PlayingField field{MineCellArray<2, 2>{
             MineCell::Empty, MineCell::Mine, MineCell::Empty, MineCell::Empty}
                                .cspan()};
-    field = field.reveal(0, 0).reveal(0, 1);
-    stdex::mdspan<Cell const, stdex::dextents<2>> const view = field;
+    field.reveal(0, 0);
+    field.reveal(0, 1);
+    stdex::mdspan<Cell const, stdex::dextents<2>> const view = field.cspan();
     REQUIRE(view(0, 0) == Cell::One);
     REQUIRE(view(0, 1) == Cell::Mine);
     REQUIRE(view(1, 0) == Cell::Hidden);

@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_ENABLE_OPTIONAL_STRINGMAKER
-#include "PlayingFieldPresenter.h"
+#include "ConstCellSpanPresenter.h"
 #include "StringMaker.h"
 #include <QString>
 #include <catch.hpp>
@@ -8,9 +8,9 @@ using namespace aswui;
 
 namespace {
 
-class MockPlayingFieldView final : public PlayingFieldView {
+class MockConstCellSpanView final : public ConstCellSpanView {
 public:
-    ~MockPlayingFieldView() override = default;
+    ~MockConstCellSpanView() override = default;
 
     std::optional<std::size_t> set_row_count_call = {};
     std::optional<std::size_t> set_column_count_call = {};
@@ -31,9 +31,9 @@ private:
     }
 };
 
-TEST_CASE("PlayingFieldPresenter") {
-    MockPlayingFieldView view{};
-    PlayingFieldPresenter presenter{view};
+TEST_CASE("ConstCellSpanPresenter") {
+    MockConstCellSpanView view{};
+    ConstCellSpanPresenter presenter{view};
     SECTION("set() correctly sets up row and column count") {
         presenter.set(asw::CellArray<12, 34>{}.cspan());
         REQUIRE(view.set_row_count_call == 12);

@@ -1,5 +1,5 @@
-#include "PlayingFieldWidgetQt.h"
-#include "PlayingFieldPresenter.h"
+#include "ConstCellSpanWidgetQt.h"
+#include "ConstCellSpanPresenter.h"
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <gsl/narrow>
@@ -7,7 +7,7 @@
 
 namespace aswui {
 
-class PlayingFieldWidgetQt::Impl final : public PlayingFieldView {
+class ConstCellSpanWidgetQt::Impl final : public ConstCellSpanView {
 public:
     explicit Impl(QWidget& widget)
         : presenter_{*this},
@@ -17,6 +17,10 @@ public:
     }
 
     ~Impl() override = default;
+
+    void set(asw::ConstCellSpan const& cells) {
+        presenter_.set(cells);
+    }
 
 private:
     void set_row_count(int const rows) override {
@@ -33,15 +37,26 @@ private:
     }
 
 private:
-    PlayingFieldPresenter presenter_;
+    ConstCellSpanPresenter presenter_;
     gsl::strict_not_null<QTableWidget*> table_;
 };
 
-PlayingFieldWidgetQt::PlayingFieldWidgetQt(QWidget* const parent)
+ConstCellSpanWidgetQt::ConstCellSpanWidgetQt(QWidget* const parent)
     : QWidget{parent},
       impl_{std::make_unique<Impl>(*this)} {
 }
 
-PlayingFieldWidgetQt::~PlayingFieldWidgetQt() = default;
+ConstCellSpanWidgetQt::ConstCellSpanWidgetQt(
+        asw::ConstCellSpan const& cells,
+        QWidget* const parent)
+    : ConstCellSpanWidgetQt{parent} {
+    set(cells);
+}
+
+ConstCellSpanWidgetQt::~ConstCellSpanWidgetQt() = default;
+
+void ConstCellSpanWidgetQt::set(asw::ConstCellSpan const& cells) {
+    impl_->set(cells);
+}
 
 }  // namespace aswui

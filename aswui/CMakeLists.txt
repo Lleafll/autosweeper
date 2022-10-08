@@ -7,11 +7,11 @@ find_package(Qt6 CONFIG REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
 
 add_library(${PROJECT_NAME} STATIC
-        src/PlayingFieldPresenter.cpp
-        src/PlayingFieldWidgetQt.cpp)
+        src/ConstCellSpanPresenter.cpp
+        src/ConstCellSpanWidgetQt.cpp)
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 target_sources(${PROJECT_NAME} PRIVATE  # MOC headers
-        include/aswui/PlayingFieldWidgetQt.h)
+        include/aswui/ConstCellSpanWidgetQt.h)
 target_include_directories(${PROJECT_NAME}
         PUBLIC include
         PRIVATE include/aswui src)

@@ -11,7 +11,7 @@ TEST_CASE(R"(Can get next step for simple case)") {
     MineCellArray<1, 3> mines{};
     mines(0, 1) = MineCell::Mine;
     PlayingField field{mines.cspan()};
-    field = field.reveal(0, 0);
+    field.reveal(0, 0);
     Solver solver{field};
     auto const result = solver.next();
     REQUIRE(result == Solver::Result::Success);
@@ -20,7 +20,7 @@ TEST_CASE(R"(Can get next step for simple case)") {
 
 TEST_CASE("Return Lost when mine is revealed") {
     PlayingField field{MineCellArray<1, 1>{MineCell::Mine}.cspan()};
-    field = field.reveal(0, 0);
+    field.reveal(0, 0);
     Solver solver{field};
     REQUIRE(solver.next() == Solver::Result::Lost);
 }
