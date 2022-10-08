@@ -10,8 +10,8 @@ public:
     virtual ~PlayingFieldView() = default;
 
 private:
-    virtual void set_row_count(std::size_t rows) = 0;
-    virtual void set_column_count(std::size_t columns) = 0;
+    virtual void set_row_count(int rows) = 0;
+    virtual void set_column_count(int columns) = 0;
 
     friend class PlayingFieldPresenter;
 };

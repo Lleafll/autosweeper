@@ -14,11 +14,11 @@ public:
     std::optional<std::size_t> set_column_count_call = {};
 
 private:
-    void set_row_count(std::size_t const rows) override {
+    void set_row_count(int const rows) override {
         set_row_count_call = rows;
     }
 
-    void set_column_count(std::size_t const columns) override {
+    void set_column_count(int const columns) override {
         set_column_count_call = columns;
     }
 };
