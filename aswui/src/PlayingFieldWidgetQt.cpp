@@ -5,7 +5,8 @@ namespace aswui {
 
 class PlayingFieldWidgetQt::Impl final : public PlayingFieldView {
 public:
-    Impl() : presenter_{*this} {}
+    Impl() : presenter_{*this} {
+    }
 
 private:
     PlayingFieldPresenter presenter_;
@@ -13,7 +14,8 @@ private:
 
 PlayingFieldWidgetQt::PlayingFieldWidgetQt(QWidget* const parent)
     : QWidget{parent},
-      impl_{std::make_unique<Impl>()} {}
+      impl_{std::make_unique<Impl>()} {
+}
 
 PlayingFieldWidgetQt::~PlayingFieldWidgetQt() = default;
 
