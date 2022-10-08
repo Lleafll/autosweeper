@@ -69,11 +69,16 @@ PlayingField::PlayingField(Mines const& mines)
     : rows_{mines.extent(0)},
       columns_{mines.extent(1)},
       hidden_{rows_ * columns_, Cell::Hidden},
-      cells_{calculate_cells(mines)} {}
+      cells_{calculate_cells(mines)} {
+}
 
-std::size_t PlayingField::rows() const { return rows_; }
+std::size_t PlayingField::rows() const {
+    return rows_;
+}
 
-std::size_t PlayingField::columns() const { return columns_; }
+std::size_t PlayingField::columns() const {
+    return columns_;
+}
 
 int PlayingField::mine_count() const {
     return static_cast<int>(std::ranges::count(*cells_, Cell::Mine));
@@ -92,7 +97,7 @@ PlayingField::reveal(std::size_t const row, std::size_t const column) const {
     return {rows_, columns_, std::move(hidden), cells_};
 }
 
-PlayingField::operator stdex::mdspan<Cell const, stdex::dextents<2>>() const {
+PlayingField::operator ConstCellSpan() const {
     return hidden();
 }
 
@@ -104,13 +109,14 @@ PlayingField::PlayingField(
     : rows_{rows},
       columns_{columns},
       hidden_{std::move(hidden)},
-      cells_{std::move(cells)} {}
+      cells_{std::move(cells)} {
+}
 
-PlayingField::ConstCells PlayingField::hidden() const {
+ConstCellSpan PlayingField::hidden() const {
     return stdex::mdspan{hidden_.data(), rows_, columns_};
 }
 
-PlayingField::ConstCells PlayingField::cells() const {
+ConstCellSpan PlayingField::cells() const {
     return stdex::mdspan{cells_->data(), rows_, columns_};
 }
 

@@ -4,6 +4,7 @@ project(aswtest)
 
 add_executable(${PROJECT_NAME}
         Algorithm2DTest.cpp
+        CellTest.cpp
         PlayingFieldTest.cpp
         PredictMinesTest.cpp
         SolverTest.cpp)

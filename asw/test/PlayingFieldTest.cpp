@@ -1,17 +1,10 @@
 #include "PlayingField.h"
+#include "StringMaker.h"
 #include <catch.hpp>
 #include <experimental/mdspan>
-#include <magic_enum.hpp>
 
 using namespace asw;
 namespace stdex = std::experimental;
-
-template<>
-struct Catch::StringMaker<Cell> {
-    static std::string convert(Cell const cell) {
-        return std::string{magic_enum::enum_name(cell)};
-    }
-};
 
 namespace {
 

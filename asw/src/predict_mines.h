@@ -13,7 +13,8 @@ struct Position final {
 
     constexpr Position(std::size_t const row, std::size_t const column)
         : row{row},
-          column{column} {}
+          column{column} {
+    }
 
     constexpr bool operator==(Position const&) const = default;
 };
@@ -27,9 +28,6 @@ struct MinePrediction final {
     bool operator==(MinePrediction const&) const = default;
 };
 
-std::list<MinePrediction>
-predict_mines(std::experimental::mdspan<
-              Cell const,
-              std::experimental::dextents<2>> const& field);
+std::list<MinePrediction> predict_mines(ConstCellSpan const& field);
 
 }  // namespace asw

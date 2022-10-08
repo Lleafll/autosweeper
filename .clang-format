@@ -47,6 +47,7 @@ ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 PackConstructorInitializers: CurrentLine
 PointerAlignment: Left
+QualifierAlignment: Right
 ReflowComments: true
 SpaceAfterCStyleCast: true
 SpaceAfterLogicalNot: false

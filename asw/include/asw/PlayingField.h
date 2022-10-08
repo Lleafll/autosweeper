@@ -12,10 +12,6 @@ class PlayingField final {
 public:
     using Mines = std::experimental::
             mdspan<MineCell const, std::experimental::dextents<2>>;
-    using Cells =
-            std::experimental::mdspan<Cell, std::experimental::dextents<2>>;
-    using ConstCells = std::experimental::
-            mdspan<Cell const, std::experimental::dextents<2>>;
 
     explicit PlayingField(Mines const& mines);
 
@@ -26,7 +22,7 @@ public:
     [[nodiscard]] PlayingField
     reveal(std::size_t row, std::size_t column) const;
 
-    operator ConstCells() const;
+    operator ConstCellSpan() const;
 
 private:
     std::size_t rows_;
@@ -41,8 +37,8 @@ private:
             gsl::strict_not_null<std::shared_ptr<std::vector<Cell> const>>
                     cells);
 
-    [[nodiscard]] ConstCells hidden() const;
-    [[nodiscard]] ConstCells cells() const;
+    [[nodiscard]] ConstCellSpan hidden() const;
+    [[nodiscard]] ConstCellSpan cells() const;
 };
 
 }  // namespace asw
