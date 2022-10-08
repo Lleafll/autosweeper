@@ -27,6 +27,11 @@ private:
         table_->setColumnCount(columns);
     }
 
+    void
+    set_cell(int const row, int const column, QString const& text) override {
+        table_->setItem(row, column, new QTableWidgetItem{text});
+    }
+
 private:
     PlayingFieldPresenter presenter_;
     gsl::strict_not_null<QTableWidget*> table_;

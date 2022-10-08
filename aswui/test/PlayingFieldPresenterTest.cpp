@@ -1,5 +1,7 @@
-#include "PlayingFieldPresenter.h"
 #define CATCH_CONFIG_ENABLE_OPTIONAL_STRINGMAKER
+#include "PlayingFieldPresenter.h"
+#include "StringMaker.h"
+#include <QString>
 #include <catch.hpp>
 
 using namespace aswui;
@@ -12,6 +14,7 @@ public:
 
     std::optional<std::size_t> set_row_count_call = {};
     std::optional<std::size_t> set_column_count_call = {};
+    std::vector<std::tuple<int, int, QString>> set_cell_calls = {};
 
 private:
     void set_row_count(int const rows) override {
@@ -21,15 +24,44 @@ private:
     void set_column_count(int const columns) override {
         set_column_count_call = columns;
     }
+
+    void
+    set_cell(int const row, int const column, QString const& text) override {
+        set_cell_calls.emplace_back(row, column, text);
+    }
 };
 
-TEST_CASE("set()") {
+TEST_CASE("PlayingFieldPresenter") {
     MockPlayingFieldView view{};
     PlayingFieldPresenter presenter{view};
-    SECTION("correctly sets up row and column count") {
+    SECTION("set() correctly sets up row and column count") {
         presenter.set(asw::CellArray<12, 34>{}.cspan());
         REQUIRE(view.set_row_count_call == 12);
         REQUIRE(view.set_column_count_call == 34);
+    }
+    SECTION("set() correctly sets cells") {
+        using enum asw::Cell;
+        presenter.set(asw::CellArray<3, 4>{// clang-format off
+                Empty, One, Two, Three,
+                Four, Five, Six, Seven,
+                Eight, Hidden, Mine, Empty}  // clang-format on
+                              .cspan());
+        std::ranges::sort(view.set_cell_calls);
+        REQUIRE(view.set_cell_calls ==
+                std::vector<std::tuple<int, int, QString>>{
+                        {0, 0, ""},
+                        {0, 1, "1"},
+                        {0, 2, "2"},
+                        {0, 3, "3"},
+                        {1, 0, "4"},
+                        {1, 1, "5"},
+                        {1, 2, "6"},
+                        {1, 3, "7"},
+                        {2, 0, "8"},
+                        {2, 1, "☐"},
+                        {2, 2, "💣"},
+                        {2, 3, ""},
+                });
     }
 }
 
