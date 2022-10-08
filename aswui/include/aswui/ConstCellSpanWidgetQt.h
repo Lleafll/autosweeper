@@ -18,6 +18,9 @@ public:
 
     void set(asw::ConstCellSpan const& cells);
 
+signals:
+    void clicked(int row, int column);
+
 private:
     class Impl;
 

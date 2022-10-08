@@ -11,8 +11,15 @@ int main(int argc, char** argv) {
         mines(6, 3) = Mine;
         mines(7, 7) = Mine;
     }
-    asw::PlayingField playing_field{mines.cspan()};
-    aswui::ConstCellSpanWidgetQt widget{playing_field.cspan(), nullptr};
+    asw::PlayingField field{mines.cspan()};
+    aswui::ConstCellSpanWidgetQt widget{field.cspan(), nullptr};
     widget.show();
+    QObject::connect(
+            &widget,
+            &aswui::ConstCellSpanWidgetQt::clicked,
+            [&field, &widget](int const row, int const column) {
+                field.reveal(row, column);
+                widget.set(field.cspan());
+            });
     return QApplication::exec();
 }

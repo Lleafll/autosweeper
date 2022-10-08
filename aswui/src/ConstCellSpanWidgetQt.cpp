@@ -10,7 +10,7 @@ namespace aswui {
 
 class ConstCellSpanWidgetQt::Impl final : public ConstCellSpanView {
 public:
-    explicit Impl(QWidget& widget)
+    explicit Impl(ConstCellSpanWidgetQt& widget)
         : presenter_{*this},
           table_{new QTableWidget{&widget}} {
         table_->horizontalHeader()->hide();
@@ -20,6 +20,11 @@ public:
         table_->setSelectionMode(QAbstractItemView::NoSelection);
         auto* const layout = new QVBoxLayout{&widget};
         layout->addWidget(table_);
+        QObject::connect(
+                table_,
+                &QTableWidget::cellClicked,
+                &widget,
+                &ConstCellSpanWidgetQt::clicked);
     }
 
     ~Impl() override = default;
