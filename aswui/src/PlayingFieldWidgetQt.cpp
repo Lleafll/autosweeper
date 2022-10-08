@@ -8,6 +8,17 @@ public:
     Impl() : presenter_{*this} {
     }
 
+    ~Impl() override = default;
+
+private:
+    void set_row_count(std::size_t rows) override {
+        // TODO: Implement
+    }
+
+    void set_column_count(std::size_t columns) override {
+        // TODO: Implement
+    }
+
 private:
     PlayingFieldPresenter presenter_;
 };

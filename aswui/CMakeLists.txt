@@ -16,7 +16,10 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC include
         PRIVATE include/aswui src)
 find_package(Microsoft.GSL CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC Microsoft.GSL::GSL Qt6::Widgets)
+target_link_libraries(${PROJECT_NAME} PUBLIC Microsoft.GSL::GSL Qt6::Widgets asw)
+
+
+add_subdirectory(test)
 
 
 project(aswuimain)
