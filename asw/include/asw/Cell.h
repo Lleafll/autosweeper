@@ -23,41 +23,49 @@ enum class Cell {
 
 using ConstCellSpan =
         std::experimental::mdspan<Cell const, std::experimental::dextents<2>>;
-using MutCellSpan =
-        std::experimental::mdspan<Cell, std::experimental::dextents<2>>;
 
-template<std::size_t rows, std::size_t columns>
-class CellArray final {
+template<typename T, std::size_t rows, std::size_t columns>
+class BasicCellArray final {
     static constexpr auto size = rows * columns;
 
 public:
-    constexpr explicit CellArray(Cell fill = Cell::Empty) : buffer_{} {
+    using Span = std::experimental::mdspan<T, std::experimental::dextents<2>>;
+    using ConstSpan =
+            std::experimental::mdspan<T const, std::experimental::dextents<2>>;
+
+    constexpr explicit BasicCellArray(T fill = T{}) {
+        std::ranges::fill(buffer_, fill);
     }
 
-    constexpr CellArray(std::initializer_list<Cell> const& cells) {
+    constexpr BasicCellArray(std::initializer_list<T> const& cells) {
         std::copy_n(cells.begin(), size, buffer_.begin());
     }
 
-    constexpr Cell&
-    operator()(std::size_t const row, std::size_t const column) {
-        return mut_span()(row, column);
+    constexpr T& operator()(std::size_t const row, std::size_t const column) {
+        return span()(row, column);
     }
 
-    [[nodiscard]] constexpr Cell
+    [[nodiscard]] constexpr T
     operator()(std::size_t const row, std::size_t const column) const {
-        return const_span()(row, column);
+        return cspan()(row, column);
     }
 
-    [[nodiscard]] constexpr MutCellSpan mut_span() {
-        return MutCellSpan{buffer_.data(), rows, columns};
+    [[nodiscard]] constexpr Span span() {
+        return Span{buffer_.data(), rows, columns};
     }
 
-    [[nodiscard]] constexpr ConstCellSpan const_span() const {
-        return ConstCellSpan{buffer_.data(), rows, columns};
+    [[nodiscard]] constexpr ConstSpan cspan() const {
+        return ConstSpan{buffer_.data(), rows, columns};
     }
 
 private:
-    std::array<Cell, size> buffer_ = {};
+    std::array<T, size> buffer_ = {};
 };
+
+template<std::size_t rows, std::size_t columns>
+using CellArray = BasicCellArray<Cell, rows, columns>;
+
+template<std::size_t rows, std::size_t columns>
+using MineCellArray = BasicCellArray<MineCell, rows, columns>;
 
 }  // namespace asw

@@ -1,17 +1,16 @@
 #include "Solver.h"
 #include "PlayingField.h"
+#include "StringMaker.h"
 #include <catch.hpp>
 
 using namespace asw;
-namespace stdex = std::experimental;
 
 namespace {
 
 TEST_CASE(R"(Can get next step for simple case)") {
-    std::array<MineCell, 3> mines{};
-    auto const view = stdex::mdspan{mines.data(), 1, 3};
-    view(0, 1) = MineCell::Mine;
-    PlayingField field{view};
+    MineCellArray<1, 3> mines{};
+    mines(0, 1) = MineCell::Mine;
+    PlayingField field{mines.cspan()};
     field = field.reveal(0, 0);
     Solver solver{field};
     auto const result = solver.next();
@@ -20,8 +19,7 @@ TEST_CASE(R"(Can get next step for simple case)") {
 }
 
 TEST_CASE("Return Lost when mine is revealed") {
-    PlayingField field{stdex::mdspan{
-            std::array<MineCell, 1>{MineCell::Mine}.data(), 1, 1}};
+    PlayingField field{MineCellArray<1, 1>{MineCell::Mine}.cspan()};
     field = field.reveal(0, 0);
     Solver solver{field};
     REQUIRE(solver.next() == Solver::Result::Lost);
