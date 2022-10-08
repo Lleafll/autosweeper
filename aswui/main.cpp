@@ -1,9 +1,10 @@
 #include <QApplication>
+#include <QHBoxLayout>
 #include <asw/PlayingField.h>
 #include <aswui/ConstCellSpanWidgetQt.h>
+#include <aswui/MinePredictionsWidgetQt.h>
 
 int main(int argc, char** argv) {
-    QApplication application{argc, argv};
     asw::MineCellArray<8, 8> mines;
     {
         using enum asw::MineCell;
@@ -12,14 +13,20 @@ int main(int argc, char** argv) {
         mines(7, 7) = Mine;
     }
     asw::PlayingField field{mines.cspan()};
-    aswui::ConstCellSpanWidgetQt widget{field.cspan(), nullptr};
-    widget.show();
+    QApplication application{argc, argv};
+    aswui::ConstCellSpanWidgetQt field_widget{field.cspan(), nullptr};
+    aswui::MinePredictionsWidgetQt predictions_widget{nullptr};
+    QWidget main_widget;
+    QHBoxLayout layout{&main_widget};
+    layout.addWidget(&field_widget);
+    layout.addWidget(&predictions_widget);
     QObject::connect(
-            &widget,
+            &field_widget,
             &aswui::ConstCellSpanWidgetQt::clicked,
-            [&field, &widget](int const row, int const column) {
+            [&field, &field_widget](int const row, int const column) {
                 field.reveal(row, column);
-                widget.set(field.cspan());
+                field_widget.set(field.cspan());
             });
+    main_widget.show();
     return QApplication::exec();
 }
