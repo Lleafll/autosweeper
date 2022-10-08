@@ -7,6 +7,7 @@ find_package(Qt6 CONFIG REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
 
 add_library(${PROJECT_NAME} STATIC
+        src/CellsWidgetQt.cpp
         src/ConstCellSpanPresenter.cpp
         src/ConstCellSpanWidgetQt.cpp
         src/MinePredictionsPresenter.cpp
@@ -14,7 +15,8 @@ add_library(${PROJECT_NAME} STATIC
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 target_sources(${PROJECT_NAME} PRIVATE  # MOC headers
         include/aswui/ConstCellSpanWidgetQt.h
-        include/aswui/MinePredictionsWidgetQt.h)
+        include/aswui/MinePredictionsWidgetQt.h
+        src/CellsWidgetQt.h)
 target_include_directories(${PROJECT_NAME}
         PUBLIC include
         PRIVATE include/aswui src)

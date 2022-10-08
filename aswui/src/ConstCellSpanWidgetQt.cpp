@@ -1,7 +1,6 @@
 #include "ConstCellSpanWidgetQt.h"
 #include "ConstCellSpanPresenter.h"
-#include <QHeaderView>
-#include <QTableWidget>
+#include "CellsWidgetQt.h"
 #include <QVBoxLayout>
 #include <gsl/narrow>
 #include <gsl/pointers>
@@ -12,12 +11,7 @@ class ConstCellSpanWidgetQt::Impl final : public ConstCellSpanView {
 public:
     explicit Impl(ConstCellSpanWidgetQt& widget)
         : presenter_{*this},
-          table_{new QTableWidget{&widget}} {
-        table_->horizontalHeader()->hide();
-        table_->verticalHeader()->hide();
-        table_->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        table_->setFocusPolicy(Qt::NoFocus);
-        table_->setSelectionMode(QAbstractItemView::NoSelection);
+          table_{new CellsWidgetQt{&widget}} {
         auto* const layout = new QVBoxLayout{&widget};
         layout->addWidget(table_);
         QObject::connect(
@@ -40,9 +34,6 @@ private:
 
     void set_column_count(int const columns) override {
         table_->setColumnCount(columns);
-        for (int i = 0; i < columns; ++i) {
-            table_->setColumnWidth(i, 10);
-        }
     }
 
     void
@@ -54,7 +45,7 @@ private:
 
 private:
     ConstCellSpanPresenter presenter_;
-    gsl::strict_not_null<QTableWidget*> table_;
+    gsl::strict_not_null<CellsWidgetQt*> table_;
 };
 
 ConstCellSpanWidgetQt::ConstCellSpanWidgetQt(QWidget* const parent)

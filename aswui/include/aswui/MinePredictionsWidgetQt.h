@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QWidget>
+#include <asw/predict_mines.h>
 #include <gsl/pointers>
 #include <memory>
 
@@ -13,6 +14,11 @@ class MinePredictionsWidgetQt final : public QWidget {
     explicit MinePredictionsWidgetQt(QWidget* parent);
 
     ~MinePredictionsWidgetQt() override;
+
+    void
+    set(std::size_t rows,
+        std::size_t columns,
+        std::list<asw::MinePrediction> const& predictions);
 
   private:
     class Impl;
