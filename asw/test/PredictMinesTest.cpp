@@ -44,7 +44,7 @@ TEST_CASE("predict_mines for easy case") {
     // clang-format off
     constexpr Array2d<Cell, 2, 2> buffer{
             Cell::Hidden, Cell::One,
-            Cell::One, Cell::One};
+            Cell::One,    Cell::One};
     // clang-format on
     auto const predictions = predict_mines(buffer.cspan());
     REQUIRE(predictions == std::list{MinePrediction{{{0, 0}}, 1}});
@@ -52,16 +52,18 @@ TEST_CASE("predict_mines for easy case") {
 
 TEST_CASE("predict_mines field between 1 and Empty") {
     constexpr Array2d<Cell, 2, 3> buffer{// clang-format off
-            Cell::One, Cell::Hidden, Cell::Empty,
+            Cell::One,    Cell::Hidden, Cell::Empty,
             Cell::Hidden, Cell::Hidden, Cell::Hidden};  // clang-format on
-    auto const predictions = predict_mines(buffer.cspan());
-    REQUIRE(predictions == std::list{MinePrediction{{{1, 0}}, 1}});
+    auto predictions = predict_mines(buffer.cspan());
+    REQUIRE(predictions ==
+            std::list<MinePrediction>{
+                    {{{1, 0}}, 1}, {{{1, 2}}, 0}, {{{0, 1}, {1, 1}}, 0}});
 }
 
 TEST_CASE("predict_mines_field") {
     constexpr Array2d<Cell, 2, 2> buffer{// clang-format off
             Cell::Hidden, Cell::One,
-            Cell::One, Cell::One};  // clang-format on
+            Cell::One,    Cell::One};  // clang-format on
     auto const prediction = Vector2d<Prediction>{
             2,
             2,  // clang-format off
@@ -80,7 +82,7 @@ TEST_CASE("predict_mines_field with revealed empty field") {
 
 TEST_CASE("predict_mines_field field between 1 and Empty") {
     constexpr Array2d<Cell, 2, 3> buffer{// clang-format off
-            Cell::One, Cell::Hidden, Cell::Empty,
+            Cell::One,    Cell::Hidden, Cell::Empty,
             Cell::Hidden, Cell::Hidden, Cell::Hidden};  // clang-format on
     using enum Prediction;
     auto const expected = Vector2d<Prediction>{

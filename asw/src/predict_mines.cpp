@@ -70,12 +70,12 @@ MinePrediction get_prediction(
                     field,
                     std::pair{r_begin, r_end},
                     std::pair{c_begin, c_end}),
-            [&prediction](
+            [&prediction, r_begin, c_begin](
                     std::size_t const row,
                     std::size_t const column,
                     Cell const cell) {
                 if (cell == Cell::Hidden) {
-                    prediction.cells.emplace(row, column);
+                    prediction.cells.emplace(row + r_begin, column + c_begin);
                 }
             });
     return prediction;
