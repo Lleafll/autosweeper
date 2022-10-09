@@ -68,7 +68,7 @@ TEST_CASE("predict_mines_field") {
             2,
             2,  // clang-format off
             {Prediction::Unsafe, Prediction::Safe,
-            Prediction::Safe, Prediction::Safe}};  // clang-format on
+            Prediction::Safe,    Prediction::Safe}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == prediction);
 }
 
@@ -88,8 +88,24 @@ TEST_CASE("predict_mines_field field between 1 and Empty") {
     auto const expected = Vector2d<Prediction>{
             2,
             3,  // clang-format off
-            {Safe, Safe, Safe,
-            Unsafe, Safe, Safe}};  // clang-format on
+            {Safe,   Safe, Safe,
+             Unsafe, Safe, Safe}};  // clang-format on
+    REQUIRE(predict_mines_field(buffer.cspan()) == expected);
+}
+
+TEST_CASE("predict_mines_field when not completely revealed") {
+    using enum Cell;
+    constexpr Array2d<Cell, 3, 3> buffer{// clang-format off
+            One,    One,    Empty,
+            Hidden, Hidden, Empty,
+            One,    One,    Empty};  // clang-format on
+    using enum Prediction;
+    auto const expected = Vector2d<Prediction>{
+            3,
+            3,  // clang-format off
+            {Safe,   Safe, Safe,
+             Unsafe, Safe, Safe,
+             Safe,   Safe, Safe}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 

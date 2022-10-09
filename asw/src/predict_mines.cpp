@@ -81,7 +81,7 @@ MinePrediction get_prediction(
     return prediction;
 }
 
-bool can_make_prediction(Cell const cell) {
+bool is_revealed_and_not_mine(Cell const cell) {
     return static_cast<std::underlying_type_t<Cell>>(cell) < 9;
 }
 
@@ -120,7 +120,7 @@ std::list<MinePrediction> predict_mines(ConstCellSpan const& field) {
                     std::size_t const row,
                     std::size_t const column,
                     Cell const cell) {
-                if (!can_make_prediction(cell)) {
+                if (!is_revealed_and_not_mine(cell)) {
                     return;
                 }
                 predictions.push_back(get_prediction(row, column, cell, field));
@@ -129,23 +129,45 @@ std::list<MinePrediction> predict_mines(ConstCellSpan const& field) {
     return predictions;
 }
 
-Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field) {
-    Vector2d<Prediction> prediction_field{field.extent(0), field.extent(1)};
-    for (auto const& prediction: predict_mines(field)) {
-        for (auto const cell: prediction.cells) {
-            prediction_field(cell.row, cell.column) =
-                    prediction.mine_count == 0 ? Prediction::Safe
-                                               : Prediction::Unsafe;
+namespace {
+
+Prediction safe_status(
+        std::list<MinePrediction> const& predictions,
+        Position const& position) {
+    auto mines = 10;
+    for (auto const& prediction: predictions) {
+        if (prediction.cells.contains(position)) {
+            mines = std::min(mines, prediction.mine_count);
         }
     }
+    switch (mines) {
+        case 10:
+            return Prediction::Unknown;
+        case 0:
+            return Prediction::Safe;
+        default:
+            return Prediction::Unsafe;
+    }
+}
+
+}  // namespace
+
+Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field) {
+    auto const predictions = predict_mines(field);
+    Vector2d<Prediction> prediction_field{field.extent(0), field.extent(1)};
     indexed_for_each(
             field,
-            [&prediction_field](
+            [&prediction_field, &predictions](
                     std::size_t const row,
                     std::size_t const column,
                     Cell const cell) {
-                if (can_make_prediction(cell)) {
+                if (is_revealed_and_not_mine(cell)) {
                     prediction_field(row, column) = Prediction::Safe;
+                } else if (cell == Cell::Mine) {
+                    prediction_field(row, column) = Prediction::Unsafe;
+                } else {
+                    prediction_field(row, column) =
+                            safe_status(predictions, {row, column});
                 }
             });
     return prediction_field;
