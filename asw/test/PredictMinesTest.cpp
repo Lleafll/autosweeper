@@ -50,6 +50,14 @@ TEST_CASE("predict_mines for easy case") {
     REQUIRE(predictions == std::list{MinePrediction{{{0, 0}}, 1}});
 }
 
+TEST_CASE("predict_mines field between 1 and Empty") {
+    constexpr Array2d<Cell, 2, 3> buffer{// clang-format off
+            Cell::One, Cell::Hidden, Cell::Empty,
+            Cell::Hidden, Cell::Hidden, Cell::Hidden};  // clang-format on
+    auto const predictions = predict_mines(buffer.cspan());
+    REQUIRE(predictions == std::list{MinePrediction{{{1, 0}}, 1}});
+}
+
 TEST_CASE("predict_mines_field") {
     constexpr Array2d<Cell, 2, 2> buffer{// clang-format off
             Cell::Hidden, Cell::One,
