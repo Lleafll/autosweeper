@@ -99,12 +99,15 @@ void consolidate(std::list<MinePrediction>& predictions) {
             } else {
                 auto intersection = intersect(*k, *i);
                 if (intersection.has_value()) {
-                    i->subtract(*intersection);
-                    k->subtract(*intersection);
                     intersections.push_back(std::move(*intersection));
                 }
                 ++k;
             }
+        }
+    }
+    for (auto const& intersection : intersections) {
+        for (auto& prediction : predictions) {
+            prediction.subtract(intersection);
         }
     }
     std::ranges::move(intersections, std::back_inserter(predictions));
