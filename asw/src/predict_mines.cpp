@@ -7,6 +7,13 @@ namespace stdex = std::experimental;
 
 namespace asw {
 
+MinePrediction::MinePrediction(
+        std::unordered_set<Position> cells,
+        int const mine_count)
+    : cells{std::move(cells)},
+      mine_count{mine_count} {
+}
+
 bool MinePrediction::is_subset_of(MinePrediction const& other) const {
     if (cells.size() > other.cells.size()) {
         return false;
@@ -15,6 +22,23 @@ bool MinePrediction::is_subset_of(MinePrediction const& other) const {
     return std::ranges::all_of(cells, [other](Position const& cell) -> bool {
         return std::ranges::find(other.cells, cell) != other.cells.cend();
     });
+}
+
+std::optional<MinePrediction>
+intersect(MinePrediction const& lhs, MinePrediction const& rhs) {
+    std::unordered_set<Position> positions;
+    std::ranges::copy_if(
+            lhs.cells,
+            std::inserter(positions, positions.begin()),
+            [&rhs](Position const& cell) -> bool {
+                return rhs.cells.contains(cell);
+            });
+    if (positions.empty()) {
+        return std::nullopt;
+    } else {
+        return std::make_optional<MinePrediction>(
+                std::move(positions), std::min(lhs.mine_count, rhs.mine_count));
+    }
 }
 
 namespace {
@@ -41,7 +65,7 @@ MinePrediction get_prediction(
                     std::size_t const column,
                     Cell const cell) {
                 if (cell == Cell::Hidden) {
-                    prediction.cells.emplace_back(row, column);
+                    prediction.cells.emplace(row, column);
                 }
             });
     return prediction;

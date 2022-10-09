@@ -16,6 +16,18 @@ TEST_CASE("is_subset_of") {
             MinePrediction{{{1, 1}, {1, 2}}, 1}));
 }
 
+TEST_CASE("MinePrediction::intersect() when no intersection") {
+    REQUIRE(intersect(
+                    MinePrediction{{{1, 1}}, 1}, MinePrediction{{{2, 3}}, 1}) ==
+            std::nullopt);
+}
+
+TEST_CASE("MinePrediction::intersect() when intersection") {
+    REQUIRE(intersect(
+                    MinePrediction{{{1, 1}}, 1}, MinePrediction{{{2, 3}}, 1}) ==
+            std::nullopt);
+}
+
 TEST_CASE("predict_mines for easy case") {
     // clang-format off
     constexpr Array2d<Cell, 2, 2> buffer{

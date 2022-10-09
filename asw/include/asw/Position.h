@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 namespace asw {
 
 struct Position final {
@@ -15,3 +17,11 @@ struct Position final {
 };
 
 }  // namespace asw
+
+template<>
+struct std::hash<asw::Position> {
+    std::size_t operator()(asw::Position const& position) const {
+        return (std::hash<std::size_t>{}(position.row)) ^
+               (std::hash<std::size_t>{}(position.column) << 1);
+    }
+};

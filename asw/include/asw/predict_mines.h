@@ -5,18 +5,24 @@
 #include "Position.h"
 #include "Vector2d.h"
 #include <list>
-#include <vector>
+#include <optional>
+#include <unordered_set>
 
 namespace asw {
 
 struct MinePrediction final {
-    std::vector<Position> cells;
+    std::unordered_set<Position> cells;
     int mine_count;
+
+    MinePrediction(std::unordered_set<Position> cells, int mine_count);
 
     [[nodiscard]] bool is_subset_of(MinePrediction const& other) const;
 
     bool operator==(MinePrediction const&) const = default;
 };
+
+std::optional<MinePrediction>
+intersect(MinePrediction const& lhs, MinePrediction const& rhs);
 
 std::list<MinePrediction> predict_mines(ConstCellSpan const& field);
 
