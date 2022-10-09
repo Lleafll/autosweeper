@@ -20,6 +20,9 @@ class MinePredictionsWidgetQt final : public QWidget {
 
     void set(asw::ConstPredictionSpan const& predictions);
 
+  signals:
+    void clicked(int row, int column);
+
   private:
     class Impl;
 

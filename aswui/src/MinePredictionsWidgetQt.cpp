@@ -12,6 +12,11 @@ class MinePredictionsWidgetQt::Impl final : public MinePredictionsView {
           table_{new CellsWidgetQt{&widget}} {
         auto* const layout = new QVBoxLayout{&widget};
         layout->addWidget(table_);
+        QObject::connect(
+                table_,
+                &QTableWidget::cellClicked,
+                &widget,
+                &MinePredictionsWidgetQt::clicked);
     }
 
     ~Impl() override = default;
