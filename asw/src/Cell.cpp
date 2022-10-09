@@ -11,8 +11,9 @@ class RandomGenerator final : public PositionGenerator {
 
     [[nodiscard]] Position
     operator()(std::size_t const rows, std::size_t const columns) override {
-        return {std::uniform_int_distribution<std::size_t>{0, rows}(generator),
-                std::uniform_int_distribution<std::size_t>{0, columns}(
+        return {std::uniform_int_distribution<std::size_t>{0, rows - 1}(
+                        generator),
+                std::uniform_int_distribution<std::size_t>{0, columns - 1}(
                         generator)};
     }
 
