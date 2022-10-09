@@ -44,7 +44,7 @@ inline char to_char(asw::Prediction const prediction) {
         case asw::Prediction::Unknown:
             return '?';
         case asw::Prediction::Safe:
-            return 'o';
+            return 's';
         case asw::Prediction::Unsafe:
             return 'X';
     }
