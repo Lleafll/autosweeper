@@ -38,4 +38,12 @@ TEST_CASE("predict_mines_field") {
     REQUIRE(predict_mines_field(buffer.cspan()) == prediction);
 }
 
+TEST_CASE("predict_mines_field with revealed empty field") {
+    constexpr Array2d<Cell, 1, 3> buffer{
+            Cell::Empty, Cell::Hidden, Cell::Hidden};
+    auto const prediction = PredictionVector{
+            1, 3, {Prediction::Safe, Prediction::Safe, Prediction::Unknown}};
+    REQUIRE(predict_mines_field(buffer.cspan()) == prediction);
+}
+
 }  // namespace

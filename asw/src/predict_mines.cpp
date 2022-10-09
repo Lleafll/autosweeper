@@ -92,7 +92,9 @@ PredictionVector predict_mines_field(ConstCellSpan const& field) {
     PredictionVector prediction_field{field.extent(0), field.extent(1)};
     for (auto const& prediction: predict_mines(field)) {
         for (auto const cell: prediction.cells) {
-            prediction_field(cell.row, cell.column) = Prediction::Unsafe;
+            prediction_field(cell.row, cell.column) =
+                    prediction.mine_count == 0 ? Prediction::Safe
+                                               : Prediction::Unsafe;
         }
     }
     indexed_for_each(
