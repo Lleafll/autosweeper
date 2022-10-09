@@ -23,7 +23,7 @@ MinePrediction get_prediction(
         std::size_t const row,
         std::size_t const column,
         Cell const cell,
-        stdex::mdspan<Cell const, stdex::dextents<2>> const& field) {
+        ConstCellSpan const& field) {
     MinePrediction prediction{{}, static_cast<int>(cell)};
     auto const rows = field.extent(0);
     auto const columns = field.extent(1);
@@ -70,8 +70,7 @@ void consolidate(std::list<MinePrediction>& predictions) {
 
 }  // namespace
 
-std::list<MinePrediction>
-predict_mines(stdex::mdspan<Cell const, stdex::dextents<2>> const& field) {
+std::list<MinePrediction> predict_mines(ConstCellSpan const& field) {
     std::list<MinePrediction> predictions;
     indexed_for_each(
             field,
