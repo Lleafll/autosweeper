@@ -5,14 +5,7 @@
 #include <aswui/MinePredictionsWidgetQt.h>
 
 int main(int argc, char** argv) {
-    asw::Array2d<asw::MineCell, 8, 8> mines;
-    {
-        using enum asw::MineCell;
-        mines(1, 1) = Mine;
-        mines(6, 3) = Mine;
-        mines(7, 7) = Mine;
-    }
-    asw::PlayingField field{mines.cspan()};
+    asw::PlayingField field{asw::generate_random_mines(4, 4, 2).cspan()};
     QApplication application{argc, argv};
     QWidget main_widget;
     aswui::ConstCellSpanWidgetQt field_widget{field.cspan(), nullptr};
