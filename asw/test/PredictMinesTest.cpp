@@ -28,6 +28,18 @@ TEST_CASE("MinePrediction::intersect() when intersection") {
             std::nullopt);
 }
 
+TEST_CASE("MinePrediction::subtract() when there is no intersection") {
+    MinePrediction prediction{{{1, 1}, {2, 2}}, 2};
+    prediction.subtract(MinePrediction{{{3, 3}}, 1});
+    REQUIRE(prediction == MinePrediction{{{1, 1}, {2, 2}}, 2});
+}
+
+TEST_CASE("MinePrediction::subtract() when there is a intersection") {
+    MinePrediction prediction{{{1, 1}, {2, 2}}, 2};
+    prediction.subtract(MinePrediction{{{2, 2}}, 1});
+    REQUIRE(prediction == MinePrediction{{{1, 1}}, 1});
+}
+
 TEST_CASE("predict_mines for easy case") {
     // clang-format off
     constexpr Array2d<Cell, 2, 2> buffer{

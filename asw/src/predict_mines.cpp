@@ -24,6 +24,16 @@ bool MinePrediction::is_subset_of(MinePrediction const& other) const {
     });
 }
 
+void MinePrediction::subtract(MinePrediction const& other) {
+    auto const count =
+            std::erase_if(cells, [&other](Position const& position) -> bool {
+                return other.cells.contains(position);
+            });
+    if (count > 0) {
+        mine_count -= other.mine_count;
+    }
+}
+
 std::optional<MinePrediction>
 intersect(MinePrediction const& lhs, MinePrediction const& rhs) {
     std::unordered_set<Position> positions;

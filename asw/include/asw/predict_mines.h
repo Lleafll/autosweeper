@@ -18,6 +18,8 @@ struct MinePrediction final {
 
     [[nodiscard]] bool is_subset_of(MinePrediction const& other) const;
 
+    void subtract(MinePrediction const& other);
+
     bool operator==(MinePrediction const&) const = default;
 };
 
