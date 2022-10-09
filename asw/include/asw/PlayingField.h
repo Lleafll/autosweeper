@@ -2,17 +2,13 @@
 
 #include "Cell.h"
 #include <experimental/mdspan>
-#include <gsl/pointers>
 #include <vector>
 
 namespace asw {
 
 class PlayingField final {
-public:
-    using Mines = std::experimental::
-            mdspan<MineCell const, std::experimental::dextents<2>>;
-
-    explicit PlayingField(Mines const& mines);
+  public:
+    explicit PlayingField(ConstMineCellSpan const& mines);
 
     [[nodiscard]] std::size_t rows() const;
     [[nodiscard]] std::size_t columns() const;
@@ -21,7 +17,9 @@ public:
     void reveal(std::size_t row, std::size_t column);
     [[nodiscard]] ConstCellSpan cspan() const;
 
-private:
+    bool operator==(PlayingField const&) const = default;
+
+  private:
     std::size_t rows_;
     std::size_t columns_;
     std::vector<Cell> hidden_;

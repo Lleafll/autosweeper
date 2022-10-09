@@ -9,14 +9,14 @@ using namespace aswui;
 namespace {
 
 class MockConstCellSpanView final : public ConstCellSpanView {
-public:
+  public:
     ~MockConstCellSpanView() override = default;
 
     std::optional<std::size_t> set_row_count_call = {};
     std::optional<std::size_t> set_column_count_call = {};
     std::vector<std::tuple<int, int, QString>> set_cell_calls = {};
 
-private:
+  private:
     void set_row_count(int const rows) override {
         set_row_count_call = rows;
     }
@@ -35,13 +35,13 @@ TEST_CASE("ConstCellSpanPresenter") {
     MockConstCellSpanView view{};
     ConstCellSpanPresenter presenter{view};
     SECTION("set() correctly sets up row and column count") {
-        presenter.set(asw::CellArray<12, 34>{}.cspan());
+        presenter.set(asw::Array2d<asw::Cell, 12, 34>{}.cspan());
         REQUIRE(view.set_row_count_call == 12);
         REQUIRE(view.set_column_count_call == 34);
     }
     SECTION("set() correctly sets cells") {
         using enum asw::Cell;
-        presenter.set(asw::CellArray<3, 4>{// clang-format off
+        presenter.set(asw::Array2d<asw::Cell, 3, 4>{// clang-format off
                 Empty, One, Two, Three,
                 Four, Five, Six, Seven,
                 Eight, Hidden, Mine, Empty}  // clang-format on

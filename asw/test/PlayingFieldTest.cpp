@@ -10,14 +10,14 @@ namespace {
 
 TEST_CASE("All fields are hidden initially") {
     PlayingField const field{
-            MineCellArray<2, 1>{MineCell::Empty, MineCell::Mine}.cspan()};
+            Array2d<MineCell, 2, 1>{MineCell::Empty, MineCell::Mine}.cspan()};
     REQUIRE(field(0, 0) == Cell::Hidden);
     REQUIRE(field(1, 0) == Cell::Hidden);
 }
 
 TEST_CASE("Can reveal field") {
     PlayingField field{
-            MineCellArray<2, 1>{MineCell::Empty, MineCell::Empty}.cspan()};
+            Array2d<MineCell, 2, 1>{MineCell::Empty, MineCell::Empty}.cspan()};
     field.reveal(1, 0);
     REQUIRE(field(0, 0) == Cell::Hidden);
     REQUIRE(field(1, 0) == Cell::Empty);
@@ -25,7 +25,7 @@ TEST_CASE("Can reveal field") {
 
 TEST_CASE("Correctly shows mines and proximity") {
     PlayingField field{
-            MineCellArray<2, 1>{MineCell::Empty, MineCell::Mine}.cspan()};
+            Array2d<MineCell, 2, 1>{MineCell::Empty, MineCell::Mine}.cspan()};
     field.reveal(0, 0);
     field.reveal(1, 0);
     REQUIRE(field(0, 0) == Cell::One);
@@ -34,19 +34,19 @@ TEST_CASE("Correctly shows mines and proximity") {
 
 TEST_CASE("Correctly counts mines") {
     PlayingField const field{
-            MineCellArray<2, 1>{MineCell::Empty, MineCell::Mine}.cspan()};
+            Array2d<MineCell, 2, 1>{MineCell::Empty, MineCell::Mine}.cspan()};
     REQUIRE(field.mine_count() == 1);
 }
 
 TEST_CASE("Correctly return rows and columns") {
     PlayingField const field{
-            MineCellArray<2, 1>{MineCell::Empty, MineCell::Mine}.cspan()};
+            Array2d<MineCell, 2, 1>{MineCell::Empty, MineCell::Mine}.cspan()};
     REQUIRE(field.rows() == 2);
     REQUIRE(field.columns() == 1);
 }
 
 TEST_CASE("mdspan conversion") {
-    PlayingField field{MineCellArray<2, 2>{
+    PlayingField field{Array2d<MineCell, 2, 2>{
             MineCell::Empty, MineCell::Mine, MineCell::Empty, MineCell::Empty}
                                .cspan()};
     field.reveal(0, 0);

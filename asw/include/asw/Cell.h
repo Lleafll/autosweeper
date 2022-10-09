@@ -1,10 +1,34 @@
 #pragma once
 
 #include "Array2d.h"
+#include "Position.h"
+#include "Vector2d.h"
 
 namespace asw {
 
 enum class MineCell { Empty, Mine };
+
+using ConstMineCellSpan = std::experimental::
+        mdspan<MineCell const, std::experimental::dextents<2>>;
+
+class PositionGenerator {
+  public:
+    virtual ~PositionGenerator() = default;
+    [[nodiscard]] virtual Position
+    operator()(std::size_t rows, std::size_t columns) = 0;
+};
+
+Vector2d<MineCell> generate_mines(
+        std::size_t rows,
+        std::size_t columns,
+        int count,
+        PositionGenerator&& generator);
+
+/**
+ * Thin wrapper around generate_mines() with a random generator
+ */
+Vector2d<MineCell>
+generate_random_mines(std::size_t rows, std::size_t columns, int count);
 
 enum class Cell {
     Empty,
@@ -22,11 +46,5 @@ enum class Cell {
 
 using ConstCellSpan =
         std::experimental::mdspan<Cell const, std::experimental::dextents<2>>;
-
-template<std::size_t rows, std::size_t columns>
-using CellArray = Array2d<Cell, rows, columns>;
-
-template<std::size_t rows, std::size_t columns>
-using MineCellArray = Array2d<MineCell, rows, columns>;
 
 }  // namespace asw

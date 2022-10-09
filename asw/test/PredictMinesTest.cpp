@@ -18,7 +18,7 @@ TEST_CASE("is_subset_of") {
 
 TEST_CASE("predict_mines for easy case") {
     // clang-format off
-    constexpr CellArray<2, 2> buffer{
+    constexpr Array2d<Cell, 2, 2> buffer{
             Cell::Hidden, Cell::One,
             Cell::One, Cell::One};
     // clang-format on
@@ -27,7 +27,7 @@ TEST_CASE("predict_mines for easy case") {
 }
 
 TEST_CASE("predict_mines_field") {
-    constexpr CellArray<2, 2> buffer{// clang-format off
+    constexpr Array2d<Cell, 2, 2> buffer{// clang-format off
             Cell::Hidden, Cell::One,
             Cell::One, Cell::One};  // clang-format on
     auto const prediction = PredictionVector{

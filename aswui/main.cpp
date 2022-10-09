@@ -5,7 +5,7 @@
 #include <aswui/MinePredictionsWidgetQt.h>
 
 int main(int argc, char** argv) {
-    asw::MineCellArray<8, 8> mines;
+    asw::Array2d<asw::MineCell, 8, 8> mines;
     {
         using enum asw::MineCell;
         mines(1, 1) = Mine;

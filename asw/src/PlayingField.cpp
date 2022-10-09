@@ -1,4 +1,5 @@
 #include "PlayingField.h"
+#include "Vector2d.h"
 #include "algorithm2d.h"
 #include <algorithm>
 
@@ -9,7 +10,7 @@ namespace asw {
 namespace {
 
 auto proximity(
-        PlayingField::Mines const& mines,
+        ConstMineCellSpan const& mines,
         std::size_t const row,
         std::size_t const column) {
     auto const min_row = row == 0 ? 0 : row - 1;
@@ -23,7 +24,7 @@ auto proximity(
 }
 
 Cell calculate_proximity(
-        PlayingField::Mines const& mines,
+        ConstMineCellSpan const& mines,
         std::size_t const row,
         std::size_t const column) {
     if (mines(row, column) == MineCell::Mine) {
@@ -46,7 +47,7 @@ Cell calculate_proximity(
     return static_cast<Cell>(count);
 }
 
-std::vector<Cell> calculate_cells(PlayingField::Mines const& mines) {
+std::vector<Cell> calculate_cells(ConstMineCellSpan const& mines) {
     auto const rows = mines.extent(0);
     auto const columns = mines.extent(1);
     std::vector<Cell> cells(rows * columns);
@@ -61,9 +62,11 @@ std::vector<Cell> calculate_cells(PlayingField::Mines const& mines) {
     return cells;
 }
 
+
+
 }  // namespace
 
-PlayingField::PlayingField(Mines const& mines)
+PlayingField::PlayingField(ConstMineCellSpan const& mines)
     : rows_{mines.extent(0)},
       columns_{mines.extent(1)},
       hidden_{rows_ * columns_, Cell::Hidden},

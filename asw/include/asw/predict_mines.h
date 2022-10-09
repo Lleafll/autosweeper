@@ -5,20 +5,9 @@
 #include "Vector2d.h"
 #include <list>
 #include <vector>
+#include "Position.h"
 
 namespace asw {
-
-struct Position final {
-    std::size_t row;
-    std::size_t column;
-
-    constexpr Position(std::size_t const row, std::size_t const column)
-        : row{row},
-          column{column} {
-    }
-
-    constexpr bool operator==(Position const&) const = default;
-};
 
 struct MinePrediction final {
     std::vector<Position> cells;
