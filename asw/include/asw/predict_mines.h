@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Cell.h"
-#include <experimental/mdspan>
+#include "Vector2d.h"
 #include <list>
 #include <vector>
 
@@ -29,5 +29,11 @@ struct MinePrediction final {
 };
 
 std::list<MinePrediction> predict_mines(ConstCellSpan const& field);
+
+enum class Prediction { Unknown, Safe, Unsafe };
+
+using PredictionVector = Vector2d<Prediction>;
+
+PredictionVector predict_mines_field(ConstCellSpan const& field);
 
 }  // namespace asw

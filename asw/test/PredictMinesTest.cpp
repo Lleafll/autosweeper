@@ -26,4 +26,16 @@ TEST_CASE("predict_mines for easy case") {
     REQUIRE(predictions == std::list{MinePrediction{{{0, 0}}, 1}});
 }
 
+TEST_CASE("predict_mines_field") {
+    constexpr CellArray<2, 2> buffer{// clang-format off
+            Cell::Hidden, Cell::One,
+            Cell::One, Cell::One};  // clang-format on
+    auto const prediction = PredictionVector{
+            2,
+            2,  // clang-format off
+            {Prediction::Unsafe, Prediction::Safe,
+            Prediction::Safe, Prediction::Safe}};  // clang-format on
+    REQUIRE(predict_mines_field(buffer.cspan()) == prediction);
+}
+
 }  // namespace

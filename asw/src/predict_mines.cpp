@@ -88,4 +88,24 @@ predict_mines(stdex::mdspan<Cell const, stdex::dextents<2>> const& field) {
     return predictions;
 }
 
+PredictionVector predict_mines_field(ConstCellSpan const& field) {
+    PredictionVector prediction_field{field.extent(0), field.extent(1)};
+    for (auto const& prediction: predict_mines(field)) {
+        for (auto const cell: prediction.cells) {
+            prediction_field(cell.row, cell.column) = Prediction::Unsafe;
+        }
+    }
+    indexed_for_each(
+            field,
+            [&prediction_field](
+                    std::size_t const row,
+                    std::size_t const column,
+                    Cell const cell) {
+                if (can_make_prediction(cell)) {
+                    prediction_field(row, column) = Prediction::Safe;
+                }
+            });
+    return prediction_field;
+}
+
 }  // namespace asw

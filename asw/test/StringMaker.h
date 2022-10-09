@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Cell.h"
+#include "algorithm2d.h"
 #include "predict_mines.h"
 #include <catch.hpp>
 #include <fmt/format.h>
+#include <gsl/narrow>
 #include <magic_enum.hpp>
 #include <ranges>
 
@@ -32,5 +34,48 @@ struct Catch::StringMaker<asw::MinePrediction> {
                                 cell.cells, detail::position_to_string),
                         " "),
                 cell.mine_count);
+    }
+};
+
+namespace detail {
+
+inline char to_char(asw::Prediction const prediction) {
+    switch (prediction) {
+        case asw::Prediction::Unknown:
+            return '?';
+        case asw::Prediction::Safe:
+            return 'o';
+        case asw::Prediction::Unsafe:
+            return 'X';
+    }
+    abort();
+}
+
+}  // namespace detail
+
+template<>
+struct Catch::StringMaker<asw::PredictionVector> {
+    static std::string convert(asw::PredictionVector const& predictions) {
+        auto const span = predictions.cspan();
+        auto const rows = span.extent(0);
+        auto const columns = span.extent(1);
+        auto const* const data = span.data();
+        std::string formatted;
+        for (auto i = 0; i < rows; ++i) {
+            auto const begin = data + i * columns;
+            auto const end = begin + columns;
+            fmt::format_to(
+                    std::back_inserter(formatted),
+                    "{}",
+                    fmt::join(
+                            std::views::transform(
+                                    std::ranges::subrange{begin, end},
+                                    detail::to_char),
+                            " "));
+            if (i != rows - 1) {
+                formatted.push_back('\n');
+            }
+        }
+        return formatted;
     }
 };

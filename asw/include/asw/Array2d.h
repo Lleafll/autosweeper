@@ -6,7 +6,7 @@
 namespace asw {
 
 template<typename T, std::size_t rows, std::size_t columns>
-class MdArray final {
+class Array2d final {
     static constexpr auto size = rows * columns;
 
   public:
@@ -14,11 +14,11 @@ class MdArray final {
     using ConstSpan =
             std::experimental::mdspan<T const, std::experimental::dextents<2>>;
 
-    constexpr explicit MdArray(T const& fill = T{}) {
+    constexpr explicit Array2d(T const& fill = T{}) {
         std::ranges::fill(buffer_, fill);
     }
 
-    constexpr MdArray(std::initializer_list<T> const& cells) {
+    constexpr Array2d(std::initializer_list<T> const& cells) {
         std::copy_n(cells.begin(), size, buffer_.begin());
     }
 
