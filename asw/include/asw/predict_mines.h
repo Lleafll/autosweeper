@@ -2,10 +2,10 @@
 
 #include "Array2d.h"
 #include "Cell.h"
+#include "Position.h"
 #include "Vector2d.h"
 #include <list>
 #include <vector>
-#include "Position.h"
 
 namespace asw {
 
@@ -22,9 +22,7 @@ std::list<MinePrediction> predict_mines(ConstCellSpan const& field);
 
 enum class Prediction { Unknown, Safe, Unsafe };
 
-using PredictionVector = Vector2d<Prediction>;
-
-PredictionVector predict_mines_field(ConstCellSpan const& field);
+Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field);
 
 template<std::size_t rows, std::size_t columns>
 using PredictionArray = Array2d<Prediction, rows, columns>;

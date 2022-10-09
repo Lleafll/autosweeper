@@ -54,8 +54,9 @@ inline char to_char(asw::Prediction const prediction) {
 }  // namespace detail
 
 template<>
-struct Catch::StringMaker<asw::PredictionVector> {
-    static std::string convert(asw::PredictionVector const& predictions) {
+struct Catch::StringMaker<asw::Vector2d<asw::Prediction>> {
+    static std::string
+    convert(asw::Vector2d<asw::Prediction> const& predictions) {
         auto const span = predictions.cspan();
         auto const rows = span.extent(0);
         auto const columns = span.extent(1);
