@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Array2d.h"
 #include "Cell.h"
 #include "Vector2d.h"
 #include <list>
@@ -35,5 +36,11 @@ enum class Prediction { Unknown, Safe, Unsafe };
 using PredictionVector = Vector2d<Prediction>;
 
 PredictionVector predict_mines_field(ConstCellSpan const& field);
+
+template<std::size_t rows, std::size_t columns>
+using PredictionArray = Array2d<Prediction, rows, columns>;
+
+using ConstPredictionSpan = std::experimental::
+        mdspan<Prediction const, std::experimental::dextents<2>>;
 
 }  // namespace asw

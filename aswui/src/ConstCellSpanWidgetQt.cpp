@@ -1,6 +1,6 @@
 #include "ConstCellSpanWidgetQt.h"
-#include "ConstCellSpanPresenter.h"
 #include "CellsWidgetQt.h"
+#include "ConstCellSpanPresenter.h"
 #include <QVBoxLayout>
 #include <gsl/narrow>
 #include <gsl/pointers>
@@ -8,7 +8,7 @@
 namespace aswui {
 
 class ConstCellSpanWidgetQt::Impl final : public ConstCellSpanView {
-public:
+  public:
     explicit Impl(ConstCellSpanWidgetQt& widget)
         : presenter_{*this},
           table_{new CellsWidgetQt{&widget}} {
@@ -27,7 +27,7 @@ public:
         presenter_.set(cells);
     }
 
-private:
+  private:
     void set_row_count(int const rows) override {
         table_->setRowCount(rows);
     }
@@ -38,12 +38,10 @@ private:
 
     void
     set_cell(int const row, int const column, QString const& text) override {
-        auto* const item = new QTableWidgetItem{text};
-        item->setTextAlignment(Qt::AlignCenter);
-        table_->setItem(row, column, item);
+        table_->setCellText(row, column, text);
     }
 
-private:
+  private:
     ConstCellSpanPresenter presenter_;
     gsl::strict_not_null<CellsWidgetQt*> table_;
 };

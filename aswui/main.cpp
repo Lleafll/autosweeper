@@ -14,18 +14,22 @@ int main(int argc, char** argv) {
     }
     asw::PlayingField field{mines.cspan()};
     QApplication application{argc, argv};
-    aswui::ConstCellSpanWidgetQt field_widget{field.cspan(), nullptr};
-    aswui::MinePredictionsWidgetQt predictions_widget{nullptr};
     QWidget main_widget;
+    aswui::ConstCellSpanWidgetQt field_widget{field.cspan(), nullptr};
+    aswui::MinePredictionsWidgetQt predictions_widget{
+            asw::predict_mines_field(field.cspan()).cspan(), nullptr};
     QHBoxLayout layout{&main_widget};
     layout.addWidget(&field_widget);
     layout.addWidget(&predictions_widget);
     QObject::connect(
             &field_widget,
             &aswui::ConstCellSpanWidgetQt::clicked,
-            [&field, &field_widget](int const row, int const column) {
+            [&field, &field_widget, &predictions_widget](
+                    int const row, int const column) {
                 field.reveal(row, column);
                 field_widget.set(field.cspan());
+                predictions_widget.set(
+                        asw::predict_mines_field(field.cspan()).cspan());
             });
     main_widget.show();
     return QApplication::exec();

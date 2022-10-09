@@ -12,13 +12,13 @@ class MinePredictionsWidgetQt final : public QWidget {
 
   public:
     explicit MinePredictionsWidgetQt(QWidget* parent);
+    MinePredictionsWidgetQt(
+            asw::ConstPredictionSpan const& predictions,
+            QWidget* parent);
 
     ~MinePredictionsWidgetQt() override;
 
-    void
-    set(std::size_t rows,
-        std::size_t columns,
-        std::list<asw::MinePrediction> const& predictions);
+    void set(asw::ConstPredictionSpan const& predictions);
 
   private:
     class Impl;

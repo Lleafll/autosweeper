@@ -1,6 +1,7 @@
 #include "MinePredictionsWidgetQt.h"
 #include "CellsWidgetQt.h"
 #include "MinePredictionsPresenter.h"
+#include <QVBoxLayout>
 
 namespace aswui {
 
@@ -9,15 +10,14 @@ class MinePredictionsWidgetQt::Impl final : public MinePredictionsView {
     explicit Impl(MinePredictionsWidgetQt& widget)
         : presenter_{*this},
           table_{new CellsWidgetQt{&widget}} {
+        auto* const layout = new QVBoxLayout{&widget};
+        layout->addWidget(table_);
     }
 
     ~Impl() override = default;
 
-    void
-    set(std::size_t const rows,
-        std::size_t const columns,
-        std::list<asw::MinePrediction> const& predictions) {
-        presenter_.set(rows, columns, predictions);
+    void set(asw::ConstPredictionSpan const& predictions) {
+        presenter_.set(predictions);
     }
 
   private:
@@ -27,6 +27,11 @@ class MinePredictionsWidgetQt::Impl final : public MinePredictionsView {
 
     void set_column_count(int columns) override {
         table_->setColumnCount(columns);
+    }
+
+    void
+    set_cell(int const row, int const column, QString const& text) override {
+        table_->setCellText(row, column, text);
     }
 
   private:
@@ -39,13 +44,17 @@ MinePredictionsWidgetQt::MinePredictionsWidgetQt(QWidget* const parent)
       impl_{std::make_unique<Impl>(*this)} {
 }
 
+MinePredictionsWidgetQt::MinePredictionsWidgetQt(
+        asw::ConstPredictionSpan const& predictions,
+        QWidget* const parent)
+    : MinePredictionsWidgetQt{parent} {
+    set(predictions);
+}
+
 MinePredictionsWidgetQt::~MinePredictionsWidgetQt() = default;
 
-void MinePredictionsWidgetQt::set(
-        std::size_t const rows,
-        std::size_t const columns,
-        std::list<asw::MinePrediction> const& predictions) {
-    impl_->set(rows, columns, predictions);
+void MinePredictionsWidgetQt::set(asw::ConstPredictionSpan const& predictions) {
+    impl_->set(predictions);
 }
 
 }  // namespace aswui
