@@ -99,6 +99,17 @@ void consolidate(std::list<MinePrediction>& predictions) {
             } else if (k->is_subset_of(*i)) {
                 k = predictions.erase(k);
             } else {
+                if (auto overlap = intersect(*i, *k)) {
+                    auto remaining = *i;
+                    remaining.subtract(*overlap);
+                    if (remaining.cells.size() ==
+                        i->mine_count - k->mine_count) {
+                        auto no_mines = *k;
+                        no_mines.subtract(*overlap);
+                        predictions.emplace_back(std::move(no_mines.cells), 0);
+                        k->cells = std::move(overlap->cells);
+                    }
+                }
                 ++k;
             }
         }
