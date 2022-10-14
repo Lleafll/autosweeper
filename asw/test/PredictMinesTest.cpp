@@ -57,7 +57,7 @@ TEST_CASE("predict_mines field between 1 and Empty") {
     auto predictions = predict_mines(buffer.cspan());
     REQUIRE(predictions ==
             std::list<MinePrediction>{
-                    {{{1, 0}}, 1}, {{{1, 2}}, 0}, {{{0, 1}, {1, 1}}, 0}});
+                    {{{1, 0}}, 1}, {{{1, 2}, {1, 1}, {0, 1}}, 0}});
 }
 
 TEST_CASE("predict_mines_field") {
@@ -106,6 +106,20 @@ TEST_CASE("predict_mines_field when not completely revealed") {
             {Safe,   Safe, Safe,
              Unsafe, Safe, Safe,
              Safe,   Safe, Safe}};  // clang-format on
+    REQUIRE(predict_mines_field(buffer.cspan()) == expected);
+}
+
+TEST_CASE("predict_mines_field when one cell can be excluded") {
+    using enum Cell;
+    constexpr Array2d<Cell, 2, 3> buffer{// clang-format off
+            Two,    Hidden, One,
+            Hidden, Hidden, Empty};  // clang-format on
+    using enum Prediction;
+    auto const expected = Vector2d<Prediction>{
+            2,
+            3,  // clang-format off
+            {Safe,   Unsafe, Safe,
+             Unsafe, Unsafe, Safe}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 
