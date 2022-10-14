@@ -89,28 +89,20 @@ void consolidate(std::list<MinePrediction>& predictions) {
     if (predictions.size() <= 1) {
         return;
     }
-    std::list<MinePrediction> intersections;
     for (auto i = predictions.begin();
          i != std::prev(predictions.end()) && i != predictions.end();
          ++i) {
         for (auto k = std::next(i); k != predictions.end();) {
-            if (k->is_subset_of(*i)) {
+            if (k->mine_count == 0) {
+                i->subtract(*k);
+                ++k;
+            } else if (k->is_subset_of(*i)) {
                 k = predictions.erase(k);
             } else {
-                auto intersection = intersect(*k, *i);
-                if (intersection.has_value()) {
-                    intersections.push_back(std::move(*intersection));
-                }
                 ++k;
             }
         }
     }
-    for (auto const& intersection : intersections) {
-        for (auto& prediction : predictions) {
-            prediction.subtract(intersection);
-        }
-    }
-    std::ranges::move(intersections, std::back_inserter(predictions));
 }
 
 }  // namespace
