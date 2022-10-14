@@ -113,7 +113,7 @@ TEST_CASE("predict_mines_field when one cell can be excluded") {
     using enum Cell;
     constexpr Array2d<Cell, 2, 3> buffer{// clang-format off
             Two,    Hidden, One,
-            Hidden, Hidden, Empty};  // clang-format on
+            Hidden, Hidden, Hidden};  // clang-format on
     using enum Prediction;
     auto const expected = Vector2d<Prediction>{
             2,
