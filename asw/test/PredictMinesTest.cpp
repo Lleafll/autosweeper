@@ -7,59 +7,6 @@ using namespace asw;
 
 namespace {
 
-TEST_CASE("is_subset_of") {
-    REQUIRE(MinePrediction{{{1, 1}}, 1}.is_subset_of(
-            MinePrediction{{{1, 1}}, 1}));
-    REQUIRE_FALSE(MinePrediction{{{1, 1}}, 1}.is_subset_of(
-            MinePrediction{{{1, 2}}, 1}));
-    REQUIRE(MinePrediction{{{1, 1}}, 1}.is_subset_of(
-            MinePrediction{{{1, 1}, {1, 2}}, 1}));
-}
-
-TEST_CASE("MinePrediction::intersect() when no intersection") {
-    REQUIRE(intersect(
-                    MinePrediction{{{1, 1}}, 1}, MinePrediction{{{2, 3}}, 1}) ==
-            std::nullopt);
-}
-
-TEST_CASE("MinePrediction::intersect() when intersection") {
-    REQUIRE(intersect(
-                    MinePrediction{{{1, 1}}, 1}, MinePrediction{{{2, 3}}, 1}) ==
-            std::nullopt);
-}
-
-TEST_CASE("MinePrediction::subtract() when there is no intersection") {
-    MinePrediction prediction{{{1, 1}, {2, 2}}, 2};
-    prediction.subtract(MinePrediction{{{3, 3}}, 1});
-    REQUIRE(prediction == MinePrediction{{{1, 1}, {2, 2}}, 2});
-}
-
-TEST_CASE("MinePrediction::subtract() when there is a intersection") {
-    MinePrediction prediction{{{1, 1}, {2, 2}}, 2};
-    prediction.subtract(MinePrediction{{{2, 2}}, 1});
-    REQUIRE(prediction == MinePrediction{{{1, 1}}, 1});
-}
-
-TEST_CASE("predict_mines for easy case") {
-    // clang-format off
-    constexpr Array2d<Cell, 2, 2> buffer{
-            Cell::Hidden, Cell::One,
-            Cell::One,    Cell::One};
-    // clang-format on
-    auto const predictions = predict_mines(buffer.cspan());
-    REQUIRE(predictions == std::list{MinePrediction{{{0, 0}}, 1}});
-}
-
-TEST_CASE("predict_mines field between 1 and Empty") {
-    constexpr Array2d<Cell, 2, 3> buffer{// clang-format off
-            Cell::One,    Cell::Hidden, Cell::Empty,
-            Cell::Hidden, Cell::Hidden, Cell::Hidden};  // clang-format on
-    auto predictions = predict_mines(buffer.cspan());
-    REQUIRE(predictions ==
-            std::list<MinePrediction>{
-                    {{{1, 0}}, 1}, {{{1, 2}, {1, 1}, {0, 1}}, 0}});
-}
-
 TEST_CASE("predict_mines_field") {
     constexpr Array2d<Cell, 2, 2> buffer{// clang-format off
             Cell::Hidden, Cell::One,
@@ -120,6 +67,22 @@ TEST_CASE("predict_mines_field when one cell can be excluded") {
             3,  // clang-format off
             {Safe,   Unsafe, Safe,
              Unsafe, Unsafe, Safe}};  // clang-format on
+    REQUIRE(predict_mines_field(buffer.cspan()) == expected);
+}
+
+TEST_CASE("predict_mines_field case") {
+    using enum Cell;
+    constexpr Array2d<Cell, 3, 3> buffer{// clang-format off
+            Two,    Hidden, One,
+            Hidden, Hidden, One,
+            Hidden, Two,    One};  // clang-format on
+    using enum Prediction;
+    auto const expected = Vector2d<Prediction>{
+            3,
+            3,  // clang-format off
+            {Safe,   Safe,   Safe,
+             Unsafe, Unsafe, Safe,
+             Safe,   Safe,   Safe}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 

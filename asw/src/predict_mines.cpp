@@ -2,10 +2,27 @@
 #include "algorithm2d.h"
 #include <algorithm>
 #include <list>
+#include <optional>
+#include <unordered_set>
 
 namespace stdex = std::experimental;
 
 namespace asw {
+
+namespace {
+
+struct MinePrediction final {
+    std::unordered_set<Position> cells;
+    int mine_count;
+
+    MinePrediction(std::unordered_set<Position> cells, int mine_count);
+
+    [[nodiscard]] bool is_subset_of(MinePrediction const& other) const;
+
+    void subtract(MinePrediction const& other);
+
+    bool operator==(MinePrediction const&) const = default;
+};
 
 MinePrediction::MinePrediction(
         std::unordered_set<Position> cells,
@@ -51,8 +68,6 @@ intersect(MinePrediction const& lhs, MinePrediction const& rhs) {
     }
 }
 
-namespace {
-
 MinePrediction get_prediction(
         std::size_t const row,
         std::size_t const column,
@@ -85,38 +100,48 @@ bool is_revealed_and_not_mine(Cell const cell) {
     return static_cast<std::underlying_type_t<Cell>>(cell) < 9;
 }
 
-void consolidate(std::list<MinePrediction>& predictions) {
+bool consolidate(std::list<MinePrediction>& predictions) {
     if (predictions.size() <= 1) {
-        return;
+        return false;
     }
-    for (auto i = predictions.begin();
-         i != std::prev(predictions.end()) && i != predictions.end();
-         ++i) {
+    auto const original = predictions;
+    for (auto& i: predictions) {
+        for (auto& k: predictions) {
+            if (i == k) {
+                continue;
+            }
+            if (i.is_subset_of(k)) {
+                k.subtract(i);
+            } else if (auto overlap = intersect(i, k)) {
+                auto remaining = i;
+                remaining.subtract(*overlap);
+                if (remaining.cells.size() == i.mine_count - k.mine_count) {
+                    auto no_mines = k;
+                    no_mines.subtract(*overlap);
+                    predictions.emplace_back(std::move(no_mines.cells), 0);
+                    k.cells = std::move(overlap->cells);
+                }
+            }
+        }
+    }
+    for (auto i = predictions.begin(); i != predictions.end();) {
+        if (i->cells.empty()) {
+            i = predictions.erase(i);
+        } else {
+            ++i;
+        }
+    }
+    for (auto i = predictions.begin(); i != std::prev(predictions.end()); ++i) {
         for (auto k = std::next(i); k != predictions.end();) {
-            if (k->mine_count == 0) {
-                i->subtract(*k);
-                ++k;
-            } else if (k->is_subset_of(*i)) {
+            if (*i == *k) {
                 k = predictions.erase(k);
             } else {
-                if (auto overlap = intersect(*i, *k)) {
-                    auto remaining = *i;
-                    remaining.subtract(*overlap);
-                    if (remaining.cells.size() ==
-                        i->mine_count - k->mine_count) {
-                        auto no_mines = *k;
-                        no_mines.subtract(*overlap);
-                        predictions.emplace_back(std::move(no_mines.cells), 0);
-                        k->cells = std::move(overlap->cells);
-                    }
-                }
                 ++k;
             }
         }
     }
+    return predictions != original;
 }
-
-}  // namespace
 
 std::list<MinePrediction> predict_mines(ConstCellSpan const& field) {
     std::list<MinePrediction> predictions;
@@ -131,11 +156,10 @@ std::list<MinePrediction> predict_mines(ConstCellSpan const& field) {
                 }
                 predictions.push_back(get_prediction(row, column, cell, field));
             });
-    consolidate(predictions);
+    while (consolidate(predictions)) {
+    }
     return predictions;
 }
-
-namespace {
 
 Prediction safe_status(
         std::list<MinePrediction> const& predictions,

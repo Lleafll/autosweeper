@@ -24,19 +24,6 @@ inline std::string position_to_string(asw::Position const& position) {
 
 }  // namespace detail
 
-template<>
-struct Catch::StringMaker<asw::MinePrediction> {
-    static std::string convert(asw::MinePrediction const& cell) {
-        return fmt::format(
-                "([{}], mines:{})",
-                fmt::join(
-                        std::views::transform(
-                                cell.cells, detail::position_to_string),
-                        ";"),
-                cell.mine_count);
-    }
-};
-
 namespace detail {
 
 inline char to_char(asw::Prediction const prediction) {
