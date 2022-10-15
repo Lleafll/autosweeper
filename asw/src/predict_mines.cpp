@@ -180,6 +180,34 @@ Prediction safe_status(
     }
 }
 
+Prediction to_prediction(Cell const cell) {
+    using enum Prediction;
+    switch (cell) {
+        case Cell::Empty:
+            return Empty;
+        case Cell::One:
+            return One;
+        case Cell::Two:
+            return Two;
+        case Cell::Three:
+            return Three;
+        case Cell::Four:
+            return Four;
+        case Cell::Five:
+            return Five;
+        case Cell::Six:
+            return Six;
+        case Cell::Seven:
+            return Seven;
+        case Cell::Eight:
+            return Eight;
+        case Cell::Hidden:
+            return Hidden;
+        case Cell::Mine:
+            return Mine;
+    }
+}
+
 }  // namespace
 
 Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field) {
@@ -191,8 +219,8 @@ Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field) {
                     std::size_t const row,
                     std::size_t const column,
                     Cell const cell) {
-                if (is_revealed_and_not_mine(cell)) {
-                    prediction_field(row, column) = Prediction::Safe;
+                if (is_revealed_and_not_mine(cell) or cell == Cell::Mine) {
+                    prediction_field(row, column) = to_prediction(cell);
                 } else if (cell == Cell::Mine) {
                     prediction_field(row, column) = Prediction::Unsafe;
                 } else {

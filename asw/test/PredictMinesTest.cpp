@@ -14,8 +14,8 @@ TEST_CASE("predict_mines_field") {
     auto const prediction = Vector2d<Prediction>{
             2,
             2,  // clang-format off
-            {Prediction::Unsafe, Prediction::Safe,
-            Prediction::Safe,    Prediction::Safe}};  // clang-format on
+            {Prediction::Unsafe, Prediction::One,
+            Prediction::One,     Prediction::One}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == prediction);
 }
 
@@ -23,7 +23,7 @@ TEST_CASE("predict_mines_field with revealed empty field") {
     constexpr Array2d<Cell, 1, 3> buffer{
             Cell::Empty, Cell::Hidden, Cell::Hidden};
     auto const expected = Vector2d<Prediction>{
-            1, 3, {Prediction::Safe, Prediction::Safe, Prediction::Unknown}};
+            1, 3, {Prediction::Empty, Prediction::Safe, Prediction::Unknown}};
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 
@@ -35,54 +35,51 @@ TEST_CASE("predict_mines_field field between 1 and Empty") {
     auto const expected = Vector2d<Prediction>{
             2,
             3,  // clang-format off
-            {Safe,   Safe, Safe,
+            {One ,   Safe, Empty,
              Unsafe, Safe, Safe}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 
 TEST_CASE("predict_mines_field when not completely revealed") {
-    using enum Cell;
     constexpr Array2d<Cell, 3, 3> buffer{// clang-format off
-            One,    One,    Empty,
-            Hidden, Hidden, Empty,
-            One,    One,    Empty};  // clang-format on
+            Cell::One,    Cell::One,    Cell::Empty,
+            Cell::Hidden, Cell::Hidden, Cell::Empty,
+            Cell::One,    Cell::One,    Cell::Empty};  // clang-format on
     using enum Prediction;
     auto const expected = Vector2d<Prediction>{
             3,
             3,  // clang-format off
-            {Safe,   Safe, Safe,
-             Unsafe, Safe, Safe,
-             Safe,   Safe, Safe}};  // clang-format on
+            {One,    One,  Empty,
+             Unsafe, Safe, Empty,
+             One,    One,  Empty}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 
 TEST_CASE("predict_mines_field when one cell can be excluded") {
-    using enum Cell;
     constexpr Array2d<Cell, 2, 3> buffer{// clang-format off
-            Two,    Hidden, One,
-            Hidden, Hidden, Hidden};  // clang-format on
+            Cell::Two,    Cell::Hidden, Cell::One,
+            Cell::Hidden, Cell::Hidden, Cell::Hidden};  // clang-format on
     using enum Prediction;
     auto const expected = Vector2d<Prediction>{
             2,
             3,  // clang-format off
-            {Safe,   Unsafe, Safe,
+            {Two,    Unsafe, One,
              Unsafe, Unsafe, Safe}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 
 TEST_CASE("predict_mines_field case") {
-    using enum Cell;
     constexpr Array2d<Cell, 3, 3> buffer{// clang-format off
-            Two,    Hidden, One,
-            Hidden, Hidden, One,
-            Hidden, Two,    One};  // clang-format on
+            Cell::Two,    Cell::Hidden, Cell::One,
+            Cell::Hidden, Cell::Hidden, Cell::One,
+            Cell::Hidden, Cell::Two,    Cell::One};  // clang-format on
     using enum Prediction;
     auto const expected = Vector2d<Prediction>{
             3,
             3,  // clang-format off
-            {Safe,   Safe,   Safe,
-             Unsafe, Unsafe, Safe,
-             Safe,   Safe,   Safe}};  // clang-format on
+            {Two,    Safe,   One,
+             Unsafe, Unsafe, One,
+             Safe,   Two,    One}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 

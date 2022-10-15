@@ -46,12 +46,42 @@ TEST_CASE("MockMinePredictionsView::set()") {
         );  // clang-format on
         std::ranges::sort(view.set_cell_calls);
         std::vector<std::tuple<int, int, QString>> const expected{
-                {0, 0, " "},
+                {0, 0, "✓"},
                 {0, 1, "⚠"},
                 {0, 2, "⚠"},
                 {1, 0, "?"},
                 {1, 1, "?"},
-                {1, 2, " "}};
+                {1, 2, "✓"}};
+        REQUIRE(view.set_cell_calls == expected);
+    }
+    SECTION("sets up field with extended asw::Prediction") {
+        using enum asw::Prediction;
+        presenter.set(asw::PredictionArray<1, 11>{
+                Empty,
+                One,
+                Two,
+                Three,
+                Four,
+                Five,
+                Six,
+                Seven,
+                Eight,
+                Hidden,
+                Mine}
+                              .cspan());
+        std::ranges::sort(view.set_cell_calls);
+        std::vector<std::tuple<int, int, QString>> const expected{
+                {0, 0, " "},
+                {0, 1, "1"},
+                {0, 2, "2"},
+                {0, 3, "3"},
+                {0, 4, "4"},
+                {0, 5, "5"},
+                {0, 6, "6"},
+                {0, 7, "7"},
+                {0, 8, "8"},
+                {0, 9, "☐"},
+                {0, 10, "💣"}};
         REQUIRE(view.set_cell_calls == expected);
     }
 }

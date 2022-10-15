@@ -6,7 +6,22 @@
 
 namespace asw {
 
-enum class Prediction { Unknown, Safe, Unsafe };
+enum class Prediction {
+    Empty,
+    One,
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven,
+    Eight,
+    Hidden,
+    Mine,
+    Unknown,
+    Safe,
+    Unsafe
+};
 
 Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field);
 
