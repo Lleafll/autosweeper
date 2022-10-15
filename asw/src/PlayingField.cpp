@@ -27,7 +27,7 @@ Cell calculate_proximity(
         ConstMineCellSpan const& mines,
         std::size_t const row,
         std::size_t const column) {
-    if (mines(row, column) == MineCell::Mine) {
+    if (mines(row, column) == MineCell::Mined) {
         return Cell::Mine;
     }
     std::underlying_type_t<Cell> count = 0;
@@ -40,7 +40,7 @@ Cell calculate_proximity(
                 if (r == row && c == column) {
                     return;
                 }
-                if (mine == MineCell::Mine) {
+                if (mine == MineCell::Mined) {
                     ++count;
                 }
             });
@@ -61,8 +61,6 @@ std::vector<Cell> calculate_cells(ConstMineCellSpan const& mines) {
             });
     return cells;
 }
-
-
 
 }  // namespace
 
@@ -93,6 +91,10 @@ Cell PlayingField::operator()(std::size_t const row, std::size_t const column)
 void PlayingField::reveal(std::size_t const row, std::size_t const column) {
     stdex::mdspan{hidden_.data(), rows_, columns_}(row, column) =
             cells()(row, column);
+}
+
+CellSpan PlayingField::span() {
+    return stdex::mdspan{hidden_.data(), rows_, columns_};
 }
 
 ConstCellSpan PlayingField::cspan() const {

@@ -27,7 +27,7 @@ TEST_CASE("predict_mines_field with revealed empty field") {
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 
-TEST_CASE("predict_mines_field field between 1 and Empty") {
+TEST_CASE("predict_mines_field field between 1 and Clear") {
     constexpr Array2d<Cell, 2, 3> buffer{// clang-format off
             Cell::One,    Cell::Hidden, Cell::Empty,
             Cell::Hidden, Cell::Hidden, Cell::Hidden};  // clang-format on

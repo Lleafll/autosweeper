@@ -15,6 +15,7 @@ class PlayingField final {
     [[nodiscard]] int mine_count() const;
     [[nodiscard]] Cell operator()(std::size_t row, std::size_t column) const;
     void reveal(std::size_t row, std::size_t column);
+    [[nodiscard]] CellSpan span();
     [[nodiscard]] ConstCellSpan cspan() const;
 
     bool operator==(PlayingField const&) const = default;

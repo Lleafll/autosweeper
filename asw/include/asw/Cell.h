@@ -6,7 +6,7 @@
 
 namespace asw {
 
-enum class MineCell { Empty, Mine };
+enum class MineCell { Clear, Mined };
 
 using ConstMineCellSpan = std::experimental::
         mdspan<MineCell const, std::experimental::dextents<2>>;
@@ -44,6 +44,8 @@ enum class Cell {
     Mine
 };
 
+using CellSpan =
+        std::experimental::mdspan<Cell, std::experimental::dextents<2>>;
 using ConstCellSpan =
         std::experimental::mdspan<Cell const, std::experimental::dextents<2>>;
 

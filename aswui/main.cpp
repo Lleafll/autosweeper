@@ -5,7 +5,7 @@
 #include <aswui/MinePredictionsWidgetQt.h>
 
 int main(int argc, char** argv) {
-    asw::PlayingField field{asw::generate_random_mines(3, 3, 2).cspan()};
+    asw::PlayingField field{asw::generate_random_mines(5, 5, 5).cspan()};
     QApplication application{argc, argv};
     QWidget main_widget;
     aswui::ConstCellSpanWidgetQt field_widget{field.cspan(), nullptr};

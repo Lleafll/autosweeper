@@ -31,7 +31,7 @@ Vector2d<MineCell> generate_mines(
     Vector2d<MineCell> mines{rows, columns};
     for (int i = 0; i < count; ++i) {
         auto const [row, column] = generator(rows, columns);
-        mines(row, column) = MineCell::Mine;
+        mines(row, column) = MineCell::Mined;
     }
     return mines;
 }

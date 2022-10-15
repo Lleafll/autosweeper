@@ -206,6 +206,7 @@ Prediction to_prediction(Cell const cell) {
         case Cell::Mine:
             return Mine;
     }
+    abort();
 }
 
 }  // namespace

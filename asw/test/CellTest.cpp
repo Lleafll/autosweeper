@@ -55,9 +55,9 @@ TEST_CASE("generate_mines without collision") {
     auto const mines = generate_mines(
             4, 4, 3, PredeterminedGenerator{{0, 2}, {1, 2}, {2, 3}});
     auto expected = Vector2d<MineCell>{4, 4};
-    expected(0, 2) = MineCell::Mine;
-    expected(1, 2) = MineCell::Mine;
-    expected(2, 3) = MineCell::Mine;
+    expected(0, 2) = MineCell::Mined;
+    expected(1, 2) = MineCell::Mined;
+    expected(2, 3) = MineCell::Mined;
     REQUIRE(mines == expected);
 }
 
