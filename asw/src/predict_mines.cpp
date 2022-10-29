@@ -1,6 +1,7 @@
 #include "predict_mines.h"
 #include "algorithm2d.h"
 #include <algorithm>
+#include <iterator>
 #include <list>
 #include <optional>
 #include <unordered_set>
