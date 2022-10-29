@@ -34,6 +34,8 @@ inline char to_char(asw::Prediction const prediction) {
             return 's';
         case asw::Prediction::Unsafe:
             return 'X';
+        default:
+            break;
     }
     abort();
 }
