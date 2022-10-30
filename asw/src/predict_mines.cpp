@@ -132,7 +132,9 @@ bool consolidate(std::list<MinePrediction>& predictions) {
             ++i;
         }
     }
-    for (auto i = predictions.begin(); i != std::prev(predictions.end()); ++i) {
+    for (auto i = predictions.begin();
+         i != std::prev(predictions.end()) && i != predictions.end();
+         ++i) {
         for (auto k = std::next(i); k != predictions.end();) {
             if (*i == *k) {
                 k = predictions.erase(k);
