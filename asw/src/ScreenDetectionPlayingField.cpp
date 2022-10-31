@@ -1,12 +1,18 @@
 #include "ScreenDetectionPlayingField.h"
+#include "ITesseract.h"
 
 namespace asw {
 
-size_t ScreenDetectionPlayingField::rows() const {
+ScreenDetectionPlayingField::ScreenDetectionPlayingField(
+        std::unique_ptr<ITesseract> tesseract)
+    : tesseract_{std::move(tesseract)} {
+}
+
+std::size_t ScreenDetectionPlayingField::rows() const {
     throw std::runtime_error{"NYI"};
 }
 
-size_t ScreenDetectionPlayingField::columns() const {
+std::size_t ScreenDetectionPlayingField::columns() const {
     throw std::runtime_error{"NYI"};
 }
 

@@ -6,7 +6,8 @@ add_library(${PROJECT_NAME} STATIC
         src/Cell.cpp
         src/InMemoryPlayingField.cpp
         src/predict_mines.cpp
-        src/ScreenDetectionPlayingField.cpp)
+        src/ScreenDetectionPlayingField.cpp
+        src/Tesseract.cpp)
 target_include_directories(${PROJECT_NAME}
         PUBLIC include
         PRIVATE include/asw src)

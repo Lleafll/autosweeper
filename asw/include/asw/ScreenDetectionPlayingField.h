@@ -1,12 +1,17 @@
 #pragma once
 
 #include "PlayingField.h"
+namespace asw {
+class ITesseract;
+}  // namespace asw
 
 namespace asw {
 
 class ScreenDetectionPlayingField final : public PlayingField {
   public:
-    ~ScreenDetectionPlayingField() override = default;
+    explicit ScreenDetectionPlayingField(std::unique_ptr<ITesseract> tesseract);
+
+    ~ScreenDetectionPlayingField() override;
 
     [[nodiscard]] std::size_t rows() const override;
     [[nodiscard]] std::size_t columns() const override;
@@ -16,6 +21,9 @@ class ScreenDetectionPlayingField final : public PlayingField {
     void reveal(std::size_t row, std::size_t column) override;
     [[nodiscard]] CellSpan span() override;
     [[nodiscard]] ConstCellSpan cspan() const override;
+
+  private:
+    std::unique_ptr<ITesseract> tesseract_;
 };
 
 }  // namespace asw
