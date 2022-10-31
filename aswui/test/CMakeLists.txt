@@ -15,6 +15,14 @@ endif()
 find_package(Catch2 CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Catch2::Catch2WithMain aswui)
 
+if (WIN32)
+    find_package(Qt6 CONFIG REQUIRED COMPONENTS Core)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:Qt6::Core>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+endif (WIN32)
+
 include(CTest)
 include(Catch)
 catch_discover_tests(${PROJECT_NAME})
