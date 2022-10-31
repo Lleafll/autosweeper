@@ -41,8 +41,7 @@ class PredeterminedGenerator final : public PositionGenerator {
 
     ~PredeterminedGenerator() override = default;
 
-    Position
-    operator()(std::size_t const rows, std::size_t const columns) override {
+    Position operator()(std::size_t const, std::size_t const) override {
         return positions_[current_++];
     }
 

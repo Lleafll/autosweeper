@@ -51,7 +51,7 @@ struct Catch::StringMaker<asw::Vector2d<asw::Prediction>> {
         auto const columns = span.extent(1);
         auto const* const data = span.data();
         std::string formatted;
-        for (auto i = 0; i < rows; ++i) {
+        for (std::size_t i = 0; i < rows; ++i) {
             auto const begin = data + i * columns;
             auto const end = begin + columns;
             fmt::format_to(
