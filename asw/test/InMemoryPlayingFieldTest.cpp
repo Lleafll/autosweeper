@@ -1,4 +1,4 @@
-#include "PlayingField.h"
+#include "InMemoryPlayingField.h"
 #include "StringMaker.h"
 #include <catch.hpp>
 #include <experimental/mdspan>
@@ -9,14 +9,14 @@ namespace stdex = std::experimental;
 namespace {
 
 TEST_CASE("All fields are hidden initially") {
-    PlayingField const field{
+    InMemoryPlayingField const field{
             Array2d<MineCell, 2, 1>{MineCell::Clear, MineCell::Mined}.cspan()};
     REQUIRE(field(0, 0) == Cell::Hidden);
     REQUIRE(field(1, 0) == Cell::Hidden);
 }
 
 TEST_CASE("Can reveal field") {
-    PlayingField field{
+    InMemoryPlayingField field{
             Array2d<MineCell, 2, 1>{MineCell::Clear, MineCell::Clear}.cspan()};
     field.reveal(1, 0);
     REQUIRE(field(0, 0) == Cell::Hidden);
@@ -24,7 +24,7 @@ TEST_CASE("Can reveal field") {
 }
 
 TEST_CASE("Correctly shows mines and proximity") {
-    PlayingField field{
+    InMemoryPlayingField field{
             Array2d<MineCell, 2, 1>{MineCell::Clear, MineCell::Mined}.cspan()};
     field.reveal(0, 0);
     field.reveal(1, 0);
@@ -33,20 +33,20 @@ TEST_CASE("Correctly shows mines and proximity") {
 }
 
 TEST_CASE("Correctly counts mines") {
-    PlayingField const field{
+    InMemoryPlayingField const field{
             Array2d<MineCell, 2, 1>{MineCell::Clear, MineCell::Mined}.cspan()};
     REQUIRE(field.mine_count() == 1);
 }
 
 TEST_CASE("Correctly return rows and columns") {
-    PlayingField const field{
+    InMemoryPlayingField const field{
             Array2d<MineCell, 2, 1>{MineCell::Clear, MineCell::Mined}.cspan()};
     REQUIRE(field.rows() == 2);
     REQUIRE(field.columns() == 1);
 }
 
 TEST_CASE("mdspan conversion") {
-    PlayingField field{Array2d<MineCell, 2, 2>{
+    InMemoryPlayingField field{Array2d<MineCell, 2, 2>{
             MineCell::Clear, MineCell::Mined, MineCell::Clear, MineCell::Clear}
                                .cspan()};
     field.reveal(0, 0);
@@ -61,7 +61,7 @@ TEST_CASE("mdspan conversion") {
 
 TEST_CASE("Correctly displays mine field") {
     using enum MineCell;
-    PlayingField field{Array2d<MineCell, 5, 5>{
+    InMemoryPlayingField field{Array2d<MineCell, 5, 5>{
             // clang-format off
             Clear, Clear, Clear, Mined, Clear,
             Clear, Clear, Clear, Mined, Mined,

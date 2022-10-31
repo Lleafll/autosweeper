@@ -5,7 +5,7 @@ project(aswtest)
 add_executable(${PROJECT_NAME}
         Algorithm2DTest.cpp
         CellTest.cpp
-        PlayingFieldTest.cpp
+    InMemoryPlayingFieldTest.cpp
         PredictMinesTest.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ../include/asw ../src)
 if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")

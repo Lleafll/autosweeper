@@ -1,4 +1,4 @@
-#include "PlayingField.h"
+#include "InMemoryPlayingField.h"
 #include "StringMaker.h"
 #include "predict_mines.h"
 #include <catch.hpp>

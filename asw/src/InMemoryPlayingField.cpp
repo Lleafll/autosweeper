@@ -1,4 +1,4 @@
-#include "PlayingField.h"
+#include "InMemoryPlayingField.h"
 #include "Vector2d.h"
 #include "algorithm2d.h"
 #include <algorithm>
@@ -74,48 +74,48 @@ std::vector<Cell> calculate_cells(ConstMineCellSpan const& mines) {
 
 }  // namespace
 
-PlayingField::PlayingField(ConstMineCellSpan const& mines)
+InMemoryPlayingField::InMemoryPlayingField(ConstMineCellSpan const& mines)
     : rows_{mines.extent(0)},
       columns_{mines.extent(1)},
       hidden_{rows_ * columns_, Cell::Hidden},
       cells_{calculate_cells(mines)} {
 }
 
-std::size_t PlayingField::rows() const {
+std::size_t InMemoryPlayingField::rows() const {
     return rows_;
 }
 
-std::size_t PlayingField::columns() const {
+std::size_t InMemoryPlayingField::columns() const {
     return columns_;
 }
 
-int PlayingField::mine_count() const {
+int InMemoryPlayingField::mine_count() const {
     return static_cast<int>(std::ranges::count(cells_, Cell::Mine));
 }
 
-Cell PlayingField::operator()(std::size_t const row, std::size_t const column)
+Cell InMemoryPlayingField::operator()(std::size_t const row, std::size_t const column)
         const {
     return hidden()(row, column);
 }
 
-void PlayingField::reveal(std::size_t const row, std::size_t const column) {
+void InMemoryPlayingField::reveal(std::size_t const row, std::size_t const column) {
     stdex::mdspan{hidden_.data(), rows_, columns_}(row, column) =
             cells()(row, column);
 }
 
-CellSpan PlayingField::span() {
+CellSpan InMemoryPlayingField::span() {
     return stdex::mdspan{hidden_.data(), rows_, columns_};
 }
 
-ConstCellSpan PlayingField::cspan() const {
+ConstCellSpan InMemoryPlayingField::cspan() const {
     return hidden();
 }
 
-ConstCellSpan PlayingField::hidden() const {
+ConstCellSpan InMemoryPlayingField::hidden() const {
     return stdex::mdspan{hidden_.data(), rows_, columns_};
 }
 
-ConstCellSpan PlayingField::cells() const {
+ConstCellSpan InMemoryPlayingField::cells() const {
     return stdex::mdspan{cells_.data(), rows_, columns_};
 }
 

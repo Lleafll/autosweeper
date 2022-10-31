@@ -1,11 +1,11 @@
 #include <QApplication>
 #include <QHBoxLayout>
-#include <asw/PlayingField.h>
+#include <asw/InMemoryPlayingField.h>
 #include <aswui/ConstCellSpanWidgetQt.h>
 #include <aswui/MinePredictionsWidgetQt.h>
 
 int main(int argc, char** argv) {
-    asw::PlayingField field{asw::generate_random_mines(5, 5, 5).cspan()};
+    asw::InMemoryPlayingField field{asw::generate_random_mines(5, 5, 5).cspan()};
     QApplication application{argc, argv};
     QWidget main_widget;
     aswui::ConstCellSpanWidgetQt field_widget{field.cspan(), nullptr};

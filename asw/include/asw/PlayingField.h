@@ -1,33 +1,24 @@
 #pragma once
 
 #include "Cell.h"
-#include <experimental/mdspan>
-#include <vector>
+#include <cstdint>
 
 namespace asw {
 
-class PlayingField final {
+class PlayingField {
   public:
-    explicit PlayingField(ConstMineCellSpan const& mines);
+    virtual ~PlayingField() = default;
 
-    [[nodiscard]] std::size_t rows() const;
-    [[nodiscard]] std::size_t columns() const;
-    [[nodiscard]] int mine_count() const;
-    [[nodiscard]] Cell operator()(std::size_t row, std::size_t column) const;
-    void reveal(std::size_t row, std::size_t column);
-    [[nodiscard]] CellSpan span();
-    [[nodiscard]] ConstCellSpan cspan() const;
+    [[nodiscard]] virtual std::size_t rows() const = 0;
+    [[nodiscard]] virtual std::size_t columns() const = 0;
+    [[nodiscard]] virtual int mine_count() const = 0;
+    [[nodiscard]] virtual Cell
+    operator()(std::size_t row, std::size_t column) const = 0;
+    virtual void reveal(std::size_t row, std::size_t column) = 0;
+    [[nodiscard]] virtual CellSpan span() = 0;
+    [[nodiscard]] virtual ConstCellSpan cspan() const = 0;
 
     bool operator==(PlayingField const&) const = default;
-
-  private:
-    std::size_t rows_;
-    std::size_t columns_;
-    std::vector<Cell> hidden_;
-    std::vector<Cell> cells_;
-
-    [[nodiscard]] ConstCellSpan hidden() const;
-    [[nodiscard]] ConstCellSpan cells() const;
 };
 
 }  // namespace asw
