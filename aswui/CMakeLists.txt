@@ -34,6 +34,18 @@ add_subdirectory(test)
 
 project(aswuimain)
 
-add_executable(${PROJECT_NAME}
+qt_standard_project_setup()
+qt_add_executable(${PROJECT_NAME}
         main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE aswui)
+
+install(TARGETS ${PROJECT_NAME}
+    BUNDLE DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+if (WIN32)
+    qt_generate_deploy_app_script(
+        TARGET ${PROJECT_NAME}
+        FILENAME_VARIABLE deploy_script
+        NO_UNSUPPORTED_PLATFORM_ERROR)
+    install(SCRIPT ${deploy_script})
+endif (WIN32)
