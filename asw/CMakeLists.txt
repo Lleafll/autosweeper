@@ -17,6 +17,9 @@ endif()
 
 find_package(Microsoft.GSL CONFIG REQUIRED)
 find_package(mdspan CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC Microsoft.GSL::GSL std::mdspan)
+find_package(Tesseract CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC Microsoft.GSL::GSL std::mdspan
+    PRIVATE Tesseract::libtesseract)
 
 add_subdirectory(test)
