@@ -116,7 +116,9 @@ bool consolidate(std::list<MinePrediction>& predictions) {
             } else if (auto overlap = intersect(i, k)) {
                 auto remaining = i;
                 remaining.subtract(*overlap);
-                if (remaining.cells.size() == i.mine_count - k.mine_count) {
+                if (std::cmp_equal(
+                            remaining.cells.size(),
+                            i.mine_count - k.mine_count)) {
                     auto no_mines = k;
                     no_mines.subtract(*overlap);
                     predictions.emplace_back(std::move(no_mines.cells), 0);
