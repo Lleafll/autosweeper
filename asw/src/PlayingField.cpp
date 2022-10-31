@@ -9,6 +9,13 @@ namespace asw {
 
 namespace {
 
+template<class T>
+struct Proximity final {
+    std::size_t min_row;
+    std::size_t min_column;
+    T subspan;
+};
+
 auto proximity(
         ConstMineCellSpan const& mines,
         std::size_t const row,
@@ -17,10 +24,11 @@ auto proximity(
     auto const max_row = row + 1 == mines.extent(0) ? row : row + 1;
     auto const min_column = column == 0 ? 0 : column - 1;
     auto const max_column = column + 1 == mines.extent(1) ? column : column + 1;
-    return stdex::submdspan(
+    auto const subspan = stdex::submdspan(
             mines,
             std::pair{min_row, max_row + 1},
             std::pair{min_column, max_column + 1});
+    return Proximity<decltype(subspan)>{min_row, min_column, subspan};
 }
 
 Cell calculate_proximity(
@@ -31,13 +39,15 @@ Cell calculate_proximity(
         return Cell::Mine;
     }
     std::underlying_type_t<Cell> count = 0;
+    auto const proximity_result = proximity(mines, row, column);
     indexed_for_each(
-            proximity(mines, row, column),
-            [row, column, &count](
+            proximity_result.subspan,
+            [row, column, &count, &proximity_result](
                     std::size_t const r,
                     std::size_t const c,
                     MineCell const mine) {
-                if (r == row && c == column) {
+                if (r + proximity_result.min_row == row and
+                    c + proximity_result.min_column == column) {
                     return;
                 }
                 if (mine == MineCell::Mined) {

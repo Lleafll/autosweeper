@@ -76,7 +76,7 @@ TEST_CASE("Correctly displays mine field") {
     using enum Cell;
     Array2d<Cell, 5, 5> const expected{
             // clang-format off
-            Empty, Empty, One,   Mine,  Three,
+            Empty, Empty, Two,   Mine,  Three,
             Empty, One,   Three, Mine,  Mine,
             Empty, One,   Mine,  Three, Two,
             Empty, One,   Two,   Two,   One,
