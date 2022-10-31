@@ -8,9 +8,10 @@ namespace asw {
 template<typename T>
 class Vector2d final {
   public:
-    using Span = std::experimental::mdspan<T, std::experimental::dextents<2>>;
-    using ConstSpan =
-            std::experimental::mdspan<T const, std::experimental::dextents<2>>;
+    using Span = std::experimental::
+            mdspan<T, std::experimental::dextents<std::size_t, 2>>;
+    using ConstSpan = std::experimental::
+            mdspan<T const, std::experimental::dextents<std::size_t, 2>>;
 
     explicit Vector2d(
             std::size_t const rows,

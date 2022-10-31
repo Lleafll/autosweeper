@@ -51,7 +51,8 @@ TEST_CASE("mdspan conversion") {
                                .cspan()};
     field.reveal(0, 0);
     field.reveal(0, 1);
-    stdex::mdspan<Cell const, stdex::dextents<2>> const view = field.cspan();
+    stdex::mdspan<Cell const, stdex::dextents<std::size_t, 2>> const view =
+            field.cspan();
     REQUIRE(view(0, 0) == Cell::One);
     REQUIRE(view(0, 1) == Cell::Mine);
     REQUIRE(view(1, 0) == Cell::Hidden);

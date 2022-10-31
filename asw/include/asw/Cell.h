@@ -9,7 +9,7 @@ namespace asw {
 enum class MineCell { Clear, Mined };
 
 using ConstMineCellSpan = std::experimental::
-        mdspan<MineCell const, std::experimental::dextents<2>>;
+        mdspan<MineCell const, std::experimental::dextents<std::size_t, 2>>;
 
 class PositionGenerator {
   public:
@@ -44,9 +44,9 @@ enum class Cell {
     Mine
 };
 
-using CellSpan =
-        std::experimental::mdspan<Cell, std::experimental::dextents<2>>;
-using ConstCellSpan =
-        std::experimental::mdspan<Cell const, std::experimental::dextents<2>>;
+using CellSpan = std::experimental::
+        mdspan<Cell, std::experimental::dextents<std::size_t, 2>>;
+using ConstCellSpan = std::experimental::
+        mdspan<Cell const, std::experimental::dextents<std::size_t, 2>>;
 
 }  // namespace asw

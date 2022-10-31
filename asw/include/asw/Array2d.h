@@ -10,9 +10,10 @@ class Array2d final {
     static constexpr auto size = rows * columns;
 
   public:
-    using Span = std::experimental::mdspan<T, std::experimental::dextents<2>>;
-    using ConstSpan =
-            std::experimental::mdspan<T const, std::experimental::dextents<2>>;
+    using Span = std::experimental::
+            mdspan<T, std::experimental::dextents<std::size_t, 2>>;
+    using ConstSpan = std::experimental::
+            mdspan<T const, std::experimental::dextents<std::size_t, 2>>;
 
     constexpr explicit Array2d(T const& fill = T{}) {
         std::ranges::fill(buffer_, fill);
