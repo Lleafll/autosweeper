@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 # JetBrains CLion
 /.idea
+/build/
