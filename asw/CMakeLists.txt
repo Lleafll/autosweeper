@@ -9,9 +9,11 @@ add_library(${PROJECT_NAME} STATIC
 target_include_directories(${PROJECT_NAME}
         PUBLIC include
         PRIVATE include/asw src)
-target_compile_options(${PROJECT_NAME} PRIVATE
-    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wpedantic -Wextra -Werror>
-    $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX /permissive- /EHsc /utf-8>)
+if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX /permissive- /EHsc /utf-8)
+elseif (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "GNU")
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wpedantic -Wextra -Werror)
+endif()
 
 find_package(Microsoft.GSL CONFIG REQUIRED)
 find_package(mdspan CONFIG REQUIRED)
