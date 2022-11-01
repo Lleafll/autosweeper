@@ -12,9 +12,15 @@ class Tesseract final : public ITesseract {
 
     ~Tesseract() override;
 
-    [[nodiscard]] std::vector<TesseractDetection>
-    detect(std::experimental::mdspan<const unsigned char,
-            std::experimental::dextents<std::size_t, 2>> image) const override;
+    void set_image(
+            std::experimental::mdspan<
+                    unsigned char const,
+                    std::experimental::dextents<std::size_t, 2>> image,
+            int bytes_per_pixel,
+            int bytes_per_line) override;
+    void recognize() override;
+    [[nodiscard]] std::unique_ptr<ITesseractResultIterator>
+    get_iterator() override;
 
   private:
     class Impl;

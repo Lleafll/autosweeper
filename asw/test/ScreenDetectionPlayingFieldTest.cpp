@@ -1,21 +1,36 @@
 #include "ScreenDetectionPlayingField.h"
 #include "ITesseract.h"
+#include "algorithm2d.h"
 #include <catch.hpp>
 
 using namespace asw;
 
 namespace {
 
-class MockScreenDetectionPlayingField final : public ITesseract {
+class MockTesseract final : public ITesseract {
   public:
-    ~MockScreenDetectionPlayingField() override = default;
+    ~MockTesseract() override = default;
 
-    [[nodiscard]] std::vector<TesseractDetection>
-    detect([[maybe_unused]] std::experimental::mdspan<
-            unsigned char const,
-            std::experimental::dextents<std::size_t, 2>> image) const override {
-        throw std::runtime_error{"NYI"};
+    void set_image(
+            std::experimental::mdspan<
+                    unsigned char const,
+                    std::experimental::dextents<std::size_t, 2>>,
+            int,
+            int) override {
+    }
+
+    void recognize() override {
+    }
+
+    [[nodiscard]] std::unique_ptr<ITesseractResultIterator>
+    get_iterator() override {
+        return nullptr;
     }
 };
+
+TEST_CASE("Returns empty detection when nothing could be detected") {
+    ScreenDetectionPlayingField field{2, 2, std::make_unique<MockTesseract>()};
+    REQUIRE(equals(field.cspan(), Array2d<Cell, 2, 2>(Cell::Hidden).cspan()));
+}
 
 }  // namespace

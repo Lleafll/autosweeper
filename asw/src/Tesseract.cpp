@@ -25,14 +25,23 @@ class Tesseract::Impl final {
 Tesseract::Tesseract() : impl_{std::make_unique<Impl>()} {
 }
 
-std::vector<TesseractDetection>
-Tesseract::detect([[maybe_unused]] std::experimental::mdspan<
-                  unsigned char const,
-                  std::experimental::dextents<std::size_t, 2>> const image)
-        const {
+Tesseract::~Tesseract() = default;
+
+void Tesseract::set_image(
+        [[maybe_unused]] std::experimental::mdspan<
+                unsigned char const,
+                std::experimental::dextents<std::size_t, 2>> image,
+        [[maybe_unused]] int bytes_per_pixel,
+        [[maybe_unused]] int bytes_per_line) {
     throw std::runtime_error{"NYI"};
 }
 
-Tesseract::~Tesseract() = default;
+void Tesseract::recognize() {
+    throw std::runtime_error{"NYI"};
+}
+
+std::unique_ptr<ITesseractResultIterator> Tesseract::get_iterator() {
+    throw std::runtime_error{"NYI"};
+}
 
 }  // namespace asw

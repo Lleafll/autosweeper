@@ -1,23 +1,32 @@
 #include "ScreenDetectionPlayingField.h"
 #include "ITesseract.h"
 
+namespace stdex = std::experimental;
+
 namespace asw {
 
 ScreenDetectionPlayingField::ScreenDetectionPlayingField(
+        std::size_t const rows,
+        std::size_t const columns,
         std::unique_ptr<ITesseract> tesseract)
-    : tesseract_{std::move(tesseract)} {
+    : rows_{rows},
+      columns_{columns},
+      tesseract_{std::move(tesseract)},
+      detected_cells_{rows_ * columns_, Cell::Hidden} {
 }
 
+ScreenDetectionPlayingField::~ScreenDetectionPlayingField() = default;
+
 std::size_t ScreenDetectionPlayingField::rows() const {
-    throw std::runtime_error{"NYI"};
+    return rows_;
 }
 
 std::size_t ScreenDetectionPlayingField::columns() const {
-    throw std::runtime_error{"NYI"};
+    return columns_;
 }
 
 int ScreenDetectionPlayingField::mine_count() const {
-    throw std::runtime_error{"NYI"};
+    return 0;
 }
 
 Cell ScreenDetectionPlayingField::operator()(
@@ -33,11 +42,11 @@ void ScreenDetectionPlayingField::reveal(
 }
 
 CellSpan ScreenDetectionPlayingField::span() {
-    throw std::runtime_error{"NYI"};
+    return stdex::mdspan{detected_cells_.data(), rows_, columns_};
 }
 
 ConstCellSpan ScreenDetectionPlayingField::cspan() const {
-    throw std::runtime_error{"NYI"};
+    return stdex::mdspan{detected_cells_.data(), rows_, columns_};
 }
 
 }  // namespace asw

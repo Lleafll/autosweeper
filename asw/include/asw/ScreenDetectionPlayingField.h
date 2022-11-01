@@ -9,7 +9,10 @@ namespace asw {
 
 class ScreenDetectionPlayingField final : public PlayingField {
   public:
-    explicit ScreenDetectionPlayingField(std::unique_ptr<ITesseract> tesseract);
+    ScreenDetectionPlayingField(
+            std::size_t rows,
+            std::size_t columns,
+            std::unique_ptr<ITesseract> tesseract);
 
     ~ScreenDetectionPlayingField() override;
 
@@ -23,7 +26,10 @@ class ScreenDetectionPlayingField final : public PlayingField {
     [[nodiscard]] ConstCellSpan cspan() const override;
 
   private:
+    std::size_t rows_;
+    std::size_t columns_;
     std::unique_ptr<ITesseract> tesseract_;
+    std::vector<Cell> detected_cells_;
 };
 
 }  // namespace asw

@@ -39,4 +39,25 @@ constexpr void indexed_transform(auto&& in, auto&& out, auto&& func) {
             });
 }
 
+constexpr bool equals(auto&& lhs, auto&& rhs) {
+    using Lhs = std::remove_cvref_t<decltype(lhs)>;
+    using Rhs = std::remove_cvref_t<decltype(rhs)>;
+    static_assert(Lhs::extents_type::rank() == 2);
+    static_assert(Rhs::extents_type::rank() == 2);
+    if (lhs.extent(0) != rhs.extent(0)) {
+        return false;
+    }
+    if (lhs.extent(1) != rhs.extent(1)) {
+        return false;
+    }
+    for (std::size_t row = 0; row < lhs.extent(0); ++row) {
+        for (std::size_t column = 0; column < lhs.extent(1); ++column) {
+            if (lhs(row, column) != rhs(row, column)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 }  // namespace asw
