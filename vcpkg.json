@@ -1,7 +1,7 @@
 {
   "name": "asw",
   "version": "0.0.1",
-  "builtin-baseline": "253704407ae68efa37bf8f5b59b3e06dd40d3d3f",
+  "builtin-baseline": "a4013afe6d3053e739b37c4cb6b5e64b55611e24",
   "dependencies": [
     "catch2",
     "fmt",
