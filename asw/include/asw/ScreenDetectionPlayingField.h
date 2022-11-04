@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PlayingField.h"
+#include <memory>
 namespace asw {
 class ITesseract;
 }  // namespace asw
