@@ -7,8 +7,11 @@ namespace asw {
 class Tesseract::Impl final {
   public:
     Impl() {
-        auto const init_success = api_.Init(nullptr, "eng");
-        if (not init_success) {
+        auto const init_success = api_.Init(
+                nullptr,  // Use working directory
+                nullptr   // Use "eng", corresponds to eng.traineddata
+        );
+        if (init_success != 0) {
             throw std::runtime_error{"Failed to initialize Tesseract API"};
         }
         api_.SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
