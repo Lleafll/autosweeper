@@ -19,7 +19,7 @@ build_widget(asw::InMemoryPlayingField& field) {
     columns_widget->setMinimum(1);
     auto* const mines_widget = new QSpinBox{widget.get()};
     mines_widget->setValue(field.mine_count());
-    columns_widget->setMinimum(1);
+    mines_widget->setMinimum(1);
     auto* const field_widget =
             new aswui::ConstCellSpanWidgetQt{field.cspan(), nullptr};
     auto* const predictions_widget = new aswui::MinePredictionsWidgetQt{
