@@ -1,10 +1,26 @@
 #include "ScreenDetectionPlayingField.h"
 #include "ITesseract.h"
+#include "MinesweeperScreen.h"
 #include "Tesseract.h"
 
 namespace stdex = std::experimental;
 
 namespace asw {
+
+namespace {
+
+void detect(
+        [[maybe_unused]] ITesseract& detection,
+        IScreen& screen,
+        [[maybe_unused]] CellSpan const cells) {
+    auto const image = screen.grab();
+    if (!image.has_value()) {
+        std::puts("Could not grab image");
+        return;
+    }
+}
+
+}  // namespace
 
 ScreenDetectionPlayingField::ScreenDetectionPlayingField(
         std::size_t const rows,
@@ -12,17 +28,21 @@ ScreenDetectionPlayingField::ScreenDetectionPlayingField(
     : ScreenDetectionPlayingField{
               rows,
               columns,
-              std::make_unique<Tesseract>()} {
+              di::make_owning<Tesseract>(),
+              di::make_owning<MinesweeperScreen>()} {
 }
 
 ScreenDetectionPlayingField::ScreenDetectionPlayingField(
-        std::size_t const rows,
-        std::size_t const columns,
-        std::unique_ptr<ITesseract> tesseract)
+        size_t rows,
+        size_t columns,
+        di::ptr<ITesseract> tesseract,
+        di::ptr<IScreen> screen)
     : rows_{rows},
       columns_{columns},
       tesseract_{std::move(tesseract)},
-      detected_cells_{rows_ * columns_, Cell::Hidden} {
+      screen_{std::move(screen)},
+      detected_cells_{rows_, columns_, Cell::Hidden} {
+    detect(*tesseract_, *screen_, detected_cells_.span());
 }
 
 ScreenDetectionPlayingField::~ScreenDetectionPlayingField() = default;

@@ -1,4 +1,5 @@
 #include "ScreenDetectionPlayingField.h"
+#include "IScreen.h"
 #include "ITesseract.h"
 #include "algorithm2d.h"
 #include <catch.hpp>
@@ -28,8 +29,19 @@ class MockTesseract final : public ITesseract {
     }
 };
 
+class MockScreen final : public IScreen {
+  public:
+    ~MockScreen() override = default;
+
+    [[nodiscard]] std::optional<Vector2d<int>> grab() const override {
+        return std::nullopt;
+    }
+};
+
 TEST_CASE("Returns empty detection when nothing could be detected") {
-    ScreenDetectionPlayingField field{2, 2, std::make_unique<MockTesseract>()};
+    MockTesseract tesseract;
+    MockScreen screen;
+    ScreenDetectionPlayingField field{2, 2, tesseract, screen};
     REQUIRE(equals(field.cspan(), Array2d<Cell, 2, 2>(Cell::Hidden).cspan()));
 }
 

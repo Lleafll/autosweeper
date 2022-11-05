@@ -1,8 +1,10 @@
 #pragma once
 
 #include "PlayingField.h"
-#include <memory>
+#include "Vector2d.h"
+#include <di/ptr.h>
 namespace asw {
+class IScreen;
 class ITesseract;
 }  // namespace asw
 
@@ -14,7 +16,8 @@ class ScreenDetectionPlayingField final : public PlayingField {
     ScreenDetectionPlayingField(
             std::size_t rows,
             std::size_t columns,
-            std::unique_ptr<ITesseract> tesseract);
+            di::ptr<ITesseract> tesseract,
+            di::ptr<IScreen> screen);
 
     ~ScreenDetectionPlayingField() override;
 
@@ -30,8 +33,9 @@ class ScreenDetectionPlayingField final : public PlayingField {
   private:
     std::size_t rows_;
     std::size_t columns_;
-    std::unique_ptr<ITesseract> tesseract_;
-    std::vector<Cell> detected_cells_;
+    di::ptr<ITesseract> tesseract_;
+    di::ptr<IScreen> screen_;
+    Vector2d<Cell> detected_cells_;
 };
 
 }  // namespace asw
