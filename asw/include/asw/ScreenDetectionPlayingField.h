@@ -10,6 +10,7 @@ namespace asw {
 
 class ScreenDetectionPlayingField final : public PlayingField {
   public:
+    ScreenDetectionPlayingField(std::size_t rows, std::size_t columns);
     ScreenDetectionPlayingField(
             std::size_t rows,
             std::size_t columns,

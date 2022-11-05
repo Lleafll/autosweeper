@@ -50,6 +50,14 @@ class Vector2d final {
         return ConstSpan{buffer_.data(), rows_, columns_};
     }
 
+    [[nodiscard]] T* data() {
+        return buffer_.data();
+    }
+
+    [[nodiscard]] T const* data() const {
+        return buffer_.data();
+    }
+
     bool operator==(Vector2d const&) const = default;
 
   private:

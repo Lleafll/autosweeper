@@ -1,9 +1,19 @@
 #include "ScreenDetectionPlayingField.h"
 #include "ITesseract.h"
+#include "Tesseract.h"
 
 namespace stdex = std::experimental;
 
 namespace asw {
+
+ScreenDetectionPlayingField::ScreenDetectionPlayingField(
+        std::size_t const rows,
+        std::size_t const columns)
+    : ScreenDetectionPlayingField{
+              rows,
+              columns,
+              std::make_unique<Tesseract>()} {
+}
 
 ScreenDetectionPlayingField::ScreenDetectionPlayingField(
         std::size_t const rows,
