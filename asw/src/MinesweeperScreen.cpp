@@ -6,7 +6,7 @@
 namespace asw {
 
 std::optional<Vector2d<int>> asw::MinesweeperScreen::grab() const {
-    auto const hwnd = FindWindow(TEXT("Microsoft Minesweeper"), nullptr);
+    auto const hwnd = FindWindow(nullptr, "Microsoft Minesweeper");
     if (hwnd == nullptr) {
         return std::nullopt;
     }
