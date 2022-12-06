@@ -53,12 +53,10 @@ void MinePredictionsPresenter::set(
     view_.set_column_count(gsl::narrow_cast<int>(predictions.extent(1)));
     asw::indexed_for_each(
             predictions,
-            [this](std::size_t const row,
-                   std::size_t const column,
-                   asw::Prediction const prediction) {
+            [this](asw::Position const& i, asw::Prediction const prediction) {
                 view_.set_cell(
-                        gsl::narrow_cast<int>(row),
-                        gsl::narrow_cast<int>(column),
+                        gsl::narrow_cast<int>(i.row),
+                        gsl::narrow_cast<int>(i.column),
                         to_qstring(prediction));
             });
 }

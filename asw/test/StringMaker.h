@@ -27,17 +27,21 @@ inline std::string position_to_string(asw::Position const& position) {
 namespace detail {
 
 inline char to_char(asw::Prediction const prediction) {
+    using enum asw::Prediction;
     switch (prediction) {
-        case asw::Prediction::Unknown:
+        case Hidden:
+            return ' ';
+        case Unknown:
             return '?';
-        case asw::Prediction::Safe:
+        case Safe:
             return 's';
-        case asw::Prediction::Unsafe:
+        case Unsafe:
             return 'X';
-        default:
-            break;
+        default:;
+            return gsl::narrow_cast<char>(
+                    gsl::narrow_cast<int>('0') +
+                    gsl::narrow_cast<int>(prediction));
     }
-    abort();
 }
 
 }  // namespace detail
@@ -49,17 +53,16 @@ struct Catch::StringMaker<asw::Vector2d<asw::Prediction>> {
         auto const span = predictions.cspan();
         auto const rows = span.extent(0);
         auto const columns = span.extent(1);
-        auto const* const data = span.data();
         std::string formatted;
-        for (std::size_t i = 0; i < rows; ++i) {
-            auto const begin = data + i * columns;
-            auto const end = begin + columns;
+        for (size_t i = 0; i < rows; ++i) {
+            auto const row_span = std::experimental::submdspan(
+                    span, i, std::pair{0, columns + 1});
             fmt::format_to(
                     std::back_inserter(formatted),
                     "{}",
                     fmt::join(
                             std::views::transform(
-                                    std::ranges::subrange{begin, end},
+                                    std::span{row_span.data(), row_span.size()},
                                     detail::to_char),
                             " "));
             if (i != rows - 1) {

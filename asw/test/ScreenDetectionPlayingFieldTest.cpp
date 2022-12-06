@@ -4,36 +4,33 @@
 #include "algorithm2d.h"
 #include <catch.hpp>
 
-using namespace asw;
-
 namespace {
 
-class MockTesseract final : public ITesseract {
+class MockTesseract final : public asw::ITesseract {
   public:
     ~MockTesseract() override = default;
 
     void set_image(
             std::experimental::mdspan<
                     unsigned char const,
-                    std::experimental::dextents<std::size_t, 2>>,
-            int,
-            int) override {
+                    std::experimental::dextents<size_t, 2>>,
+            asw::ImageInfo const&) override {
     }
 
     void recognize() override {
     }
 
-    [[nodiscard]] std::unique_ptr<ITesseractResultIterator>
+    [[nodiscard]] std::unique_ptr<asw::ITesseractResultIterator>
     get_iterator() override {
         return nullptr;
     }
 };
 
-class MockScreen final : public IScreen {
+class MockScreen final : public asw::IScreen {
   public:
     ~MockScreen() override = default;
 
-    [[nodiscard]] std::optional<Vector2d<int>> grab() const override {
+    [[nodiscard]] std::optional<asw::Vector2d<int>> grab() const override {
         return std::nullopt;
     }
 };
@@ -41,8 +38,11 @@ class MockScreen final : public IScreen {
 TEST_CASE("Returns empty detection when nothing could be detected") {
     MockTesseract tesseract;
     MockScreen screen;
-    ScreenDetectionPlayingField field{2, 2, tesseract, screen};
-    REQUIRE(equals(field.cspan(), Array2d<Cell, 2, 2>(Cell::Hidden).cspan()));
+    asw::ScreenDetectionPlayingField const field{
+            asw::Size{2, 2}, tesseract, screen};
+    REQUIRE(
+            equals(field.cspan(),
+                   asw::Array2d<asw::Cell, 2, 2>(asw::Cell::Hidden).cspan()));
 }
 
 }  // namespace

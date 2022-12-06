@@ -21,6 +21,11 @@ class Tesseract::Impl final {
         api_.End();
     }
 
+    Impl(Impl const&) = delete;
+    Impl(Impl&&) noexcept = delete;
+    Impl& operator=(Impl const&) = delete;
+    Impl& operator=(Impl&&) noexcept = delete;
+
   private:
     tesseract::TessBaseAPI api_ = {};
 };
@@ -33,9 +38,8 @@ Tesseract::~Tesseract() = default;
 void Tesseract::set_image(
         [[maybe_unused]] std::experimental::mdspan<
                 unsigned char const,
-                std::experimental::dextents<std::size_t, 2>> image,
-        [[maybe_unused]] int bytes_per_pixel,
-        [[maybe_unused]] int bytes_per_line) {
+                std::experimental::dextents<size_t, 2>> image,
+        [[maybe_unused]] ImageInfo const& info) {
     throw std::runtime_error{"NYI"};
 }
 

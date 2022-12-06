@@ -22,36 +22,32 @@ void detect(
 
 }  // namespace
 
-ScreenDetectionPlayingField::ScreenDetectionPlayingField(
-        std::size_t const rows,
-        std::size_t const columns)
+ScreenDetectionPlayingField::ScreenDetectionPlayingField(Size const& size)
     : ScreenDetectionPlayingField{
-              rows,
-              columns,
+              size,
               di::make_owning<Tesseract>(),
               di::make_owning<MinesweeperScreen>()} {
 }
 
 ScreenDetectionPlayingField::ScreenDetectionPlayingField(
-        size_t rows,
-        size_t columns,
+        Size const& size,
         di::ptr<ITesseract> tesseract,
         di::ptr<IScreen> screen)
-    : rows_{rows},
-      columns_{columns},
+    : rows_{size.rows},
+      columns_{size.columns},
       tesseract_{std::move(tesseract)},
       screen_{std::move(screen)},
-      detected_cells_{rows_, columns_, Cell::Hidden} {
+      detected_cells_{size, Cell::Hidden} {
     detect(*tesseract_, *screen_, detected_cells_.span());
 }
 
 ScreenDetectionPlayingField::~ScreenDetectionPlayingField() = default;
 
-std::size_t ScreenDetectionPlayingField::rows() const {
+size_t ScreenDetectionPlayingField::rows() const {
     return rows_;
 }
 
-std::size_t ScreenDetectionPlayingField::columns() const {
+size_t ScreenDetectionPlayingField::columns() const {
     return columns_;
 }
 
@@ -60,14 +56,13 @@ int ScreenDetectionPlayingField::mine_count() const {
 }
 
 Cell ScreenDetectionPlayingField::operator()(
-        [[maybe_unused]] std::size_t row,
-        [[maybe_unused]] std::size_t column) const {
+        [[maybe_unused]] size_t row,
+        [[maybe_unused]] size_t column) const {
     throw std::runtime_error{"NYI"};
 }
 
 void ScreenDetectionPlayingField::reveal(
-        [[maybe_unused]] std::size_t row,
-        [[maybe_unused]] std::size_t column) {
+        [[maybe_unused]] Position const& position) {
     throw std::runtime_error{"NYI"};
 }
 

@@ -8,7 +8,7 @@ namespace asw {
 
 class ITesseractResultIterator {
   public:
-    virtual ~ITesseractResultIterator() = 0;
+    virtual ~ITesseractResultIterator() = default;
 
     /**
      * Implies tesseract::PageIteratorLevel::RIL_SYMBOL
@@ -18,7 +18,12 @@ class ITesseractResultIterator {
     /**
      * Implies tesseract::PageIteratorLevel::RIL_SYMBOL
      */
-    [[nodiscard]] virtual std::unique_ptr<char[]> get_utf8_text() const = 0;
+    [[nodiscard]] virtual std::vector<char> get_utf8_text() const = 0;
+};
+
+struct ImageInfo {
+    int bytes_per_pixel;
+    int bytes_per_line;
 };
 
 /**
@@ -32,9 +37,8 @@ class ITesseract {
     virtual void set_image(
             std::experimental::mdspan<
                     unsigned char const,
-                    std::experimental::dextents<std::size_t, 2>> image,
-            int bytes_per_pixel,
-            int bytes_per_line) = 0;
+                    std::experimental::dextents<size_t, 2>> image,
+            ImageInfo const& info) = 0;
 
     virtual void recognize() = 0;
 

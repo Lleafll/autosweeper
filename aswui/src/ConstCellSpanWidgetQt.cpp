@@ -28,6 +28,9 @@ class ConstCellSpanWidgetQt::Impl final : public ConstCellSpanView {
     }
 
   private:
+    ConstCellSpanPresenter presenter_;
+    gsl::strict_not_null<CellsWidgetQt*> table_;
+
     void set_row_count(int const rows) override {
         table_->setRowCount(rows);
     }
@@ -40,10 +43,6 @@ class ConstCellSpanWidgetQt::Impl final : public ConstCellSpanView {
     set_cell(int const row, int const column, QString const& text) override {
         table_->setCellText(row, column, text);
     }
-
-  private:
-    ConstCellSpanPresenter presenter_;
-    gsl::strict_not_null<CellsWidgetQt*> table_;
 };
 
 ConstCellSpanWidgetQt::ConstCellSpanWidgetQt(QWidget* const parent)

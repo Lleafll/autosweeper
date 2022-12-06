@@ -2,11 +2,9 @@
 #include <QString>
 #include <catch.hpp>
 
-using namespace aswui;
-
 namespace {
 
-class MockMinePredictionsView final : public MinePredictionsView {
+class MockMinePredictionsView final : public aswui::MinePredictionsView {
   public:
     std::optional<int> set_row_count_call = {};
     std::optional<int> set_column_count_call = {};
@@ -30,12 +28,14 @@ class MockMinePredictionsView final : public MinePredictionsView {
 };
 
 TEST_CASE("MockMinePredictionsView::set()") {
+    static constexpr auto rows = 23;
+    static constexpr auto columns = 56;
     MockMinePredictionsView view;
-    MinePredictionsPresenter presenter{view};
+    aswui::MinePredictionsPresenter presenter{view};
     SECTION("resizes the field") {
-        presenter.set(asw::PredictionArray<23, 56>{}.cspan());
-        REQUIRE(view.set_row_count_call == 23);
-        REQUIRE(view.set_column_count_call == 56);
+        presenter.set(asw::PredictionArray<rows, columns>{}.cspan());
+        REQUIRE(view.set_row_count_call == rows);
+        REQUIRE(view.set_column_count_call == columns);
     }
     SECTION("sets up field") {
         using enum asw::Prediction;
@@ -55,8 +55,10 @@ TEST_CASE("MockMinePredictionsView::set()") {
         REQUIRE(view.set_cell_calls == expected);
     }
     SECTION("sets up field with extended asw::Prediction") {
+        static constexpr auto rows = 1;
+        static constexpr auto columns = 11;
         using enum asw::Prediction;
-        presenter.set(asw::PredictionArray<1, 11>{
+        presenter.set(asw::PredictionArray<rows, columns>{
                 Empty,
                 One,
                 Two,

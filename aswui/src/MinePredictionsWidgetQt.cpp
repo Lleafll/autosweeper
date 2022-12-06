@@ -26,6 +26,9 @@ class MinePredictionsWidgetQt::Impl final : public MinePredictionsView {
     }
 
   private:
+    MinePredictionsPresenter presenter_;
+    gsl::strict_not_null<CellsWidgetQt*> table_;
+
     void set_row_count(int const rows) override {
         table_->setRowCount(rows);
     }
@@ -38,10 +41,6 @@ class MinePredictionsWidgetQt::Impl final : public MinePredictionsView {
     set_cell(int const row, int const column, QString const& text) override {
         table_->setCellText(row, column, text);
     }
-
-  private:
-    MinePredictionsPresenter presenter_;
-    gsl::strict_not_null<CellsWidgetQt*> table_;
 };
 
 MinePredictionsWidgetQt::MinePredictionsWidgetQt(QWidget* const parent)

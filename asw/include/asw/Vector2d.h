@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Size.h"
 #include <experimental/mdspan>
 #include <vector>
 
@@ -9,36 +10,29 @@ template<typename T>
 class Vector2d final {
   public:
     using Span = std::experimental::
-            mdspan<T, std::experimental::dextents<std::size_t, 2>>;
+            mdspan<T, std::experimental::dextents<size_t, 2>>;
     using ConstSpan = std::experimental::
-            mdspan<T const, std::experimental::dextents<std::size_t, 2>>;
+            mdspan<T const, std::experimental::dextents<size_t, 2>>;
 
-    explicit Vector2d(
-            std::size_t const rows,
-            std::size_t const columns,
-            T const& fill = T{})
-        : rows_{rows},
-          columns_{columns},
-          buffer_(rows * columns, fill) {
+    explicit Vector2d(Size const& size, T const& fill = T{})
+        : rows_{size.rows},
+          columns_{size.columns},
+          buffer_(rows_ * columns_, fill) {
     }
 
-    Vector2d(
-            std::size_t const rows,
-            std::size_t const columns,
-            std::vector<T> cells)
-        : rows_{rows},
-          columns_{columns},
+    Vector2d(Size const& size, std::vector<T> cells)
+        : rows_{size.rows},
+          columns_{size.columns},
           buffer_{std::move(cells)} {
         buffer_.resize(rows_ * columns_);
     }
 
-    [[nodiscard]] T&
-    operator()(std::size_t const row, std::size_t const column) {
+    [[nodiscard]] T& operator()(size_t const row, size_t const column) {
         return span()(row, column);
     }
 
     [[nodiscard]] T const&
-    operator()(std::size_t const row, std::size_t const column) const {
+    operator()(size_t const row, size_t const column) const {
         return cspan()(row, column);
     }
 
@@ -61,8 +55,8 @@ class Vector2d final {
     bool operator==(Vector2d const&) const = default;
 
   private:
-    std::size_t rows_;
-    std::size_t columns_;
+    size_t rows_;
+    size_t columns_;
     std::vector<T> buffer_ = {};
 };
 

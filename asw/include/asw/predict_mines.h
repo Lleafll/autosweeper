@@ -25,10 +25,10 @@ enum class Prediction {
 
 Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field);
 
-template<std::size_t rows, std::size_t columns>
+template<size_t rows, size_t columns>
 using PredictionArray = Array2d<Prediction, rows, columns>;
 
 using ConstPredictionSpan = std::experimental::
-        mdspan<Prediction const, std::experimental::dextents<std::size_t, 2>>;
+        mdspan<Prediction const, std::experimental::dextents<size_t, 2>>;
 
 }  // namespace asw

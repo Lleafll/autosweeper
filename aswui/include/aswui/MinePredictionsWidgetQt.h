@@ -17,6 +17,11 @@ class MinePredictionsWidgetQt final : public QWidget {
             QWidget* parent);
 
     ~MinePredictionsWidgetQt() override;
+    MinePredictionsWidgetQt(MinePredictionsWidgetQt const&) = delete;
+    MinePredictionsWidgetQt(MinePredictionsWidgetQt&&) noexcept = delete;
+    MinePredictionsWidgetQt& operator=(MinePredictionsWidgetQt const&) = delete;
+    MinePredictionsWidgetQt&
+    operator=(MinePredictionsWidgetQt&&) noexcept = delete;
 
     void set(asw::ConstPredictionSpan const& predictions);
 

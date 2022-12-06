@@ -11,15 +11,14 @@ namespace {
 
 template<class T>
 struct Proximity final {
-    std::size_t min_row;
-    std::size_t min_column;
+    size_t min_row;
+    size_t min_column;
     T subspan;
 };
 
-auto proximity(
-        ConstMineCellSpan const& mines,
-        std::size_t const row,
-        std::size_t const column) {
+auto proximity(ConstMineCellSpan const& mines, Position const& position) {
+    auto const row = position.row;
+    auto const column = position.column;
     auto const min_row = row == 0 ? 0 : row - 1;
     auto const max_row = row + 1 == mines.extent(0) ? row : row + 1;
     auto const min_column = column == 0 ? 0 : column - 1;
@@ -28,26 +27,24 @@ auto proximity(
             mines,
             std::pair{min_row, max_row + 1},
             std::pair{min_column, max_column + 1});
-    return Proximity<decltype(subspan)>{min_row, min_column, subspan};
+    return Proximity<std::remove_cvref_t<decltype(subspan)>>{
+            min_row, min_column, subspan};
 }
 
 Cell calculate_proximity(
         ConstMineCellSpan const& mines,
-        std::size_t const row,
-        std::size_t const column) {
-    if (mines(row, column) == MineCell::Mined) {
+        Position const& position) {
+    if (mines(position.row, position.column) == MineCell::Mined) {
         return Cell::Mine;
     }
     std::underlying_type_t<Cell> count = 0;
-    auto const proximity_result = proximity(mines, row, column);
+    auto const proximity_result = proximity(mines, position);
     indexed_for_each(
             proximity_result.subspan,
-            [row, column, &count, &proximity_result](
-                    std::size_t const r,
-                    std::size_t const c,
-                    MineCell const mine) {
-                if (r + proximity_result.min_row == row and
-                    c + proximity_result.min_column == column) {
+            [&position, &count, &proximity_result](
+                    Position const& i, MineCell const mine) {
+                if (i.row + proximity_result.min_row == position.row and
+                    i.column + proximity_result.min_column == position.column) {
                     return;
                 }
                 if (mine == MineCell::Mined) {
@@ -63,11 +60,8 @@ std::vector<Cell> calculate_cells(ConstMineCellSpan const& mines) {
     std::vector<Cell> cells(rows * columns);
     indexed_for_each(
             stdex::mdspan{cells.data(), rows, columns},
-            [&mines](
-                    std::size_t const row,
-                    std::size_t const column,
-                    Cell& cell) {
-                cell = calculate_proximity(mines, row, column);
+            [&mines](Position const& i, Cell& cell) {
+                cell = calculate_proximity(mines, i);
             });
     return cells;
 }
@@ -81,11 +75,11 @@ InMemoryPlayingField::InMemoryPlayingField(ConstMineCellSpan const& mines)
       cells_{calculate_cells(mines)} {
 }
 
-std::size_t InMemoryPlayingField::rows() const {
+size_t InMemoryPlayingField::rows() const {
     return rows_;
 }
 
-std::size_t InMemoryPlayingField::columns() const {
+size_t InMemoryPlayingField::columns() const {
     return columns_;
 }
 
@@ -93,14 +87,15 @@ int InMemoryPlayingField::mine_count() const {
     return static_cast<int>(std::ranges::count(cells_, Cell::Mine));
 }
 
-Cell InMemoryPlayingField::operator()(std::size_t const row, std::size_t const column)
+Cell InMemoryPlayingField::operator()(size_t const row, size_t const column)
         const {
     return hidden()(row, column);
 }
 
-void InMemoryPlayingField::reveal(std::size_t const row, std::size_t const column) {
-    stdex::mdspan{hidden_.data(), rows_, columns_}(row, column) =
-            cells()(row, column);
+void InMemoryPlayingField::reveal(Position const& position) {
+    stdex::mdspan{hidden_.data(), rows_, columns_}(
+            position.row, position.column) =
+            cells()(position.row, position.column);
 }
 
 CellSpan InMemoryPlayingField::span() {

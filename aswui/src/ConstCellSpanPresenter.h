@@ -7,10 +7,10 @@ class QString;
 namespace aswui {
 
 class ConstCellSpanView {
-public:
+  public:
     virtual ~ConstCellSpanView() = default;
 
-private:
+  private:
     virtual void set_row_count(int rows) = 0;
     virtual void set_column_count(int columns) = 0;
     virtual void set_cell(int row, int column, QString const& text) = 0;
@@ -19,12 +19,12 @@ private:
 };
 
 class ConstCellSpanPresenter final {
-public:
+  public:
     explicit ConstCellSpanPresenter(ConstCellSpanView& view);
 
     void set(asw::ConstCellSpan const& cells);
 
-private:
+  private:
     ConstCellSpanView& view_;
 };
 

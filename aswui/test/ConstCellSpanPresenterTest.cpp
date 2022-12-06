@@ -4,7 +4,8 @@
 #include <QString>
 #include <catch.hpp>
 
-using namespace aswui;
+using aswui::ConstCellSpanPresenter;
+using aswui::ConstCellSpanView;
 
 namespace {
 
@@ -12,8 +13,8 @@ class MockConstCellSpanView final : public ConstCellSpanView {
   public:
     ~MockConstCellSpanView() override = default;
 
-    std::optional<std::size_t> set_row_count_call = {};
-    std::optional<std::size_t> set_column_count_call = {};
+    std::optional<size_t> set_row_count_call = {};
+    std::optional<size_t> set_column_count_call = {};
     std::vector<std::tuple<int, int, QString>> set_cell_calls = {};
 
   private:
@@ -32,12 +33,14 @@ class MockConstCellSpanView final : public ConstCellSpanView {
 };
 
 TEST_CASE("ConstCellSpanPresenter") {
+    static constexpr int rows = 12;
+    static constexpr int columns = 34;
     MockConstCellSpanView view{};
     ConstCellSpanPresenter presenter{view};
     SECTION("set() correctly sets up row and column count") {
-        presenter.set(asw::Array2d<asw::Cell, 12, 34>{}.cspan());
-        REQUIRE(view.set_row_count_call == 12);
-        REQUIRE(view.set_column_count_call == 34);
+        presenter.set(asw::Array2d<asw::Cell, rows, columns>{}.cspan());
+        REQUIRE(view.set_row_count_call == rows);
+        REQUIRE(view.set_column_count_call == columns);
     }
     SECTION("set() correctly sets cells") {
         using enum asw::Cell;

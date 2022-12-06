@@ -45,13 +45,10 @@ void ConstCellSpanPresenter::set(asw::ConstCellSpan const& cells) {
     view_.set_row_count(gsl::narrow_cast<int>(cells.extent(0)));
     view_.set_column_count(gsl::narrow_cast<int>(cells.extent(1)));
     asw::indexed_for_each(
-            cells,
-            [this](std::size_t const row,
-                   std::size_t const column,
-                   asw::Cell const cell) {
+            cells, [this](asw::Position const& i, asw::Cell const cell) {
                 view_.set_cell(
-                        gsl::narrow_cast<int>(row),
-                        gsl::narrow_cast<int>(column),
+                        gsl::narrow_cast<int>(i.row),
+                        gsl::narrow_cast<int>(i.column),
                         to_qstring(cell));
             });
 }

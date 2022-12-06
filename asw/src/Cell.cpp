@@ -9,11 +9,10 @@ class RandomGenerator final : public PositionGenerator {
   public:
     ~RandomGenerator() override = default;
 
-    [[nodiscard]] Position
-    operator()(std::size_t const rows, std::size_t const columns) override {
-        return {std::uniform_int_distribution<std::size_t>{0, rows - 1}(
+    [[nodiscard]] Position operator()(Size const& size) override {
+        return {std::uniform_int_distribution<size_t>{0, size.rows - 1}(
                         generator),
-                std::uniform_int_distribution<std::size_t>{0, columns - 1}(
+                std::uniform_int_distribution<size_t>{0, size.columns - 1}(
                         generator)};
     }
 
@@ -24,23 +23,19 @@ class RandomGenerator final : public PositionGenerator {
 }  // namespace
 
 Vector2d<MineCell> generate_mines(
-        std::size_t const rows,
-        std::size_t const columns,
+        Size const& size,
         int const count,
         PositionGenerator&& generator) {
-    Vector2d<MineCell> mines{rows, columns};
+    Vector2d<MineCell> mines{size};
     for (int i = 0; i < count; ++i) {
-        auto const [row, column] = generator(rows, columns);
+        auto const [row, column] = generator(size);
         mines(row, column) = MineCell::Mined;
     }
     return mines;
 }
 
-Vector2d<MineCell> generate_random_mines(
-        std::size_t const rows,
-        std::size_t const columns,
-        int const count) {
-    return generate_mines(rows, columns, count, RandomGenerator{});
+Vector2d<MineCell> generate_random_mines(Size const& size, int const count) {
+    return generate_mines(size, count, RandomGenerator{});
 }
 
 }  // namespace asw

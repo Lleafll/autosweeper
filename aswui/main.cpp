@@ -10,6 +10,9 @@
 
 namespace {
 
+constexpr asw::Size field_size{5, 5};
+constexpr int mine_count = 5;
+
 gsl::not_null<std::unique_ptr<QWidget>>
 build_widget(std::unique_ptr<asw::PlayingField>& field) {
     auto widget = std::make_unique<QWidget>();
@@ -29,13 +32,13 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
     auto* const predictions_widget = new aswui::MinePredictionsWidgetQt{
             asw::predict_mines_field(field->cspan()).cspan(), nullptr};
     auto* const main_layout = new QVBoxLayout{widget.get()};
-    auto* const top_layout = new QHBoxLayout{};
+    auto* const top_layout = new QHBoxLayout;
     main_layout->addLayout(top_layout);
     top_layout->addWidget(field_selection);
     top_layout->addWidget(rows_widget);
     top_layout->addWidget(columns_widget);
     top_layout->addWidget(mines_widget);
-    auto* const lower_layout = new QHBoxLayout{};
+    auto* const lower_layout = new QHBoxLayout;
     main_layout->addLayout(lower_layout);
     lower_layout->addWidget(field_widget);
     lower_layout->addWidget(predictions_widget);
@@ -46,7 +49,9 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
     };
     auto const recalculate = [&field,
                               refresh](int const row, int const column) {
-        field->reveal(row, column);
+        field->reveal(
+                {.row = gsl::narrow_cast<size_t>(row),
+                 .column = gsl::narrow_cast<size_t>(column)});
         refresh();
     };
     auto const reinitialize_field = [&field,
@@ -58,13 +63,15 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
         auto const field_type = field_selection->currentIndex();
         auto const rows = rows_widget->value();
         auto const columns = columns_widget->value();
+        asw::Size const size{
+                .rows = gsl::narrow_cast<size_t>(rows),
+                .columns = gsl::narrow_cast<size_t>(columns)};
         auto const mines = mines_widget->value();
         if (field_type == 0) {
             field = std::make_unique<asw::InMemoryPlayingField>(
-                    asw::generate_random_mines(rows, columns, mines).cspan());
+                    asw::generate_random_mines(size, mines).cspan());
         } else {
-            field = std::make_unique<asw::ScreenDetectionPlayingField>(
-                    rows, columns);
+            field = std::make_unique<asw::ScreenDetectionPlayingField>(size);
         }
         refresh();
     };
@@ -90,8 +97,8 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
 int main(int argc, char** argv) {
     std::unique_ptr<asw::PlayingField> field =
             std::make_unique<asw::InMemoryPlayingField>(
-                    asw::generate_random_mines(5, 5, 5).cspan());
-    QApplication application{argc, argv};
+                    asw::generate_random_mines(field_size, mine_count).cspan());
+    QApplication const application{argc, argv};
     auto main_widget = build_widget(field);
     main_widget->show();
     return QApplication::exec();

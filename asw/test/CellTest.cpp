@@ -2,7 +2,12 @@
 #include "StringMaker.h"
 #include <catch.hpp>
 
-using namespace asw;
+using asw::Array2d;
+using asw::Cell;
+using asw::MineCell;
+using asw::Position;
+using asw::Size;
+using asw::Vector2d;
 
 namespace {
 
@@ -33,7 +38,7 @@ TEST_CASE("Can use initializer list for filling array") {
     REQUIRE(cells(1, 1) == Cell::Four);
 }
 
-class PredeterminedGenerator final : public PositionGenerator {
+class PredeterminedGenerator final : public asw::PositionGenerator {
   public:
     PredeterminedGenerator(std::initializer_list<Position> const& positions)
         : positions_{positions} {
@@ -41,19 +46,20 @@ class PredeterminedGenerator final : public PositionGenerator {
 
     ~PredeterminedGenerator() override = default;
 
-    Position operator()(std::size_t const, std::size_t const) override {
+    Position operator()(Size const&) override {
         return positions_[current_++];
     }
 
   private:
     std::vector<Position> positions_;
-    std::size_t current_ = 0;
+    size_t current_ = 0;
 };
 
 TEST_CASE("generate_mines without collision") {
+    constexpr Size size{4, 4};
     auto const mines = generate_mines(
-            4, 4, 3, PredeterminedGenerator{{0, 2}, {1, 2}, {2, 3}});
-    auto expected = Vector2d<MineCell>{4, 4};
+            size, 3, PredeterminedGenerator{{0, 2}, {1, 2}, {2, 3}});
+    auto expected = Vector2d<MineCell>{size};
     expected(0, 2) = MineCell::Mined;
     expected(1, 2) = MineCell::Mined;
     expected(2, 3) = MineCell::Mined;

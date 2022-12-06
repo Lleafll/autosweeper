@@ -12,27 +12,32 @@ namespace asw {
 
 class ScreenDetectionPlayingField final : public PlayingField {
   public:
-    ScreenDetectionPlayingField(std::size_t rows, std::size_t columns);
+    explicit ScreenDetectionPlayingField(Size const& size);
     ScreenDetectionPlayingField(
-            std::size_t rows,
-            std::size_t columns,
+            Size const& size,
             di::ptr<ITesseract> tesseract,
             di::ptr<IScreen> screen);
 
     ~ScreenDetectionPlayingField() override;
+    ScreenDetectionPlayingField(ScreenDetectionPlayingField const&) = delete;
+    ScreenDetectionPlayingField(ScreenDetectionPlayingField&&) noexcept =
+            default;
+    ScreenDetectionPlayingField&
+    operator=(ScreenDetectionPlayingField const&) = delete;
+    ScreenDetectionPlayingField&
+    operator=(ScreenDetectionPlayingField&&) noexcept = default;
 
-    [[nodiscard]] std::size_t rows() const override;
-    [[nodiscard]] std::size_t columns() const override;
+    [[nodiscard]] size_t rows() const override;
+    [[nodiscard]] size_t columns() const override;
     [[nodiscard]] int mine_count() const override;
-    [[nodiscard]] Cell
-    operator()(std::size_t row, std::size_t column) const override;
-    void reveal(std::size_t row, std::size_t column) override;
+    [[nodiscard]] Cell operator()(size_t row, size_t column) const override;
+    void reveal(Position const& position) override;
     [[nodiscard]] CellSpan span() override;
     [[nodiscard]] ConstCellSpan cspan() const override;
 
   private:
-    std::size_t rows_;
-    std::size_t columns_;
+    size_t rows_;
+    size_t columns_;
     di::ptr<ITesseract> tesseract_;
     di::ptr<IScreen> screen_;
     Vector2d<Cell> detected_cells_;

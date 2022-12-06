@@ -16,41 +16,35 @@ struct MinePrediction final {
     std::unordered_set<Position> cells;
     int mine_count;
 
-    MinePrediction(std::unordered_set<Position> cells, int mine_count);
+    MinePrediction(std::unordered_set<Position> cells, int const mine_count)
+        : cells{std::move(cells)},
+          mine_count{mine_count} {
+    }
 
-    [[nodiscard]] bool is_subset_of(MinePrediction const& other) const;
+    [[nodiscard]] bool is_subset_of(MinePrediction const& other) const {
+        if (cells.size() > other.cells.size()) {
+            return false;
+        }
+        // O(N²) :(
+        return std::ranges::all_of(
+                cells, [other](Position const& cell) -> bool {
+                    return std::ranges::find(other.cells, cell) !=
+                           other.cells.cend();
+                });
+    }
 
-    void subtract(MinePrediction const& other);
+    void subtract(MinePrediction const& other) {
+        auto const count = std::erase_if(
+                cells, [&other](Position const& position) -> bool {
+                    return other.cells.contains(position);
+                });
+        if (count > 0) {
+            mine_count -= other.mine_count;
+        }
+    }
 
     bool operator==(MinePrediction const&) const = default;
 };
-
-MinePrediction::MinePrediction(
-        std::unordered_set<Position> cells,
-        int const mine_count)
-    : cells{std::move(cells)},
-      mine_count{mine_count} {
-}
-
-bool MinePrediction::is_subset_of(MinePrediction const& other) const {
-    if (cells.size() > other.cells.size()) {
-        return false;
-    }
-    // O(N²) :(
-    return std::ranges::all_of(cells, [other](Position const& cell) -> bool {
-        return std::ranges::find(other.cells, cell) != other.cells.cend();
-    });
-}
-
-void MinePrediction::subtract(MinePrediction const& other) {
-    auto const count =
-            std::erase_if(cells, [&other](Position const& position) -> bool {
-                return other.cells.contains(position);
-            });
-    if (count > 0) {
-        mine_count -= other.mine_count;
-    }
-}
 
 std::optional<MinePrediction>
 intersect(MinePrediction const& lhs, MinePrediction const& rhs) {
@@ -63,18 +57,18 @@ intersect(MinePrediction const& lhs, MinePrediction const& rhs) {
             });
     if (positions.empty()) {
         return std::nullopt;
-    } else {
-        return std::make_optional<MinePrediction>(
-                std::move(positions), std::min(lhs.mine_count, rhs.mine_count));
     }
+    return std::make_optional<MinePrediction>(
+            std::move(positions), std::min(lhs.mine_count, rhs.mine_count));
 }
 
 MinePrediction get_prediction(
-        std::size_t const row,
-        std::size_t const column,
+        Position const& position,
         Cell const cell,
         ConstCellSpan const& field) {
     MinePrediction prediction{{}, static_cast<int>(cell)};
+    auto const row = position.row;
+    auto const column = position.column;
     auto const rows = field.extent(0);
     auto const columns = field.extent(1);
     auto const r_begin = row == 0 ? 0 : row - 1;
@@ -87,25 +81,20 @@ MinePrediction get_prediction(
                     std::pair{r_begin, r_end},
                     std::pair{c_begin, c_end}),
             [&prediction, r_begin, c_begin](
-                    std::size_t const row,
-                    std::size_t const column,
-                    Cell const cell) {
+                    Position const& i, Cell const cell) {
                 if (cell == Cell::Hidden) {
-                    prediction.cells.emplace(row + r_begin, column + c_begin);
+                    prediction.cells.emplace(
+                            Position{i.row + r_begin, i.column + c_begin});
                 }
             });
     return prediction;
 }
 
 bool is_revealed_and_not_mine(Cell const cell) {
-    return static_cast<std::underlying_type_t<Cell>>(cell) < 9;
+    return cell < Cell::Hidden;
 }
 
-bool consolidate(std::list<MinePrediction>& predictions) {
-    if (predictions.size() <= 1) {
-        return false;
-    }
-    auto const original = predictions;
+void calculate_overlap(std::list<MinePrediction>& predictions) {
     for (auto& i: predictions) {
         for (auto& k: predictions) {
             if (i == k) {
@@ -127,6 +116,9 @@ bool consolidate(std::list<MinePrediction>& predictions) {
             }
         }
     }
+}
+
+void remove_empty_cells(std::list<MinePrediction>& predictions) {
     for (auto i = predictions.begin(); i != predictions.end();) {
         if (i->cells.empty()) {
             i = predictions.erase(i);
@@ -134,6 +126,9 @@ bool consolidate(std::list<MinePrediction>& predictions) {
             ++i;
         }
     }
+}
+
+void remove_duplicates(std::list<MinePrediction>& predictions) {
     for (auto i = predictions.begin();
          i != std::prev(predictions.end()) && i != predictions.end();
          ++i) {
@@ -145,21 +140,30 @@ bool consolidate(std::list<MinePrediction>& predictions) {
             }
         }
     }
+}
+
+bool consolidate(std::list<MinePrediction>& predictions) {
+    if (predictions.size() <= 1) {
+        return false;
+    }
+    auto const original = predictions;
+    calculate_overlap(predictions);
+    remove_empty_cells(predictions);
+    remove_duplicates(predictions);
     return predictions != original;
 }
 
 std::list<MinePrediction> predict_mines(ConstCellSpan const& field) {
     std::list<MinePrediction> predictions;
     indexed_for_each(
-            field,
-            [&predictions, &field](
-                    std::size_t const row,
-                    std::size_t const column,
-                    Cell const cell) {
+            field, [&predictions, &field](Position const& i, Cell const cell) {
                 if (!is_revealed_and_not_mine(cell)) {
                     return;
                 }
-                predictions.push_back(get_prediction(row, column, cell, field));
+                predictions.push_back(get_prediction(
+                        Position{.row = i.row, .column = i.column},
+                        cell,
+                        field));
             });
     while (consolidate(predictions)) {
     }
@@ -169,14 +173,15 @@ std::list<MinePrediction> predict_mines(ConstCellSpan const& field) {
 Prediction safe_status(
         std::list<MinePrediction> const& predictions,
         Position const& position) {
-    auto mines = 10;
+    static constexpr int no_prediction_possible_sentinel = 10;
+    auto mines = no_prediction_possible_sentinel;
     for (auto const& prediction: predictions) {
         if (prediction.cells.contains(position)) {
             mines = std::min(mines, prediction.mine_count);
         }
     }
     switch (mines) {
-        case 10:
+        case no_prediction_possible_sentinel:
             return Prediction::Unknown;
         case 0:
             return Prediction::Safe;
@@ -218,18 +223,17 @@ Prediction to_prediction(Cell const cell) {
 
 Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field) {
     auto const predictions = predict_mines(field);
-    Vector2d<Prediction> prediction_field{field.extent(0), field.extent(1)};
+    Vector2d<Prediction> prediction_field{
+            Size{.rows = field.extent(0), .columns = field.extent(1)}};
     indexed_for_each(
             field,
-            [&prediction_field, &predictions](
-                    std::size_t const row,
-                    std::size_t const column,
-                    Cell const cell) {
+            [&prediction_field,
+             &predictions](Position const& i, Cell const cell) {
                 if (is_revealed_and_not_mine(cell) or cell == Cell::Mine) {
-                    prediction_field(row, column) = to_prediction(cell);
+                    prediction_field(i.row, i.column) = to_prediction(cell);
                 } else {
-                    prediction_field(row, column) =
-                            safe_status(predictions, {row, column});
+                    prediction_field(i.row, i.column) =
+                            safe_status(predictions, {i.row, i.column});
                 }
             });
     return prediction_field;
