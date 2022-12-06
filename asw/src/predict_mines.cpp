@@ -227,8 +227,6 @@ Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field) {
                     Cell const cell) {
                 if (is_revealed_and_not_mine(cell) or cell == Cell::Mine) {
                     prediction_field(row, column) = to_prediction(cell);
-                } else if (cell == Cell::Mine) {
-                    prediction_field(row, column) = Prediction::Unsafe;
                 } else {
                     prediction_field(row, column) =
                             safe_status(predictions, {row, column});
