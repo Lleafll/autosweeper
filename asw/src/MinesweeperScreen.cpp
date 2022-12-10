@@ -13,7 +13,7 @@ constexpr int bit_count = 4 * 8;
 }  // namespace
 
 std::optional<Vector2d<int>> asw::MinesweeperScreen::grab() const {
-    auto* const hwnd = FindWindow(nullptr, "Microsoft Minesweeper");
+    auto* const hwnd = FindWindow(nullptr, "Minesweeper Classic");
     if (hwnd == nullptr) {
         return std::nullopt;
     }
