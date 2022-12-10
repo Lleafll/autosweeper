@@ -25,7 +25,7 @@ jobs:
       run: |
         git -C $VCPKG_INSTALLATION_ROOT reset --hard
         git -C $VCPKG_INSTALLATION_ROOT pull
-        $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
+        $VCPKG_INSTALLATION_ROOT\bootstrap-vcpkg.sh
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
