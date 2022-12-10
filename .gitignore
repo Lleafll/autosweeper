@@ -400,3 +400,4 @@ FodyWeavers.xsd
 # JetBrains CLion
 /.idea
 /build/
+/cmake-build-debug/
