@@ -2,6 +2,7 @@
 #include "ITesseract.h"
 #include "MinesweeperScreen.h"
 #include "Tesseract.h"
+#include <gsl/narrow>
 
 namespace stdex = std::experimental;
 
@@ -9,14 +10,34 @@ namespace asw {
 
 namespace {
 
+constexpr int bytes_per_pixel = 4 * 3;
+
 void detect(
-        [[maybe_unused]] ITesseract& detection,
+        ITesseract& detection,
         IScreen& screen,
         [[maybe_unused]] CellSpan const cells) {
     auto const image = screen.grab();
     if (!image.has_value()) {
         std::puts("Could not grab image");
         return;
+    }
+    auto const span = image->cspan();
+    detection.set_image(
+            stdex::mdspan<
+                    unsigned char const,
+                    std::experimental::dextents<size_t, 2>>{
+                    reinterpret_cast<unsigned char const*>(span.data()),
+                    span.extent(0),
+                    span.extent(1)},
+            ImageInfo{
+                    bytes_per_pixel,
+                    bytes_per_pixel *
+                            gsl::narrow_cast<int>(image->cspan().extent(0))});
+    auto iterator = detection.get_iterator();
+    if (iterator != nullptr) {
+        do {
+            std::puts(iterator->get_utf8_text().data());
+        } while (iterator->next());
     }
 }
 

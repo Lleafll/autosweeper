@@ -1,8 +1,45 @@
 #include "Tesseract.h"
+#include <gsl/narrow>
 #include <stdexcept>
 #include <tesseract/baseapi.h>
 
+namespace stdex = std::experimental;
+
 namespace asw {
+
+class TesseractIterator final : public ITesseractResultIterator {
+  public:
+    explicit TesseractIterator(tesseract::ResultIterator* const iterator)
+        : iterator_{iterator} {
+    }
+
+    ~TesseractIterator() override {
+        delete iterator_;
+    }
+
+    TesseractIterator(TesseractIterator const&) = delete;
+    TesseractIterator& operator=(TesseractIterator const&) = delete;
+
+    TesseractIterator(TesseractIterator&& other) noexcept
+        : iterator_{std::exchange(other.iterator_, nullptr)} {
+    }
+
+    TesseractIterator& operator=(TesseractIterator&& other) noexcept {
+        iterator_ = std::exchange(other.iterator_, nullptr);
+        return *this;
+    }
+
+    bool next() override {
+        return false;  // TODO: Implement
+    }
+
+    [[nodiscard]] std::vector<char> get_utf8_text() const override {
+        return {};  // TODO: Implement
+    }
+
+  private:
+    tesseract::ResultIterator* iterator_ = nullptr;
+};
 
 class Tesseract::Impl final {
   public:
@@ -15,6 +52,31 @@ class Tesseract::Impl final {
             throw std::runtime_error{"Failed to initialize Tesseract API"};
         }
         api_.SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
+    }
+
+    void set_image(
+            stdex::mdspan<
+                    unsigned char const,
+                    stdex::dextents<size_t, 2>> const& image,
+            ImageInfo const& info) {
+        api_.SetImage(
+                image.data(),
+                gsl::narrow_cast<int>(image.extent(0)),
+                gsl::narrow_cast<int>(image.extent(1)),
+                info.bytes_per_pixel,
+                info.bytes_per_line);
+    }
+
+    bool recognize() {
+        return api_.Recognize(nullptr) == 0;
+    }
+
+    std::unique_ptr<ITesseractResultIterator> get_iterator() {
+        auto* const iterator = api_.GetIterator();
+        if (iterator == nullptr) {
+            return {};
+        }
+        return std::make_unique<TesseractIterator>(iterator);
     }
 
     ~Impl() {
@@ -36,19 +98,18 @@ Tesseract::Tesseract() : impl_{std::make_unique<Impl>()} {
 Tesseract::~Tesseract() = default;
 
 void Tesseract::set_image(
-        [[maybe_unused]] std::experimental::mdspan<
-                unsigned char const,
-                std::experimental::dextents<size_t, 2>> image,
-        [[maybe_unused]] ImageInfo const& info) {
-    throw std::runtime_error{"NYI"};
+        stdex::mdspan<unsigned char const, stdex::dextents<size_t, 2>> const&
+                image,
+        ImageInfo const& info) {
+    impl_->set_image(image, info);
 }
 
-void Tesseract::recognize() {
-    throw std::runtime_error{"NYI"};
+bool Tesseract::recognize() {
+    return impl_->recognize();
 }
 
 std::unique_ptr<ITesseractResultIterator> Tesseract::get_iterator() {
-    throw std::runtime_error{"NYI"};
+    return impl_->get_iterator();
 }
 
 }  // namespace asw

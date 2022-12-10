@@ -37,10 +37,10 @@ class ITesseract {
     virtual void set_image(
             std::experimental::mdspan<
                     unsigned char const,
-                    std::experimental::dextents<size_t, 2>> image,
+                    std::experimental::dextents<size_t, 2>> const& image,
             ImageInfo const& info) = 0;
 
-    virtual void recognize() = 0;
+    virtual bool recognize() = 0;
 
     /**
      * @return Is allowed to point to nullptr

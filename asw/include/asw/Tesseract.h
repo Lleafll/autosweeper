@@ -19,9 +19,9 @@ class Tesseract final : public ITesseract {
     void set_image(
             std::experimental::mdspan<
                     unsigned char const,
-                    std::experimental::dextents<size_t, 2>> image,
+                    std::experimental::dextents<size_t, 2>> const& image,
             ImageInfo const& info) override;
-    void recognize() override;
+    bool recognize() override;
     [[nodiscard]] std::unique_ptr<ITesseractResultIterator>
     get_iterator() override;
 
