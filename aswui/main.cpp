@@ -85,11 +85,10 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
             for (size_t column = 0; column < field->columns(); ++column) {
                 if (prediction(row, column) == asw::Prediction::Safe) {
                     field->reveal({row, column});
-                    refresh();
-                    return;
                 }
             }
         }
+        refresh();
     };
     new QShortcut{QKeySequence{Qt::Key_Space}, widget.get(), auto_solve};
     QObject::connect(
