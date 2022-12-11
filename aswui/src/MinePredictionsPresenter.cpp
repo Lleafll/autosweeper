@@ -37,6 +37,8 @@ QString to_qstring(asw::Prediction const prediction) {
             return QStringLiteral("☐");
         case asw::Prediction::Mine:
             return QStringLiteral("💣");
+        case asw::Prediction::DetectedMine:
+            return u"🚩"_qs;
     }
     abort();
 }

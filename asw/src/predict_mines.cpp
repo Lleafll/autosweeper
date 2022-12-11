@@ -177,6 +177,10 @@ Prediction safe_status(
     auto mines = no_prediction_possible_sentinel;
     for (auto const& prediction: predictions) {
         if (prediction.cells.contains(position)) {
+            if (std::cmp_equal(
+                        prediction.cells.size(), prediction.mine_count)) {
+                return Prediction::DetectedMine;
+            }
             mines = std::min(mines, prediction.mine_count);
         }
     }

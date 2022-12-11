@@ -16,8 +16,8 @@ TEST_CASE("predict_mines_field") {
             Cell::One,    Cell::One};  // clang-format on
     auto const prediction = Vector2d<Prediction>{
             Size{2, 2},  // clang-format off
-            {Prediction::Unsafe, Prediction::One,
-            Prediction::One,     Prediction::One}};  // clang-format on
+            {Prediction::DetectedMine, Prediction::One,
+            Prediction::One,           Prediction::One}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == prediction);
 }
 
@@ -37,8 +37,8 @@ TEST_CASE("predict_mines_field field between 1 and Clear") {
     using enum Prediction;
     auto const expected = Vector2d<Prediction>{
             Size{2, 3},  // clang-format off
-            {One ,   Safe, Empty,
-             Unsafe, Safe, Safe}};  // clang-format on
+            {One,          Safe, Empty,
+             DetectedMine, Safe, Safe}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 
@@ -50,9 +50,9 @@ TEST_CASE("predict_mines_field when not completely revealed") {
     using enum Prediction;
     auto const expected = Vector2d<Prediction>{
             Size{3, 3},  // clang-format off
-            {One,    One,  Empty,
-             Unsafe, Safe, Empty,
-             One,    One,  Empty}};  // clang-format on
+            {One,          One,  Empty,
+             DetectedMine, Safe, Empty,
+             One,          One,  Empty}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 
@@ -63,8 +63,8 @@ TEST_CASE("predict_mines_field when one cell can be excluded") {
     using enum Prediction;
     auto const expected = Vector2d<Prediction>{
             Size{2, 3},  // clang-format off
-            {Two,    Unsafe, One,
-             Unsafe, Unsafe, Safe}};  // clang-format on
+            {Two,          Unsafe, One,
+             DetectedMine, Unsafe, Safe}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 
@@ -76,9 +76,9 @@ TEST_CASE("predict_mines_field case") {
     using enum Prediction;
     auto const expected = Vector2d<Prediction>{
             Size{3, 3},  // clang-format off
-            {Two,    Safe,   One,
-             Unsafe, Unsafe, One,
-             Safe,   Two,    One}};  // clang-format on
+            {Two,          Safe,         One,
+             DetectedMine, DetectedMine, One,
+             Safe,         Two,          One}};  // clang-format on
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
 }
 

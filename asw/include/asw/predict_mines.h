@@ -20,7 +20,8 @@ enum class Prediction {
     Mine,
     Unknown,
     Safe,
-    Unsafe
+    Unsafe,
+    DetectedMine
 };
 
 Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field);
