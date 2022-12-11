@@ -3,7 +3,6 @@
 #include "MinesweeperScreen.h"
 #include "Tesseract.h"
 #include <gsl/narrow>
-#include <iostream>
 
 namespace stdex = std::experimental;
 
