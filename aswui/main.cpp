@@ -6,6 +6,7 @@
 #include <QSpinBox>
 #include <asw/InMemoryPlayingField.h>
 #include <asw/ScreenDetectionPlayingField.h>
+#include <asw/algorithm2d.h>
 #include <aswui/ConstCellSpanWidgetQt.h>
 #include <aswui/MinePredictionsWidgetQt.h>
 #include <gsl/narrow>
@@ -83,10 +84,29 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
     };
     auto const auto_solve = [&field, refresh] {
         auto const prediction = asw::predict_mines_field(field->cspan());
-        for (size_t row = 0; row < field->rows(); ++row) {
-            for (size_t column = 0; column < field->columns(); ++column) {
-                if (prediction(row, column) == asw::Prediction::Safe) {
-                    field->reveal({row, column});
+        auto safe_clicked = false;
+        asw::indexed_for_each(
+                prediction.cspan(),
+                [&safe_clicked, &field](
+                        asw::Position const& position,
+                        asw::Prediction const prediction) {
+                    if (prediction == asw::Prediction::Safe) {
+                        field->reveal(position);
+                        safe_clicked = true;
+                    }
+                });
+        if (not safe_clicked) {
+            auto break_out = false;
+            for (size_t row = 0; row < field->rows(); ++row) {
+                for (size_t column = 0; column < field->columns(); ++column) {
+                    if (prediction(row, column) == asw::Prediction::Unknown) {
+                        field->reveal({row, column});
+                        break_out = true;
+                        break;
+                    }
+                }
+                if (break_out) {
+                    break;
                 }
             }
         }
