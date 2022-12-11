@@ -3,6 +3,7 @@
 #include "MinesweeperScreen.h"
 #include "Tesseract.h"
 #include <gsl/narrow>
+#include <iostream>
 
 namespace stdex = std::experimental;
 
@@ -23,16 +24,10 @@ void detect(
     }
     auto const span = image->cspan();
     detection.set_image(
-            stdex::mdspan<
-                    unsigned char const,
-                    std::experimental::dextents<size_t, 2>>{
-                    reinterpret_cast<unsigned char const*>(span.data()),
-                    span.extent(0),
-                    span.extent(1)},
+            span,
             ImageInfo{
                     bytes_per_pixel,
-                    bytes_per_pixel *
-                            gsl::narrow_cast<int>(image->cspan().extent(0))});
+                    bytes_per_pixel * gsl::narrow_cast<int>(span.extent(0))});
     auto iterator = detection.get_iterator();
     if (iterator != nullptr) {
         do {

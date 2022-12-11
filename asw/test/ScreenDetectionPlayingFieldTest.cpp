@@ -31,7 +31,8 @@ class MockScreen final : public asw::IScreen {
   public:
     ~MockScreen() override = default;
 
-    [[nodiscard]] std::optional<asw::Vector2d<int>> grab() const override {
+    [[nodiscard]] std::optional<asw::Vector2d<unsigned char>>
+    grab() const override {
         return std::nullopt;
     }
 };
