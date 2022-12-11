@@ -49,9 +49,8 @@ class Tesseract::Impl final {
   public:
     Impl() {
         auto const init_success = api_.Init(
-                nullptr,  // Use working directory
-                nullptr   // Use "eng", corresponds to eng.traineddata
-        );
+                nullptr,  // Use working directory for looking up training data
+                "eng");
         if (init_success != 0) {
             throw std::runtime_error{"Failed to initialize Tesseract API"};
         }
