@@ -1,6 +1,8 @@
 #include <QApplication>
 #include <QComboBox>
 #include <QHBoxLayout>
+#include <QPushButton>
+#include <QShortcut>
 #include <QSpinBox>
 #include <asw/InMemoryPlayingField.h>
 #include <asw/ScreenDetectionPlayingField.h>
@@ -27,6 +29,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
     auto* const mines_widget = new QSpinBox{widget.get()};
     mines_widget->setValue(field->mine_count());
     mines_widget->setMinimum(1);
+    auto* const auto_solver_button = new QPushButton{u"Next"_qs, widget.get()};
     auto* const field_widget =
             new aswui::ConstCellSpanWidgetQt{field->cspan(), nullptr};
     auto* const predictions_widget = new aswui::MinePredictionsWidgetQt{
@@ -38,6 +41,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
     top_layout->addWidget(rows_widget);
     top_layout->addWidget(columns_widget);
     top_layout->addWidget(mines_widget);
+    top_layout->addWidget(auto_solver_button);
     auto* const lower_layout = new QHBoxLayout;
     main_layout->addLayout(lower_layout);
     lower_layout->addWidget(field_widget);
@@ -75,6 +79,19 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
         }
         refresh();
     };
+    auto const auto_solve = [&field, refresh] {
+        auto const prediction = asw::predict_mines_field(field->cspan());
+        for (size_t row = 0; row < field->rows(); ++row) {
+            for (size_t column = 0; column < field->columns(); ++column) {
+                if (prediction(row, column) == asw::Prediction::Safe) {
+                    field->reveal({row, column});
+                    refresh();
+                    return;
+                }
+            }
+        }
+    };
+    new QShortcut{QKeySequence{Qt::Key_Space}, widget.get(), auto_solve};
     QObject::connect(
             field_selection,
             &QComboBox::currentIndexChanged,
@@ -89,6 +106,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
             predictions_widget,
             &aswui::MinePredictionsWidgetQt::clicked,
             recalculate);
+    QObject::connect(auto_solver_button, &QPushButton::clicked, auto_solve);
     return widget;
 }
 
