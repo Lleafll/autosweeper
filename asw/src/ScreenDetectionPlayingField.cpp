@@ -10,7 +10,7 @@ namespace asw {
 
 namespace {
 
-constexpr int bytes_per_pixel = 4 * 3;
+constexpr int bytes_per_pixel = 4;
 
 void detect(
         ITesseract& detection,

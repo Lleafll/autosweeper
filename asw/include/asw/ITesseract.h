@@ -18,7 +18,7 @@ class ITesseractResultIterator {
     /**
      * Implies tesseract::PageIteratorLevel::RIL_SYMBOL
      */
-    [[nodiscard]] virtual std::vector<char> get_utf8_text() const = 0;
+    [[nodiscard]] virtual std::string get_utf8_text() const = 0;
 };
 
 struct ImageInfo {

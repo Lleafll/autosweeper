@@ -13,11 +13,12 @@ class MockTesseract final : public asw::ITesseract {
     void set_image(
             std::experimental::mdspan<
                     unsigned char const,
-                    std::experimental::dextents<size_t, 2>>,
+                    std::experimental::dextents<size_t, 2>> const&,
             asw::ImageInfo const&) override {
     }
 
-    void recognize() override {
+    bool recognize() override {
+        return true;
     }
 
     [[nodiscard]] std::unique_ptr<asw::ITesseractResultIterator>

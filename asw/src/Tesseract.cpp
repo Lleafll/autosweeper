@@ -30,11 +30,15 @@ class TesseractIterator final : public ITesseractResultIterator {
     }
 
     bool next() override {
-        return false;  // TODO: Implement
+        return iterator_->Next(tesseract::PageIteratorLevel::RIL_SYMBOL);
     }
 
-    [[nodiscard]] std::vector<char> get_utf8_text() const override {
-        return {};  // TODO: Implement
+    [[nodiscard]] std::string get_utf8_text() const override {
+        auto* chars = iterator_->GetUTF8Text(
+                tesseract::PageIteratorLevel::RIL_SYMBOL);
+        std::string string{chars};
+        delete[] chars;
+        return string;
     }
 
   private:
@@ -74,7 +78,7 @@ class Tesseract::Impl final {
     std::unique_ptr<ITesseractResultIterator> get_iterator() {
         auto* const iterator = api_.GetIterator();
         if (iterator == nullptr) {
-            return {};
+            return nullptr;
         }
         return std::make_unique<TesseractIterator>(iterator);
     }

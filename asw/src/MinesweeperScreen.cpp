@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRA_LEAN
 #include "MinesweeperScreen.h"
+#include <format>
 #include <gsl/narrow>
 #include <windows.h>
 
@@ -37,7 +38,7 @@ std::optional<Vector2d<int>> asw::MinesweeperScreen::grab() const {
     auto screen_grab = std::make_optional<Vector2d<int>>(
             Size{.rows = gsl::narrow_cast<size_t>(size.cx),
                  .columns = gsl::narrow_cast<size_t>(size.cy)});
-    GetDIBits(
+    auto const status = GetDIBits(
             hdc,
             hbmp,
             0,
@@ -45,6 +46,10 @@ std::optional<Vector2d<int>> asw::MinesweeperScreen::grab() const {
             static_cast<LPVOID>(screen_grab->data()),
             &bitmapinfo,
             DIB_RGB_COLORS);
+    if (status != 0) {
+        throw std::runtime_error{
+                std::format("GetDIBits return status: {}", status)};
+    }
     return screen_grab;
 }
 
