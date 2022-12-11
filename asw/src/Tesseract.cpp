@@ -7,6 +7,10 @@ namespace stdex = std::experimental;
 
 namespace asw {
 
+namespace {
+
+constexpr auto iterator_level = tesseract::PageIteratorLevel::RIL_SYMBOL;
+
 class TesseractIterator final : public ITesseractResultIterator {
   public:
     explicit TesseractIterator(tesseract::ResultIterator* const iterator)
@@ -30,13 +34,12 @@ class TesseractIterator final : public ITesseractResultIterator {
     }
 
     bool next() override {
-        return iterator_->Next(tesseract::PageIteratorLevel::RIL_SYMBOL);
+        return iterator_->Next(iterator_level);
     }
 
     [[nodiscard]] std::string get_utf8_text() const override {
-        auto* chars = iterator_->GetUTF8Text(
-                tesseract::PageIteratorLevel::RIL_SYMBOL);
-        std::string string{chars};
+        auto* chars = iterator_->GetUTF8Text(iterator_level);
+        std::string string{chars == nullptr ? "" : chars};
         delete[] chars;
         return string;
     }
@@ -44,6 +47,8 @@ class TesseractIterator final : public ITesseractResultIterator {
   private:
     tesseract::ResultIterator* iterator_ = nullptr;
 };
+
+}  // namespace
 
 class Tesseract::Impl final {
   public:
