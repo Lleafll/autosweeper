@@ -29,6 +29,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
     auto* const mines_widget = new QSpinBox{widget.get()};
     mines_widget->setValue(field->mine_count());
     mines_widget->setMinimum(1);
+    auto* const restart_button = new QPushButton{u"Restart"_qs, widget.get()};
     auto* const auto_solver_button = new QPushButton{u"Next"_qs, widget.get()};
     auto* const field_widget =
             new aswui::ConstCellSpanWidgetQt{field->cspan(), nullptr};
@@ -41,6 +42,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
     top_layout->addWidget(rows_widget);
     top_layout->addWidget(columns_widget);
     top_layout->addWidget(mines_widget);
+    top_layout->addWidget(restart_button);
     top_layout->addWidget(auto_solver_button);
     auto* const lower_layout = new QHBoxLayout;
     main_layout->addLayout(lower_layout);
@@ -105,6 +107,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
             predictions_widget,
             &aswui::MinePredictionsWidgetQt::clicked,
             recalculate);
+    QObject::connect(restart_button, &QPushButton::clicked, reinitialize_field);
     QObject::connect(auto_solver_button, &QPushButton::clicked, auto_solve);
     return widget;
 }
