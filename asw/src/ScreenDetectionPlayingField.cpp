@@ -24,13 +24,12 @@ void detect(
     auto const span = image->cspan();
     detection.set_image(
             span,
-            ImageInfo{
-                    bytes_per_pixel,
-                    bytes_per_pixel * gsl::narrow_cast<int>(span.extent(0))});
+            ImageInfo{bytes_per_pixel, gsl::narrow_cast<int>(span.extent(0))});
+    detection.recognize();
     auto iterator = detection.get_iterator();
     if (iterator != nullptr) {
         do {
-            std::puts(iterator->get_utf8_text().data());
+            std::puts(iterator->get_utf8_text().c_str());
         } while (iterator->next());
     }
 }
