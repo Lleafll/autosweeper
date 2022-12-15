@@ -70,7 +70,7 @@ TEST_CASE("Correctly displays mine field") {
     InMemoryPlayingField field{Array2d<MineCell, size.rows, size.columns>{
             // clang-format off
             Clear, Clear, Clear, Mined, Clear,
-            Clear, Clear, Clear, Mined, Mined,
+            Mined, Clear, Clear, Mined, Mined,
             Clear, Clear, Mined, Clear, Clear,
             Clear, Clear, Clear, Clear, Clear,
             Clear, Clear, Clear, Mined, Clear}.cspan()};  // clang-format on
@@ -80,17 +80,25 @@ TEST_CASE("Correctly displays mine field") {
     using enum Cell;
     Array2d<Cell, 5, 5> const expected{
             // clang-format off
-            Empty, Empty, Two,   Mine,  Three,
-            Empty, One,   Three, Mine,  Mine,
-            Empty, One,   Mine,  Three, Two,
-            Empty, One,   Two,   Two,   One,
-            Empty, Empty, One,   Mine,  One};  // clang-format on
+            One,    One,    Two,    Mine,   Hidden,
+            Hidden, Hidden, Hidden, Hidden, Hidden,
+            Hidden, Hidden, Hidden, Hidden, Hidden,
+            Hidden, Hidden, Hidden, Hidden, Hidden,
+            Hidden, Hidden, Hidden, Hidden, Hidden};  // clang-format on
     for (size_t row = 0; row < field.rows(); ++row) {
         for (size_t column = 0; column < field.columns(); ++column) {
             INFO(fmt::format("row: {}, column: {}", row, column));
             REQUIRE(field(row, column) == expected(row, column));
         }
     }
+}
+
+TEST_CASE("Reveal not possible when a mine is already revealed") {
+    using enum MineCell;
+    InMemoryPlayingField field{Array2d<MineCell, 1, 2>{Mined, Clear}.cspan()};
+    field.reveal({0, 0});
+    field.reveal({0, 1});
+    REQUIRE(field(0, 1) == Cell::Hidden);
 }
 
 }  // namespace

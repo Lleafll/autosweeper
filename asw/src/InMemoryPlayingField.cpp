@@ -93,9 +93,13 @@ Cell InMemoryPlayingField::operator()(size_t const row, size_t const column)
 }
 
 void InMemoryPlayingField::reveal(Position const& position) {
-    stdex::mdspan{hidden_.data(), rows_, columns_}(
-            position.row, position.column) =
-            cells()(position.row, position.column);
+    auto const mine_revealed =
+            std::ranges::find(hidden_, Cell::Mine) != hidden_.cend();
+    if (not mine_revealed) {
+        stdex::mdspan{hidden_.data(), rows_, columns_}(
+                position.row, position.column) =
+                cells()(position.row, position.column);
+    }
 }
 
 CellSpan InMemoryPlayingField::span() {
