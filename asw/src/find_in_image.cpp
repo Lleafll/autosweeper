@@ -35,7 +35,7 @@ Image load_sub_image(char const* const path) {
     Image image{{png.get_height(), png.get_width()}};
     for (size_t row = 0; row < png.get_height(); ++row) {
         for (size_t column = 0; column < png.get_width(); ++column) {
-            auto const& pixel = png.get_pixel(row, column);
+            auto const& pixel = png.get_pixel(column, row);
             image(row, column) = pixel.red;
             image(row + 1, column) = pixel.green;
             image(row + 2, column) = pixel.blue;
@@ -48,14 +48,14 @@ Image load_sub_image(char const* const path) {
 SubImages load_default_sub_images() {
     static auto const sub_images = []() -> SubImages {
         return {load_sub_image("minesweeperclassic/Empty.png"),
-                load_sub_image("minesweeperclassic/One.png"),
-                load_sub_image("minesweeperclassic/Two.png"),
-                load_sub_image("minesweeperclassic/Three.png"),
-                load_sub_image("minesweeperclassic/Four.png"),
-                load_sub_image("minesweeperclassic/Five.png"),
-                load_sub_image("minesweeperclassic/Six.png"),
-                load_sub_image("minesweeperclassic/Seven.png"),
-                load_sub_image("minesweeperclassic/Eight.png"),
+                load_sub_image("minesweeperclassic/1.png"),
+                load_sub_image("minesweeperclassic/2.png"),
+                load_sub_image("minesweeperclassic/3.png"),
+                load_sub_image("minesweeperclassic/4.png"),
+                load_sub_image("minesweeperclassic/5.png"),
+                load_sub_image("minesweeperclassic/6.png"),
+                load_sub_image("minesweeperclassic/7.png"),
+                load_sub_image("minesweeperclassic/8.png"),
                 load_sub_image("minesweeperclassic/Hidden.png"),
                 load_sub_image("minesweeperclassic/Mine.png")};
     }();
