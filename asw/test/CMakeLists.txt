@@ -8,8 +8,7 @@ add_executable(${PROJECT_NAME}
     FindInImageTest.cpp
     ImageMatchingPlayingFieldTest.cpp
     InMemoryPlayingFieldTest.cpp
-    PredictMinesTest.cpp
-    ScreenDetectionPlayingFieldTest.cpp)
+    PredictMinesTest.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ../include/asw ../src)
 if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX /permissive- /EHsc /utf-8)

@@ -8,8 +8,6 @@ add_library(${PROJECT_NAME} STATIC
     src/InMemoryPlayingField.cpp
     src/MinesweeperScreen.cpp
     src/predict_mines.cpp
-    src/ScreenDetectionPlayingField.cpp
-    src/Tesseract.cpp
     src/ImageMatchingPlayingField.cpp)
 target_include_directories(${PROJECT_NAME}
     PUBLIC include
@@ -22,9 +20,7 @@ endif ()
 
 find_package(Microsoft.GSL CONFIG REQUIRED)
 find_package(mdspan CONFIG REQUIRED)
-find_package(Tesseract CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC di_ptr Microsoft.GSL::GSL std::mdspan
-    PRIVATE Tesseract::libtesseract)
+    PUBLIC di_ptr Microsoft.GSL::GSL std::mdspan)
 
 add_subdirectory(test)
