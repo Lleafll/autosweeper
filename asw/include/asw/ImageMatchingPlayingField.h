@@ -4,16 +4,12 @@
 #include "PlayingField.h"
 #include <di/ptr.h>
 #include <optional>
+#include "Match.h"
 namespace asw {
 class IScreen;
 }  // namespace asw
 
 namespace asw {
-
-struct Match {
-    Position screen_position;
-    Cell const cell;
-};
 
 class ImageMatchingPlayingField final : public PlayingField {
   public:
