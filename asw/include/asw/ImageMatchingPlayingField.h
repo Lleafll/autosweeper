@@ -15,6 +15,11 @@ class ImageMatchingPlayingField final : public PlayingField {
   public:
     using Matcher = std::function<std::vector<Match>(ImageConstSpan const&)>;
 
+    /**
+     * @brief Constructs a field for Minesweeper Classic
+     */
+    ImageMatchingPlayingField();
+
     ImageMatchingPlayingField(
             di::ptr<IScreen> screen,
             Matcher matcher,

@@ -1,6 +1,8 @@
 #include "ImageMatchingPlayingField.h"
 #include "IScreen.h"
+#include "MinesweeperScreen.h"
 #include "algorithm2d.h"
+#include "find_in_image.h"
 #include <algorithm>
 #include <gsl/narrow>
 
@@ -50,6 +52,13 @@ Vector2d<Cell> matches_to_field(
 }
 
 }  // namespace
+
+ImageMatchingPlayingField::ImageMatchingPlayingField()
+    : ImageMatchingPlayingField{
+              di::make_owning<MinesweeperScreen>(),
+              Matcher{},
+              8} {
+}
 
 ImageMatchingPlayingField::ImageMatchingPlayingField(
         di::ptr<IScreen> screen,
