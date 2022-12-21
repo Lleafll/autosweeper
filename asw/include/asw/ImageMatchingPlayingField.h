@@ -1,21 +1,40 @@
 #pragma once
 
+#include "Image.h"
 #include "PlayingField.h"
-#include "Position.h"
+#include <di/ptr.h>
+#include <optional>
+namespace asw {
+class IScreen;
+}  // namespace asw
 
 namespace asw {
 
+struct Match {
+    Position screen_position;
+    Cell const cell;
+};
+
 class ImageMatchingPlayingField final : public PlayingField {
   public:
+    using Matcher = std::function<std::vector<Match>(ImageConstSpan const&)>;
+
+    ImageMatchingPlayingField(di::ptr<IScreen> screen, Matcher matcher);
+
     ~ImageMatchingPlayingField() override = default;
 
     [[nodiscard]] size_t rows() const override;
     [[nodiscard]] size_t columns() const override;
     [[nodiscard]] int mine_count() const override;
     Cell operator()(size_t row, size_t column) const override;
-    void reveal(Position& position) override;
+    void reveal(Position const& position) override;
     CellSpan span() override;
     [[nodiscard]] CellConstSpan cspan() const override;
+
+  private:
+    di::ptr<IScreen> screen_;
+    Matcher matcher_;
+    Vector2d<Cell> field_ = Vector2d<Cell>{{0, 0}, Cell::Hidden};
 };
 
 }  // namespace asw
