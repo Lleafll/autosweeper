@@ -47,7 +47,7 @@ std::optional<Vector2d<unsigned char>> asw::MinesweeperScreen::grab() const {
     Sleep(sleep_after_foreground_call_ms);
     auto* const bitmap = capture_fullscreen(hdcScreen, hdc, rc);
     auto const bitmap_cleanup = gsl::finally([&] { DeleteObject(bitmap); });
-    BITMAPINFO bitmap_info;
+    BITMAPINFO bitmap_info{0};
     bitmap_info.bmiHeader.biSize = sizeof(bitmap_info.bmiHeader);
     if (auto const status = GetDIBits(
                 hdc, bitmap, 0, 0, nullptr, &bitmap_info, DIB_RGB_COLORS);
