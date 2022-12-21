@@ -1,8 +1,7 @@
 #pragma once
 
-#include <experimental/mdspan>
+#include "Image.h"
 #include <memory>
-#include <vector>
 
 namespace asw {
 
@@ -34,11 +33,8 @@ class ITesseract {
   public:
     virtual ~ITesseract() = default;
 
-    virtual void set_image(
-            std::experimental::mdspan<
-                    unsigned char const,
-                    std::experimental::dextents<size_t, 2>> const& image,
-            ImageInfo const& info) = 0;
+    virtual void
+    set_image(ImageConstSpan const& image, ImageInfo const& info) = 0;
 
     virtual bool recognize() = 0;
 

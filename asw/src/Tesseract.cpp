@@ -62,11 +62,7 @@ class Tesseract::Impl final {
         api_.SetPageSegMode(tesseract::PSM_SINGLE_CHAR);
     }
 
-    void set_image(
-            stdex::mdspan<
-                    unsigned char const,
-                    stdex::dextents<size_t, 2>> const& image,
-            ImageInfo const& info) {
+    void set_image(ImageConstSpan const& image, ImageInfo const& info) {
         api_.SetImage(
                 image.data(),
                 gsl::narrow_cast<int>(image.extent(0)),
@@ -105,10 +101,7 @@ Tesseract::Tesseract() : impl_{std::make_unique<Impl>()} {
 
 Tesseract::~Tesseract() = default;
 
-void Tesseract::set_image(
-        stdex::mdspan<unsigned char const, stdex::dextents<size_t, 2>> const&
-                image,
-        ImageInfo const& info) {
+void Tesseract::set_image(ImageConstSpan const& image, ImageInfo const& info) {
     impl_->set_image(image, info);
 }
 

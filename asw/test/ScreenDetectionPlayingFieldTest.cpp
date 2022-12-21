@@ -10,11 +10,7 @@ class MockTesseract final : public asw::ITesseract {
   public:
     ~MockTesseract() override = default;
 
-    void set_image(
-            std::experimental::mdspan<
-                    unsigned char const,
-                    std::experimental::dextents<size_t, 2>> const&,
-            asw::ImageInfo const&) override {
+    void set_image(asw::ImageConstSpan const&, asw::ImageInfo const&) override {
     }
 
     bool recognize() override {
