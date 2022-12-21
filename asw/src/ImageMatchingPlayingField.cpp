@@ -76,10 +76,8 @@ int ImageMatchingPlayingField::mine_count() const {
     return 0;
 }
 
-Cell ImageMatchingPlayingField::operator()(
-        [[maybe_unused]] size_t row,
-        [[maybe_unused]] size_t column) const {
-    throw std::runtime_error{"NYI"};
+Cell ImageMatchingPlayingField::operator()(size_t row, size_t column) const {
+    return field_(row, column);
 }
 
 void ImageMatchingPlayingField::reveal(

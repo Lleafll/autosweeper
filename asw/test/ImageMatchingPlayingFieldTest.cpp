@@ -90,6 +90,11 @@ TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
                 Array2d<asw::Cell, 3, 1>{Cell::One, Cell::Two, Cell::Three}
                         .cspan()));
     }
+    SECTION("operator()") {
+        REQUIRE(field(0, 0) == Cell::One);
+        REQUIRE(field(0, 1) == Cell::Two);
+        REQUIRE(field(0, 2) == Cell::Three);
+    }
 }
 
 }  // namespace
