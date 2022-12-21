@@ -8,7 +8,8 @@ add_library(${PROJECT_NAME} STATIC
     src/MinesweeperScreen.cpp
     src/predict_mines.cpp
     src/ScreenDetectionPlayingField.cpp
-    src/Tesseract.cpp)
+    src/Tesseract.cpp
+    src/ImageMatchingPlayingField.cpp)
 target_include_directories(${PROJECT_NAME}
     PUBLIC include
     PRIVATE include/asw src)

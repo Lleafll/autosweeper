@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Cell.h"
-#include <cstdint>
+#include "Position.h"
 
 namespace asw {
 

@@ -5,6 +5,7 @@ project(aswtest)
 add_executable(${PROJECT_NAME}
     Algorithm2DTest.cpp
     CellTest.cpp
+    ImageMatchingPlayingFieldTest.cpp
     InMemoryPlayingFieldTest.cpp
     PredictMinesTest.cpp
     ScreenDetectionPlayingFieldTest.cpp)
