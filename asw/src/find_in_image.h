@@ -28,6 +28,11 @@ struct SubImages {
 
 class Matcher {
   public:
+    /**
+     * @brief Matches Minesweeper Classic with default subimages
+     */
+    Matcher();
+
     explicit Matcher(SubImages sub_images);
 
     std::vector<Match> operator()(ImageConstSpan const& image) const;

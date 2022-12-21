@@ -3,9 +3,9 @@
 #include "Position.h"
 #include "algorithm2d.h"
 #include <gsl/narrow>
+#include <png++/png.hpp>
 
 namespace stdex = std::experimental;
-namespace stdr = std::ranges;
 
 namespace asw {
 
@@ -26,6 +26,45 @@ find_in_image(ImageConstSpan const& image, ImageConstSpan const& sub_image) {
         }
     }
     return positions;
+}
+
+namespace {
+
+Image load_sub_image(char const* const path) {
+    png::image<png::rgba_pixel> const png{path};
+    Image image{{png.get_height(), png.get_width()}};
+    for (size_t row = 0; row < png.get_height(); ++row) {
+        for (size_t column = 0; column < png.get_width(); ++column) {
+            auto const& pixel = png.get_pixel(row, column);
+            image(row, column) = pixel.red;
+            image(row + 1, column) = pixel.green;
+            image(row + 2, column) = pixel.blue;
+            image(row + 3, column) = pixel.alpha;
+        }
+    }
+    return image;
+}
+
+SubImages load_default_sub_images() {
+    static auto const sub_images = []() -> SubImages {
+        return {load_sub_image("minesweeperclassic/Empty.png"),
+                load_sub_image("minesweeperclassic/One.png"),
+                load_sub_image("minesweeperclassic/Two.png"),
+                load_sub_image("minesweeperclassic/Three.png"),
+                load_sub_image("minesweeperclassic/Four.png"),
+                load_sub_image("minesweeperclassic/Five.png"),
+                load_sub_image("minesweeperclassic/Six.png"),
+                load_sub_image("minesweeperclassic/Seven.png"),
+                load_sub_image("minesweeperclassic/Eight.png"),
+                load_sub_image("minesweeperclassic/Hidden.png"),
+                load_sub_image("minesweeperclassic/Mine.png")};
+    }();
+    return sub_images;
+}
+
+}  // namespace
+
+Matcher::Matcher() : sub_images_{load_default_sub_images()} {
 }
 
 Matcher::Matcher(SubImages sub_images) : sub_images_{std::move(sub_images)} {
