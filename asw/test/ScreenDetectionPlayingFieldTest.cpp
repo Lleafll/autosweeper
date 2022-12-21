@@ -1,6 +1,6 @@
-#include "ScreenDetectionPlayingField.h"
 #include "IScreen.h"
 #include "ITesseract.h"
+#include "TextDetectionPlayingField.h"
 #include "algorithm2d.h"
 #include <catch.hpp>
 
@@ -40,7 +40,7 @@ class MockScreen final : public asw::IScreen {
 TEST_CASE("Returns empty detection when nothing could be detected") {
     MockTesseract tesseract;
     MockScreen screen;
-    asw::ScreenDetectionPlayingField const field{
+    asw::TextDetectionPlayingField const field{
             asw::Size{2, 2}, tesseract, screen};
     REQUIRE(
             equals(field.cspan(),

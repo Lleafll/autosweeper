@@ -10,22 +10,22 @@ class ITesseract;
 
 namespace asw {
 
-class ScreenDetectionPlayingField final : public PlayingField {
+class TextDetectionPlayingField final : public PlayingField {
   public:
-    explicit ScreenDetectionPlayingField(Size const& size);
-    ScreenDetectionPlayingField(
+    explicit TextDetectionPlayingField(Size const& size);
+    TextDetectionPlayingField(
             Size const& size,
             di::ptr<ITesseract> tesseract,
             di::ptr<IScreen> screen);
 
-    ~ScreenDetectionPlayingField() override;
-    ScreenDetectionPlayingField(ScreenDetectionPlayingField const&) = delete;
-    ScreenDetectionPlayingField(ScreenDetectionPlayingField&&) noexcept =
+    ~TextDetectionPlayingField() override;
+    TextDetectionPlayingField(TextDetectionPlayingField const&) = delete;
+    TextDetectionPlayingField(TextDetectionPlayingField&&) noexcept =
             default;
-    ScreenDetectionPlayingField&
-    operator=(ScreenDetectionPlayingField const&) = delete;
-    ScreenDetectionPlayingField&
-    operator=(ScreenDetectionPlayingField&&) noexcept = default;
+    TextDetectionPlayingField&
+    operator=(TextDetectionPlayingField const&) = delete;
+    TextDetectionPlayingField&
+    operator=(TextDetectionPlayingField&&) noexcept = default;
 
     [[nodiscard]] size_t rows() const override;
     [[nodiscard]] size_t columns() const override;

@@ -5,7 +5,7 @@
 #include <QShortcut>
 #include <QSpinBox>
 #include <asw/InMemoryPlayingField.h>
-#include <asw/ScreenDetectionPlayingField.h>
+#include <asw/TextDetectionPlayingField.h>
 #include <asw/algorithm2d.h>
 #include <aswui/ConstCellSpanWidgetQt.h>
 #include <aswui/MinePredictionsWidgetQt.h>
@@ -78,7 +78,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
             field = std::make_unique<asw::InMemoryPlayingField>(
                     asw::generate_random_mines(size, mines).cspan());
         } else {
-            field = std::make_unique<asw::ScreenDetectionPlayingField>(size);
+            field = std::make_unique<asw::TextDetectionPlayingField>(size);
         }
         refresh();
     };

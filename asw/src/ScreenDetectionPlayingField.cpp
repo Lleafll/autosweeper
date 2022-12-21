@@ -1,7 +1,7 @@
-#include "ScreenDetectionPlayingField.h"
 #include "ITesseract.h"
 #include "MinesweeperScreen.h"
 #include "Tesseract.h"
+#include "TextDetectionPlayingField.h"
 #include <gsl/narrow>
 
 namespace stdex = std::experimental;
@@ -36,14 +36,14 @@ void detect(
 
 }  // namespace
 
-ScreenDetectionPlayingField::ScreenDetectionPlayingField(Size const& size)
-    : ScreenDetectionPlayingField{
+TextDetectionPlayingField::TextDetectionPlayingField(Size const& size)
+    : TextDetectionPlayingField{
               size,
               di::make_owning<Tesseract>(),
               di::make_owning<MinesweeperScreen>()} {
 }
 
-ScreenDetectionPlayingField::ScreenDetectionPlayingField(
+TextDetectionPlayingField::TextDetectionPlayingField(
         Size const& size,
         di::ptr<ITesseract> tesseract,
         di::ptr<IScreen> screen)
@@ -55,36 +55,36 @@ ScreenDetectionPlayingField::ScreenDetectionPlayingField(
     detect(*tesseract_, *screen_, detected_cells_.span());
 }
 
-ScreenDetectionPlayingField::~ScreenDetectionPlayingField() = default;
+TextDetectionPlayingField::~TextDetectionPlayingField() = default;
 
-size_t ScreenDetectionPlayingField::rows() const {
+size_t TextDetectionPlayingField::rows() const {
     return rows_;
 }
 
-size_t ScreenDetectionPlayingField::columns() const {
+size_t TextDetectionPlayingField::columns() const {
     return columns_;
 }
 
-int ScreenDetectionPlayingField::mine_count() const {
+int TextDetectionPlayingField::mine_count() const {
     return 0;
 }
 
-Cell ScreenDetectionPlayingField::operator()(
+Cell TextDetectionPlayingField::operator()(
         [[maybe_unused]] size_t row,
         [[maybe_unused]] size_t column) const {
     throw std::runtime_error{"NYI"};
 }
 
-void ScreenDetectionPlayingField::reveal(
+void TextDetectionPlayingField::reveal(
         [[maybe_unused]] Position const& position) {
     throw std::runtime_error{"NYI"};
 }
 
-CellSpan ScreenDetectionPlayingField::span() {
+CellSpan TextDetectionPlayingField::span() {
     return stdex::mdspan{detected_cells_.data(), rows_, columns_};
 }
 
-ConstCellSpan ScreenDetectionPlayingField::cspan() const {
+ConstCellSpan TextDetectionPlayingField::cspan() const {
     return stdex::mdspan{detected_cells_.data(), rows_, columns_};
 }
 
