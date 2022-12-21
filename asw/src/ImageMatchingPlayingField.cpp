@@ -56,7 +56,7 @@ Vector2d<Cell> matches_to_field(
 ImageMatchingPlayingField::ImageMatchingPlayingField()
     : ImageMatchingPlayingField{
               di::make_owning<MinesweeperScreen>(),
-              Matcher{},
+              asw::Matcher{},
               8} {
 }
 
