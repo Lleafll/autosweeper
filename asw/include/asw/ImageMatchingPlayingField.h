@@ -19,7 +19,10 @@ class ImageMatchingPlayingField final : public PlayingField {
   public:
     using Matcher = std::function<std::vector<Match>(ImageConstSpan const&)>;
 
-    ImageMatchingPlayingField(di::ptr<IScreen> screen, Matcher matcher);
+    ImageMatchingPlayingField(
+            di::ptr<IScreen> screen,
+            Matcher matcher,
+            int distance_between_cells);
 
     ~ImageMatchingPlayingField() override = default;
 
