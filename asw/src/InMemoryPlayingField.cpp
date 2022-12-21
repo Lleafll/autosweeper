@@ -16,7 +16,7 @@ struct Proximity final {
     T subspan;
 };
 
-auto proximity(ConstMineCellSpan const& mines, Position const& position) {
+auto proximity(MineCellConstSpan const& mines, Position const& position) {
     auto const row = position.row;
     auto const column = position.column;
     auto const min_row = row == 0 ? 0 : row - 1;
@@ -32,7 +32,7 @@ auto proximity(ConstMineCellSpan const& mines, Position const& position) {
 }
 
 Cell calculate_proximity(
-        ConstMineCellSpan const& mines,
+        MineCellConstSpan const& mines,
         Position const& position) {
     if (mines(position.row, position.column) == MineCell::Mined) {
         return Cell::Mine;
@@ -54,7 +54,7 @@ Cell calculate_proximity(
     return static_cast<Cell>(count);
 }
 
-std::vector<Cell> calculate_cells(ConstMineCellSpan const& mines) {
+std::vector<Cell> calculate_cells(MineCellConstSpan const& mines) {
     auto const rows = mines.extent(0);
     auto const columns = mines.extent(1);
     std::vector<Cell> cells(rows * columns);
@@ -68,7 +68,7 @@ std::vector<Cell> calculate_cells(ConstMineCellSpan const& mines) {
 
 }  // namespace
 
-InMemoryPlayingField::InMemoryPlayingField(ConstMineCellSpan const& mines)
+InMemoryPlayingField::InMemoryPlayingField(MineCellConstSpan const& mines)
     : rows_{mines.extent(0)},
       columns_{mines.extent(1)},
       hidden_{rows_ * columns_, Cell::Hidden},
@@ -106,15 +106,15 @@ CellSpan InMemoryPlayingField::span() {
     return stdex::mdspan{hidden_.data(), rows_, columns_};
 }
 
-ConstCellSpan InMemoryPlayingField::cspan() const {
+CellConstSpan InMemoryPlayingField::cspan() const {
     return hidden();
 }
 
-ConstCellSpan InMemoryPlayingField::hidden() const {
+CellConstSpan InMemoryPlayingField::hidden() const {
     return stdex::mdspan{hidden_.data(), rows_, columns_};
 }
 
-ConstCellSpan InMemoryPlayingField::cells() const {
+CellConstSpan InMemoryPlayingField::cells() const {
     return stdex::mdspan{cells_.data(), rows_, columns_};
 }
 

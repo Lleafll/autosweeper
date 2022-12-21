@@ -65,7 +65,7 @@ intersect(MinePrediction const& lhs, MinePrediction const& rhs) {
 MinePrediction get_prediction(
         Position const& position,
         Cell const cell,
-        ConstCellSpan const& field) {
+        CellConstSpan const& field) {
     MinePrediction prediction{{}, static_cast<int>(cell)};
     auto const row = position.row;
     auto const column = position.column;
@@ -153,7 +153,7 @@ bool consolidate(std::list<MinePrediction>& predictions) {
     return predictions != original;
 }
 
-std::list<MinePrediction> predict_mines(ConstCellSpan const& field) {
+std::list<MinePrediction> predict_mines(CellConstSpan const& field) {
     std::list<MinePrediction> predictions;
     indexed_for_each(
             field, [&predictions, &field](Position const& i, Cell const cell) {
@@ -225,7 +225,7 @@ Prediction to_prediction(Cell const cell) {
 
 }  // namespace
 
-Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field) {
+Vector2d<Prediction> predict_mines_field(CellConstSpan const& field) {
     auto const predictions = predict_mines(field);
     Vector2d<Prediction> prediction_field{
             Size{.rows = field.extent(0), .columns = field.extent(1)}};

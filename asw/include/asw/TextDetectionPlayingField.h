@@ -33,7 +33,7 @@ class TextDetectionPlayingField final : public PlayingField {
     [[nodiscard]] Cell operator()(size_t row, size_t column) const override;
     void reveal(Position const& position) override;
     [[nodiscard]] CellSpan span() override;
-    [[nodiscard]] ConstCellSpan cspan() const override;
+    [[nodiscard]] CellConstSpan cspan() const override;
 
   private:
     size_t rows_;

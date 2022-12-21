@@ -9,7 +9,7 @@ namespace asw {
 
 class InMemoryPlayingField final : public PlayingField {
   public:
-    explicit InMemoryPlayingField(ConstMineCellSpan const& mines);
+    explicit InMemoryPlayingField(MineCellConstSpan const& mines);
 
     ~InMemoryPlayingField() override = default;
 
@@ -19,7 +19,7 @@ class InMemoryPlayingField final : public PlayingField {
     [[nodiscard]] Cell operator()(size_t row, size_t column) const override;
     void reveal(Position const& position) override;
     [[nodiscard]] CellSpan span() override;
-    [[nodiscard]] ConstCellSpan cspan() const override;
+    [[nodiscard]] CellConstSpan cspan() const override;
 
     bool operator==(InMemoryPlayingField const&) const = default;
 
@@ -29,8 +29,8 @@ class InMemoryPlayingField final : public PlayingField {
     std::vector<Cell> hidden_;
     std::vector<Cell> cells_;
 
-    [[nodiscard]] ConstCellSpan hidden() const;
-    [[nodiscard]] ConstCellSpan cells() const;
+    [[nodiscard]] CellConstSpan hidden() const;
+    [[nodiscard]] CellConstSpan cells() const;
 };
 
 }  // namespace asw

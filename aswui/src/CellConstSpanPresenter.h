@@ -6,26 +6,26 @@ class QString;
 
 namespace aswui {
 
-class ConstCellSpanView {
+class CellConstSpanView {
   public:
-    virtual ~ConstCellSpanView() = default;
+    virtual ~CellConstSpanView() = default;
 
   private:
     virtual void set_row_count(int rows) = 0;
     virtual void set_column_count(int columns) = 0;
     virtual void set_cell(int row, int column, QString const& text) = 0;
 
-    friend class ConstCellSpanPresenter;
+    friend class CellConstSpanPresenter;
 };
 
-class ConstCellSpanPresenter final {
+class CellConstSpanPresenter final {
   public:
-    explicit ConstCellSpanPresenter(ConstCellSpanView& view);
+    explicit CellConstSpanPresenter(CellConstSpanView& view);
 
-    void set(asw::ConstCellSpan const& cells);
+    void set(asw::CellConstSpan const& cells);
 
   private:
-    ConstCellSpanView& view_;
+    CellConstSpanView& view_;
 };
 
 }  // namespace aswui

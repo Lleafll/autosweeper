@@ -14,7 +14,7 @@ add_library(${PROJECT_NAME} STATIC
     src/MinePredictionsWidgetQt.cpp)
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 target_sources(${PROJECT_NAME} PRIVATE  # MOC headers
-    include/aswui/ConstCellSpanWidgetQt.h
+    include/aswui/CellConstSpanWidgetQt.h
     include/aswui/MinePredictionsWidgetQt.h
     src/CellsWidgetQt.h)
 target_include_directories(${PROJECT_NAME}

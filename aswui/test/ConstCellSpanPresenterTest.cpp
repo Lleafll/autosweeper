@@ -1,15 +1,15 @@
 #define CATCH_CONFIG_ENABLE_OPTIONAL_STRINGMAKER
-#include "ConstCellSpanPresenter.h"
+#include "CellConstSpanPresenter.h"
 #include "StringMaker.h"
 #include <QString>
 #include <catch.hpp>
 
-using aswui::ConstCellSpanPresenter;
-using aswui::ConstCellSpanView;
+using aswui::CellConstSpanPresenter;
+using aswui::CellConstSpanView;
 
 namespace {
 
-class MockConstCellSpanView final : public ConstCellSpanView {
+class MockConstCellSpanView final : public CellConstSpanView {
   public:
     ~MockConstCellSpanView() override = default;
 
@@ -36,7 +36,7 @@ TEST_CASE("ConstCellSpanPresenter") {
     static constexpr int rows = 12;
     static constexpr int columns = 34;
     MockConstCellSpanView view{};
-    ConstCellSpanPresenter presenter{view};
+    CellConstSpanPresenter presenter{view};
     SECTION("set() correctly sets up row and column count") {
         presenter.set(asw::Array2d<asw::Cell, rows, columns>{}.cspan());
         REQUIRE(view.set_row_count_call == rows);

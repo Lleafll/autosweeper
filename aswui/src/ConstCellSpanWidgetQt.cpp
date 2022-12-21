@@ -1,15 +1,15 @@
-#include "ConstCellSpanWidgetQt.h"
+#include "CellConstSpanPresenter.h"
+#include "CellConstSpanWidgetQt.h"
 #include "CellsWidgetQt.h"
-#include "ConstCellSpanPresenter.h"
 #include <QVBoxLayout>
 #include <gsl/narrow>
 #include <gsl/pointers>
 
 namespace aswui {
 
-class ConstCellSpanWidgetQt::Impl final : public ConstCellSpanView {
+class CellConstSpanWidgetQt::Impl final : public CellConstSpanView {
   public:
-    explicit Impl(ConstCellSpanWidgetQt& widget)
+    explicit Impl(CellConstSpanWidgetQt& widget)
         : presenter_{*this},
           table_{new CellsWidgetQt{&widget}} {
         auto* const layout = new QVBoxLayout{&widget};
@@ -18,17 +18,17 @@ class ConstCellSpanWidgetQt::Impl final : public ConstCellSpanView {
                 table_,
                 &QTableWidget::cellClicked,
                 &widget,
-                &ConstCellSpanWidgetQt::clicked);
+                &CellConstSpanWidgetQt::clicked);
     }
 
     ~Impl() override = default;
 
-    void set(asw::ConstCellSpan const& cells) {
+    void set(asw::CellConstSpan const& cells) {
         presenter_.set(cells);
     }
 
   private:
-    ConstCellSpanPresenter presenter_;
+    CellConstSpanPresenter presenter_;
     gsl::strict_not_null<CellsWidgetQt*> table_;
 
     void set_row_count(int const rows) override {
@@ -45,21 +45,21 @@ class ConstCellSpanWidgetQt::Impl final : public ConstCellSpanView {
     }
 };
 
-ConstCellSpanWidgetQt::ConstCellSpanWidgetQt(QWidget* const parent)
+CellConstSpanWidgetQt::CellConstSpanWidgetQt(QWidget* const parent)
     : QWidget{parent},
       impl_{std::make_unique<Impl>(*this)} {
 }
 
-ConstCellSpanWidgetQt::ConstCellSpanWidgetQt(
-        asw::ConstCellSpan const& cells,
+CellConstSpanWidgetQt::CellConstSpanWidgetQt(
+        asw::CellConstSpan const& cells,
         QWidget* const parent)
-    : ConstCellSpanWidgetQt{parent} {
+    : CellConstSpanWidgetQt{parent} {
     set(cells);
 }
 
-ConstCellSpanWidgetQt::~ConstCellSpanWidgetQt() = default;
+CellConstSpanWidgetQt::~CellConstSpanWidgetQt() = default;
 
-void ConstCellSpanWidgetQt::set(asw::ConstCellSpan const& cells) {
+void CellConstSpanWidgetQt::set(asw::CellConstSpan const& cells) {
     impl_->set(cells);
 }
 

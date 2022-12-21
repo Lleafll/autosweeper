@@ -24,7 +24,7 @@ enum class Prediction {
     DetectedMine
 };
 
-Vector2d<Prediction> predict_mines_field(ConstCellSpan const& field);
+Vector2d<Prediction> predict_mines_field(CellConstSpan const& field);
 
 template<size_t rows, size_t columns>
 using PredictionArray = Array2d<Prediction, rows, columns>;

@@ -84,7 +84,7 @@ CellSpan TextDetectionPlayingField::span() {
     return stdex::mdspan{detected_cells_.data(), rows_, columns_};
 }
 
-ConstCellSpan TextDetectionPlayingField::cspan() const {
+CellConstSpan TextDetectionPlayingField::cspan() const {
     return stdex::mdspan{detected_cells_.data(), rows_, columns_};
 }
 

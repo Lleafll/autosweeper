@@ -7,7 +7,7 @@
 #include <asw/InMemoryPlayingField.h>
 #include <asw/TextDetectionPlayingField.h>
 #include <asw/algorithm2d.h>
-#include <aswui/ConstCellSpanWidgetQt.h>
+#include <aswui/CellConstSpanWidgetQt.h>
 #include <aswui/MinePredictionsWidgetQt.h>
 #include <gsl/narrow>
 
@@ -33,7 +33,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
     auto* const restart_button = new QPushButton{u"Restart"_qs, widget.get()};
     auto* const auto_solver_button = new QPushButton{u"Next"_qs, widget.get()};
     auto* const field_widget =
-            new aswui::ConstCellSpanWidgetQt{field->cspan(), nullptr};
+            new aswui::CellConstSpanWidgetQt{field->cspan(), nullptr};
     auto* const predictions_widget = new aswui::MinePredictionsWidgetQt{
             asw::predict_mines_field(field->cspan()).cspan(), nullptr};
     auto* const main_layout = new QVBoxLayout{widget.get()};
@@ -122,7 +122,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
             columns_widget, &QSpinBox::valueChanged, reinitialize_field);
     QObject::connect(mines_widget, &QSpinBox::valueChanged, reinitialize_field);
     QObject::connect(
-            field_widget, &aswui::ConstCellSpanWidgetQt::clicked, recalculate);
+            field_widget, &aswui::CellConstSpanWidgetQt::clicked, recalculate);
     QObject::connect(
             predictions_widget,
             &aswui::MinePredictionsWidgetQt::clicked,
