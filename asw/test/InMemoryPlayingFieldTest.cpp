@@ -75,7 +75,7 @@ TEST_CASE("Correctly displays mine field") {
             Clear, Clear, Clear, Clear, Clear,
             Clear, Clear, Clear, Mined, Clear}.cspan()};  // clang-format on
     asw::indexed_for_each(
-            field.span(),
+            field.cspan(),
             [&field](Position const& i, Cell const) { field.reveal(i); });
     using enum Cell;
     Array2d<Cell, 5, 5> const expected{

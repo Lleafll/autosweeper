@@ -102,10 +102,6 @@ void InMemoryPlayingField::reveal(Position const& position) {
     }
 }
 
-CellSpan InMemoryPlayingField::span() {
-    return stdex::mdspan{hidden_.data(), rows_, columns_};
-}
-
 CellConstSpan InMemoryPlayingField::cspan() const {
     return hidden();
 }

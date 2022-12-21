@@ -32,7 +32,6 @@ class TextDetectionPlayingField final : public PlayingField {
     [[nodiscard]] int mine_count() const override;
     [[nodiscard]] Cell operator()(size_t row, size_t column) const override;
     void reveal(Position const& position) override;
-    [[nodiscard]] CellSpan span() override;
     [[nodiscard]] CellConstSpan cspan() const override;
 
   private:

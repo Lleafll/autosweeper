@@ -80,10 +80,6 @@ void TextDetectionPlayingField::reveal(
     throw std::runtime_error{"NYI"};
 }
 
-CellSpan TextDetectionPlayingField::span() {
-    return stdex::mdspan{detected_cells_.data(), rows_, columns_};
-}
-
 CellConstSpan TextDetectionPlayingField::cspan() const {
     return stdex::mdspan{detected_cells_.data(), rows_, columns_};
 }

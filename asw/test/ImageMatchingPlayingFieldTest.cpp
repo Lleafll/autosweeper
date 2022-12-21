@@ -78,12 +78,6 @@ TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
     SECTION("mine_count") {
         REQUIRE(field.mine_count() == 0);
     }
-    SECTION("span") {
-        REQUIRE(equals(
-                field.span(),
-                Array2d<asw::Cell, 3, 1>{Cell::One, Cell::Two, Cell::Three}
-                        .cspan()));
-    }
     SECTION("cspan") {
         REQUIRE(equals(
                 field.cspan(),

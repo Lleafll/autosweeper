@@ -31,7 +31,6 @@ class ImageMatchingPlayingField final : public PlayingField {
     [[nodiscard]] int mine_count() const override;
     Cell operator()(size_t row, size_t column) const override;
     void reveal(Position const& position) override;
-    CellSpan span() override;
     [[nodiscard]] CellConstSpan cspan() const override;
 
   private:

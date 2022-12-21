@@ -85,10 +85,6 @@ void ImageMatchingPlayingField::reveal(
     throw std::runtime_error{"NYI"};
 }
 
-CellSpan ImageMatchingPlayingField::span() {
-    return field_.span();
-}
-
 CellConstSpan ImageMatchingPlayingField::cspan() const {
     return field_.cspan();
 }
