@@ -16,13 +16,13 @@ struct Catch::StringMaker<asw::Cell> {
     }
 };
 
-namespace detail {
+template<>
+struct Catch::StringMaker<asw::Position> {
+    static std::string convert(asw::Position const position) {
+        return fmt::format("{},{}", position.row, position.column);
+    }
+};
 
-inline std::string position_to_string(asw::Position const& position) {
-    return fmt::format("{},{}", position.row, position.column);
-}
-
-}  // namespace detail
 
 namespace detail {
 

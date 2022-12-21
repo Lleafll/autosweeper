@@ -4,6 +4,7 @@ project(asw)
 
 add_library(${PROJECT_NAME} STATIC
     src/Cell.cpp
+    src/find_in_image.cpp
     src/InMemoryPlayingField.cpp
     src/MinesweeperScreen.cpp
     src/predict_mines.cpp
