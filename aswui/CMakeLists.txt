@@ -44,7 +44,7 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 get_target_property(ASW_SOURCE_DIR asw SOURCE_DIR)
 install(DIRECTORY ${ASW_SOURCE_DIR}/resources/minesweeperclassic
-    DESTINATION ${CMAKE_INSTALL_BINDIR}/minesweeperclassic)
+    DESTINATION ${CMAKE_INSTALL_BINDIR})
 if (WIN32)
     qt_generate_deploy_app_script(
         TARGET ${PROJECT_NAME}
