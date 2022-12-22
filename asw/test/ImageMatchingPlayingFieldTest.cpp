@@ -59,7 +59,7 @@ TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
     Image const image{{2, 1}, {{0, 1, 2}, {3, 4, 5}}};
     MockScreen screen_{image};
     std::optional<Image> matcher_call;
-    ImageMatchingPlayingField field{
+    ImageMatchingPlayingField const field{
             screen_,
             MockMatcher{
                     matcher_call,
@@ -93,7 +93,8 @@ TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
 TEST_CASE("ImageMatchingPlayingField when there are not matches") {
     MockScreen screen_{Image{}};
     std::optional<Image> matcher_call;
-    ImageMatchingPlayingField field{screen_, MockMatcher{matcher_call, {}}, 1};
+    ImageMatchingPlayingField const field{
+            screen_, MockMatcher{matcher_call, {}}, 1};
     REQUIRE(field.rows() == 0);
     REQUIRE(field.columns() == 0);
 }
