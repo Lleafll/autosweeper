@@ -1,13 +1,11 @@
 #pragma once
 
+#include "IScreen.h"
 #include "Image.h"
+#include "Match.h"
 #include "PlayingField.h"
 #include <di/ptr.h>
 #include <optional>
-#include "Match.h"
-namespace asw {
-class IScreen;
-}  // namespace asw
 
 namespace asw {
 
