@@ -14,6 +14,8 @@ class Vector2d final {
     using ConstSpan = std::experimental::
             mdspan<T const, std::experimental::dextents<size_t, 2>>;
 
+    Vector2d() = default;
+
     explicit Vector2d(Size const& size, T const& fill = T{})
         : rows_{size.rows},
           columns_{size.columns},
@@ -55,8 +57,8 @@ class Vector2d final {
     bool operator==(Vector2d const&) const = default;
 
   private:
-    size_t rows_;
-    size_t columns_;
+    size_t rows_ = 0;
+    size_t columns_ = 0;
     std::vector<T> buffer_ = {};
 };
 
