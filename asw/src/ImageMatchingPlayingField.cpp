@@ -31,7 +31,7 @@ Bounds find_bounds(std::span<Match const> const matches) {
     return {row(*bottom), column(*left), row(*top), column(*right)};
 }
 
-Vector2d<Cell> matches_to_field(
+std::tuple<Vector2d<Cell>, Position> matches_to_field(
         std::span<Match const> const matches,
         int const distance_between_cells) {
     auto const [bottom, left, top, right] = find_bounds(matches);
@@ -48,7 +48,8 @@ Vector2d<Cell> matches_to_field(
         field(to_row(match.screen_position.row),
               to_column(match.screen_position.column)) = match.cell;
     }
-    return field;
+    return std::make_tuple<Vector2d<Cell>, Position>(
+            std::move(field), {bottom, left});
 }
 
 }  // namespace
@@ -65,7 +66,8 @@ ImageMatchingPlayingField::ImageMatchingPlayingField(
         Matcher matcher,
         int const distance_between_cells)
     : screen_{std::move(screen)},
-      matcher_{std::move(matcher)} {
+      matcher_{std::move(matcher)},
+      distance_between_cells_{distance_between_cells} {
     auto const grab = screen_->grab();
     if (not grab.has_value()) {
         return;
@@ -74,7 +76,8 @@ ImageMatchingPlayingField::ImageMatchingPlayingField(
     if (matches.empty()) {
         return;
     }
-    field_ = matches_to_field(matches, distance_between_cells);
+    std::tie(field_, bottom_left_) =
+            matches_to_field(matches, distance_between_cells);
 }
 
 size_t ImageMatchingPlayingField::rows() const {
@@ -93,9 +96,10 @@ Cell ImageMatchingPlayingField::operator()(size_t row, size_t column) const {
     return field_(row, column);
 }
 
-void ImageMatchingPlayingField::reveal(
-        [[maybe_unused]] Position const& position) {
-    throw std::runtime_error{"NYI"};
+void ImageMatchingPlayingField::reveal(Position const& position) {
+    screen_->click(
+            {bottom_left_.column + position.column * distance_between_cells_,
+             bottom_left_.row + position.row * distance_between_cells_});
 }
 
 CellConstSpan ImageMatchingPlayingField::cspan() const {

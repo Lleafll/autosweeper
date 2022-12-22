@@ -39,6 +39,8 @@ class ImageMatchingPlayingField final : public PlayingField {
     di::ptr<IScreen> screen_;
     Matcher matcher_;
     Vector2d<Cell> field_ = Vector2d<Cell>{{0, 0}, Cell::Hidden};
+    int distance_between_cells_;
+    Position bottom_left_ = {0, 0};
 };
 
 }  // namespace asw

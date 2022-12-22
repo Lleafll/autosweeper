@@ -3,6 +3,7 @@
 #include "IScreen.h"
 #include "Image.h"
 #include "Logger.h"
+#include "Position.h"
 #include <di/ptr.h>
 
 namespace asw {
@@ -13,7 +14,7 @@ class MinesweeperScreen final : public IScreen {
 
     ~MinesweeperScreen() override = default;
 
-    [[nodiscard]] std::optional<Image> grab() const override;
+    [[nodiscard]] std::optional<Image> grab() override;
     void click(Position const& position) override;
 
   private:

@@ -12,7 +12,7 @@ class IScreen {
   public:
     virtual ~IScreen() = default;
 
-    [[nodiscard]] virtual std::optional<Image> grab() const = 0;
+    [[nodiscard]] virtual std::optional<Image> grab() = 0;
 
     /**
      * @param position Left-click position relative to image

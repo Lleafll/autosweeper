@@ -1,3 +1,4 @@
+#define CATCH_CONFIG_ENABLE_OPTIONAL_STRINGMAKER
 #include "ImageMatchingPlayingField.h"
 #include "IScreen.h"
 #include "algorithm2d.h"
@@ -9,18 +10,21 @@ namespace {
 
 class MockScreen final : public IScreen {
   public:
+    std::optional<Position> click_call = std::nullopt;
+
     MockScreen() = default;
+
     explicit MockScreen(Image image) : image_{std::move(image)} {
     }
 
     ~MockScreen() override = default;
 
-    [[nodiscard]] std::optional<Image> grab() const override {
+    [[nodiscard]] std::optional<Image> grab() override {
         return image_;
     }
 
-    void click(Position const&) override {
-        // NOOP
+    void click(Position const& position) override {
+        click_call = position;
     }
 
   private:
@@ -101,6 +105,25 @@ TEST_CASE("ImageMatchingPlayingField when there are not matches") {
             screen_, MockMatcher{matcher_call, {}}, 1};
     REQUIRE(field.rows() == 0);
     REQUIRE(field.columns() == 0);
+}
+
+TEST_CASE("reveal") {
+    MockScreen screen_{Image{}};
+    std::optional<Image> matcher_call;
+    ImageMatchingPlayingField field{
+            screen_,
+            MockMatcher{
+                    matcher_call,
+                    {{{2, 2}, Cell::One},
+                     {{6, 2}, Cell::Two},
+                     {{10, 2}, Cell::Three}}},
+            4};
+    field.reveal({0, 0});
+    REQUIRE(screen_.click_call == Position{2, 2});
+    field.reveal({0, 1});
+    REQUIRE(screen_.click_call == Position{6, 2});
+    field.reveal({0, 2});
+    REQUIRE(screen_.click_call == Position{10, 2});
 }
 
 }  // namespace

@@ -43,7 +43,7 @@ HBITMAP capture_fullscreen(HDC hdcScreen, HDC hdc, RECT const& rc) {
 
 }  // namespace
 
-std::optional<Image> asw::MinesweeperScreen::grab() const {
+std::optional<Image> asw::MinesweeperScreen::grab() {
     auto* const hwnd = FindWindow(nullptr, "Minesweeper Classic");
     if (hwnd == nullptr) {
         return std::nullopt;
@@ -102,8 +102,52 @@ std::optional<Image> asw::MinesweeperScreen::grab() const {
     return screen_grab;
 }
 
-void MinesweeperScreen::click([[maybe_unused]] Position const& position) {
-    throw std::runtime_error{"NYI"};
+void MinesweeperScreen::click(Position const& position) {
+    auto* const hwnd = FindWindow(nullptr, "Minesweeper Classic");
+    if (hwnd == nullptr) {
+        return;
+    }
+    RECT rc{};
+    GetWindowRect(hwnd, &rc);
+    POINT cursor_start_position;
+    if (GetCursorPos(&cursor_start_position) == 0) {
+        throw std::runtime_error(std::to_string(GetLastError()));
+    }
+    auto const scale_to_point =
+            [nScreenWidth = GetSystemMetrics(SM_CXVIRTUALSCREEN),
+             nScreenHeight = GetSystemMetrics(SM_CYVIRTUALSCREEN),
+             nScreenLeft = GetSystemMetrics(SM_XVIRTUALSCREEN),
+             nScreenTop = GetSystemMetrics(SM_YVIRTUALSCREEN)](
+                    POINT const& point) -> POINT {
+        int const nX = static_cast<int>(
+                ((static_cast<double>(point.x) - nScreenLeft) * 65536) /
+                        nScreenWidth +
+                65536.0 / (nScreenWidth));
+        int const nY = static_cast<int>(
+                ((static_cast<double>(point.y) - nScreenTop) * 65536) /
+                        nScreenHeight +
+                65536.0 / (nScreenHeight));
+        return {nX, nY};
+    };
+    auto const click_point = scale_to_point(
+            {rc.left + gsl::narrow_cast<long>(position.row) + 1,
+             rc.top + gsl::narrow_cast<long>(position.column) + 1});
+    auto const return_point = scale_to_point(cursor_start_position);
+    std::array<INPUT, 4> mi{};
+    mi[0].type = INPUT_MOUSE;
+    mi[0].mi.dx = click_point.x;
+    mi[0].mi.dy = click_point.y;
+    mi[0].mi.dwFlags =
+            MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_MOVE;
+    mi[1].mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK |
+                       MOUSEEVENTF_LEFTDOWN;
+    mi[2].mi.dwFlags =
+            MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_LEFTUP;
+    mi[3].mi.dwFlags =
+            MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_MOVE;
+    mi[3].mi.dx = return_point.x;
+    mi[3].mi.dy = return_point.y;
+    SendInput(gsl::narrow_cast<UINT>(mi.size()), mi.data(), sizeof(mi[0]));
 }
 
 }  // namespace asw
