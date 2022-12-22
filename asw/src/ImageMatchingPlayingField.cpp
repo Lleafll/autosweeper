@@ -55,7 +55,7 @@ Vector2d<Cell> matches_to_field(
 
 ImageMatchingPlayingField::ImageMatchingPlayingField(Logger& logger)
     : ImageMatchingPlayingField{
-              di::make_owning<MinesweeperScreen>(),
+              di::make_owning<MinesweeperScreen>(logger),
               asw::Matcher{logger},
               8} {
 }
