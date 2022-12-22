@@ -14,14 +14,14 @@ QPixmap to_pixmap(asw::Image const& image) {
     QImage qimage{
             gsl::narrow_cast<int>(columns),
             gsl::narrow_cast<int>(rows),
-            QImage::Format_RGB32};
+            QImage::Format_RGB888};
     asw::indexed_for_each(
             image.cspan(),
             [&qimage](asw::Position const& position, asw::Color const& color) {
                 qimage.setPixelColor(
                         gsl::narrow_cast<int>(position.column),
                         gsl::narrow_cast<int>(position.row),
-                        {color.red, color.green, color.green});
+                        {color.red, color.green, color.blue});
             });
     return QPixmap::fromImage(qimage);
 }
