@@ -34,6 +34,7 @@ class ImageMatchingPlayingField final : public PlayingField {
     Cell operator()(size_t row, size_t column) const override;
     void reveal(Position const& position) override;
     [[nodiscard]] CellConstSpan cspan() const override;
+    void update() override;
 
   private:
     di::ptr<IScreen> screen_;

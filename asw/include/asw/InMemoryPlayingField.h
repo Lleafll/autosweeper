@@ -21,6 +21,7 @@ class InMemoryPlayingField final : public PlayingField {
     [[nodiscard]] CellConstSpan cspan() const override;
 
     bool operator==(InMemoryPlayingField const&) const = default;
+    void update() override;
 
   private:
     size_t rows_;

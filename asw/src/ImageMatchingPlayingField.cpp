@@ -68,16 +68,7 @@ ImageMatchingPlayingField::ImageMatchingPlayingField(
     : screen_{std::move(screen)},
       matcher_{std::move(matcher)},
       distance_between_cells_{distance_between_cells} {
-    auto const grab = screen_->grab();
-    if (not grab.has_value()) {
-        return;
-    }
-    auto const matches = matcher_(grab->cspan());
-    if (matches.empty()) {
-        return;
-    }
-    std::tie(field_, bottom_left_) =
-            matches_to_field(matches, distance_between_cells);
+    update();
 }
 
 size_t ImageMatchingPlayingField::rows() const {
@@ -104,6 +95,19 @@ void ImageMatchingPlayingField::reveal(Position const& position) {
 
 CellConstSpan ImageMatchingPlayingField::cspan() const {
     return field_.cspan();
+}
+
+void ImageMatchingPlayingField::update() {
+    auto const grab = screen_->grab();
+    if (not grab.has_value()) {
+        return;
+    }
+    auto const matches = matcher_(grab->cspan());
+    if (matches.empty()) {
+        return;
+    }
+    std::tie(field_, bottom_left_) =
+            matches_to_field(matches, distance_between_cells_);
 }
 
 }  // namespace asw

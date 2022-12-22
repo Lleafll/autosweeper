@@ -114,4 +114,8 @@ CellConstSpan InMemoryPlayingField::cells() const {
     return stdex::mdspan{cells_.data(), rows_, columns_};
 }
 
+void InMemoryPlayingField::update() {
+    // NOOP
+}
+
 }  // namespace asw

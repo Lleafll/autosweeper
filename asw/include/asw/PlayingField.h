@@ -15,6 +15,7 @@ class PlayingField {
     [[nodiscard]] virtual Cell operator()(size_t row, size_t column) const = 0;
     virtual void reveal(Position const& position) = 0;
     [[nodiscard]] virtual CellConstSpan cspan() const = 0;
+    virtual void update() = 0;
 
     bool operator==(PlayingField const&) const = default;
 };

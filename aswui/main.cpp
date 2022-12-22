@@ -52,6 +52,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field, asw::Logger& logger) {
     lower_layout->addWidget(field_widget);
     lower_layout->addWidget(predictions_widget);
     auto const refresh = [&field, field_widget, predictions_widget]() {
+        field->update();
         field_widget->set(field->cspan());
         predictions_widget->set(
                 asw::predict_mines_field(field->cspan()).cspan());
