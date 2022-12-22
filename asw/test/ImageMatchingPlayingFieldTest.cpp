@@ -28,10 +28,9 @@ struct MockMatcher final {
     std::vector<Match> match = {};
 
     std::vector<Match> operator()(ImageConstSpan const& image) const {
-        call =
-                Image{Size{image.extent(0), image.extent(1)},
-                      std::vector<unsigned char>{
-                              image.data(), image.data() + image.size()}};
+        call = Image{
+                Size{image.extent(0), image.extent(1)},
+                std::vector<Color>{image.data(), image.data() + image.size()}};
         return match;
     }
 };
@@ -57,7 +56,7 @@ TEST_CASE("ImageMatchingPlayingField when no image can be detected") {
 }
 
 TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
-    Image const image{{2, 4}, {0, 1, 2, 3, 4, 5, 6, 7, 8}};
+    Image const image{{2, 1}, {{0, 1, 2}, {3, 4, 5}}};
     MockScreen screen_{image};
     std::optional<Image> matcher_call;
     ImageMatchingPlayingField field{

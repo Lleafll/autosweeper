@@ -13,7 +13,7 @@ std::vector<Position>
 find_in_image(ImageConstSpan const& image, ImageConstSpan const& sub_image) {
     std::vector<Position> positions;
     for (auto row = 0; row < image.extent(0); ++row) {
-        for (auto column = 0; column < image.extent(1); column += 4) {
+        for (auto column = 0; column < image.extent(1); ++column) {
             if (equals(stdex::submdspan(
                                image,
                                std::pair{row, row + sub_image.extent(0)},
@@ -36,10 +36,7 @@ Image load_sub_image(char const* const path) {
     for (size_t row = 0; row < png.get_height(); ++row) {
         for (size_t column = 0; column < png.get_width(); ++column) {
             auto const& pixel = png.get_pixel(column, row);
-            image(row, column) = pixel.red;
-            image(row + 1, column) = pixel.green;
-            image(row + 2, column) = pixel.blue;
-            image(row + 3, column) = pixel.alpha;
+            image(row, column) = {pixel.red, pixel.green, pixel.blue};
         }
     }
     return image;

@@ -6,6 +6,8 @@
 #include <gsl/util>
 #include <windows.h>
 
+namespace stdr = std::ranges;
+
 namespace asw {
 
 namespace {
@@ -31,7 +33,7 @@ HBITMAP capture_fullscreen(HDC hdcScreen, HDC hdc, RECT const& rc) {
 
 }  // namespace
 
-std::optional<Vector2d<unsigned char>> asw::MinesweeperScreen::grab() const {
+std::optional<Image> asw::MinesweeperScreen::grab() const {
     auto* const hwnd = FindWindow(nullptr, "Minesweeper Classic");
     if (hwnd == nullptr) {
         return std::nullopt;
@@ -59,22 +61,28 @@ std::optional<Vector2d<unsigned char>> asw::MinesweeperScreen::grab() const {
     bitmap_info.bmiHeader.biCompression = BI_RGB;
     // correct the bottom-up ordering of lines
     bitmap_info.bmiHeader.biHeight = std::abs(bitmap_info.bmiHeader.biHeight);
-    auto screen_grab = std::make_optional<Vector2d<unsigned char>>(Size{
-            .rows = gsl::narrow_cast<size_t>(bitmap_info.bmiHeader.biHeight),
-            .columns = gsl::narrow_cast<size_t>(bitmap_info.bmiHeader.biWidth) *
-                       4});
+    std::vector<RGBQUAD> buffer(gsl::narrow_cast<size_t>(
+            bitmap_info.bmiHeader.biHeight * bitmap_info.bmiHeader.biWidth));
     auto const status = GetDIBits(
             hdc,
             bitmap,
             0,
             bitmap_info.bmiHeader.biHeight,
-            static_cast<LPVOID>(screen_grab->data()),
+            static_cast<LPVOID>(buffer.data()),
             &bitmap_info,
             DIB_RGB_COLORS);
     if (status == 0) {
         throw std::runtime_error{
                 std::format("GetDIBits return status: {}", status)};
     }
+    auto screen_grab = std::make_optional<Image>(Size{
+            .rows = gsl::narrow_cast<size_t>(bitmap_info.bmiHeader.biHeight),
+            .columns = gsl::narrow_cast<size_t>(bitmap_info.bmiHeader.biWidth) *
+                       4});
+    stdr::transform(
+            buffer, screen_grab->data(), [](RGBQUAD const& quad) -> Color {
+                return {quad.rgbRed, quad.rgbBlue, quad.rgbGreen};
+            });
     return screen_grab;
 }
 
