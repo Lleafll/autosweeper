@@ -19,6 +19,10 @@ class MockScreen final : public IScreen {
         return image_;
     }
 
+    void click(Position const&) override {
+        // NOOP
+    }
+
   private:
     std::optional<Image> image_ = std::nullopt;
 };

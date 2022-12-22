@@ -102,4 +102,8 @@ std::optional<Image> asw::MinesweeperScreen::grab() const {
     return screen_grab;
 }
 
+void MinesweeperScreen::click([[maybe_unused]] Position const& position) {
+    throw std::runtime_error{"NYI"};
+}
+
 }  // namespace asw

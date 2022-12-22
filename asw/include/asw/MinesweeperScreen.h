@@ -14,6 +14,7 @@ class MinesweeperScreen final : public IScreen {
     ~MinesweeperScreen() override = default;
 
     [[nodiscard]] std::optional<Image> grab() const override;
+    void click(Position const& position) override;
 
   private:
     di::ptr<Logger> logger_;
