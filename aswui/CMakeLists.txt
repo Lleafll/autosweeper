@@ -10,12 +10,14 @@ add_library(${PROJECT_NAME} STATIC
     src/CellsWidgetQt.cpp
     src/ConstCellSpanPresenter.cpp
     src/ConstCellSpanWidgetQt.cpp
+    src/LoggerWidgetQt.cpp
     src/MinePredictionsPresenter.cpp
     src/MinePredictionsWidgetQt.cpp)
 set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
 target_sources(${PROJECT_NAME} PRIVATE  # MOC headers
     include/aswui/CellConstSpanWidgetQt.h
     include/aswui/MinePredictionsWidgetQt.h
+    include/aswui/LoggerWidgetQt.h
     src/CellsWidgetQt.h)
 target_include_directories(${PROJECT_NAME}
     PUBLIC include

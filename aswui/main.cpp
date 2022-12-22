@@ -6,8 +6,10 @@
 #include <QSpinBox>
 #include <asw/ImageMatchingPlayingField.h>
 #include <asw/InMemoryPlayingField.h>
+#include <asw/Logger.h>
 #include <asw/algorithm2d.h>
 #include <aswui/CellConstSpanWidgetQt.h>
+#include <aswui/LoggerWidgetQt.h>
 #include <aswui/MinePredictionsWidgetQt.h>
 #include <gsl/narrow>
 
@@ -17,7 +19,7 @@ constexpr asw::Size field_size{5, 5};
 constexpr int mine_count = 5;
 
 gsl::not_null<std::unique_ptr<QWidget>>
-build_widget(std::unique_ptr<asw::PlayingField>& field) {
+build_widget(std::unique_ptr<asw::PlayingField>& field, asw::Logger& logger) {
     auto widget = std::make_unique<QWidget>();
     auto* const field_selection = new QComboBox{widget.get()};
     field_selection->addItems({u"InMemory"_qs, u"Desktop"_qs});
@@ -62,6 +64,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
         refresh();
     };
     auto const reinitialize_field = [&field,
+                                     &logger,
                                      field_selection,
                                      rows_widget,
                                      columns_widget,
@@ -78,7 +81,7 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
             field = std::make_unique<asw::InMemoryPlayingField>(
                     asw::generate_random_mines(size, mines).cspan());
         } else {
-            field = std::make_unique<asw::ImageMatchingPlayingField>();
+            field = std::make_unique<asw::ImageMatchingPlayingField>(logger);
         }
         refresh();
     };
@@ -135,11 +138,14 @@ build_widget(std::unique_ptr<asw::PlayingField>& field) {
 }  // namespace
 
 int main(int argc, char** argv) {
+    QApplication const application{argc, argv};
+    aswui::LoggerWidgetQt logger{};
+    logger.setWindowFlag(Qt::Window);
+    logger.show();
     std::unique_ptr<asw::PlayingField> field =
             std::make_unique<asw::InMemoryPlayingField>(
                     asw::generate_random_mines(field_size, mine_count).cspan());
-    QApplication const application{argc, argv};
-    auto main_widget = build_widget(field);
+    auto main_widget = build_widget(field, logger);
     main_widget->show();
     return QApplication::exec();
 }

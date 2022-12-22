@@ -3,6 +3,7 @@
 #include "Image.h"
 #include <vector>
 namespace asw {
+class Logger;
 struct Match;
 struct Position;
 }  // namespace asw
@@ -31,7 +32,7 @@ class Matcher {
     /**
      * @brief Matches Minesweeper Classic with default subimages
      */
-    Matcher();
+    explicit Matcher(Logger& logger);
 
     explicit Matcher(SubImages sub_images);
 

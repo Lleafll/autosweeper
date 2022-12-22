@@ -1,4 +1,5 @@
 #include "find_in_image.h"
+#include "Logger.h"
 #include "Match.h"
 #include "Position.h"
 #include "algorithm2d.h"
@@ -35,7 +36,7 @@ find_in_image(ImageConstSpan const& image, ImageConstSpan const& sub_image) {
 
 namespace {
 
-Image load_sub_image(char const* const path) {
+Image load_sub_image(char const* const path, Logger& logger) {
     png::image<png::rgba_pixel> const png{path};
     Image image{{png.get_height(), png.get_width()}};
     for (size_t row = 0; row < png.get_height(); ++row) {
@@ -44,29 +45,31 @@ Image load_sub_image(char const* const path) {
             image(row, column) = {pixel.red, pixel.green, pixel.blue};
         }
     }
+    logger.log_image(path, image);
     return image;
 }
 
-SubImages load_default_sub_images() {
-    static auto const sub_images = []() -> SubImages {
-        return {load_sub_image("minesweeperclassic/Empty.png"),
-                load_sub_image("minesweeperclassic/1.png"),
-                load_sub_image("minesweeperclassic/2.png"),
-                load_sub_image("minesweeperclassic/3.png"),
-                load_sub_image("minesweeperclassic/4.png"),
-                load_sub_image("minesweeperclassic/5.png"),
-                load_sub_image("minesweeperclassic/6.png"),
-                load_sub_image("minesweeperclassic/7.png"),
-                load_sub_image("minesweeperclassic/8.png"),
-                load_sub_image("minesweeperclassic/Hidden.png"),
-                load_sub_image("minesweeperclassic/Mine.png")};
+SubImages load_default_sub_images(Logger& logger) {
+    static auto const sub_images = [&logger]() -> SubImages {
+        return {load_sub_image("minesweeperclassic/Empty.png", logger),
+                load_sub_image("minesweeperclassic/1.png", logger),
+                load_sub_image("minesweeperclassic/2.png", logger),
+                load_sub_image("minesweeperclassic/3.png", logger),
+                load_sub_image("minesweeperclassic/4.png", logger),
+                load_sub_image("minesweeperclassic/5.png", logger),
+                load_sub_image("minesweeperclassic/6.png", logger),
+                load_sub_image("minesweeperclassic/7.png", logger),
+                load_sub_image("minesweeperclassic/8.png", logger),
+                load_sub_image("minesweeperclassic/Hidden.png", logger),
+                load_sub_image("minesweeperclassic/Mine.png", logger)};
     }();
     return sub_images;
 }
 
 }  // namespace
 
-Matcher::Matcher() : sub_images_{load_default_sub_images()} {
+Matcher::Matcher(Logger& logger)
+    : sub_images_{load_default_sub_images(logger)} {
 }
 
 Matcher::Matcher(SubImages sub_images) : sub_images_{std::move(sub_images)} {

@@ -6,6 +6,9 @@
 #include "PlayingField.h"
 #include <di/ptr.h>
 #include <optional>
+namespace asw {
+class Logger;
+}  // namespace asw
 
 namespace asw {
 
@@ -16,7 +19,7 @@ class ImageMatchingPlayingField final : public PlayingField {
     /**
      * @brief Constructs a field for Minesweeper Classic
      */
-    ImageMatchingPlayingField();
+    explicit ImageMatchingPlayingField(Logger& logger);
 
     ImageMatchingPlayingField(
             di::ptr<IScreen> screen,
