@@ -57,7 +57,7 @@ ImageMatchingPlayingField::ImageMatchingPlayingField(Logger& logger)
     : ImageMatchingPlayingField{
               di::make_owning<MinesweeperScreen>(logger),
               asw::Matcher{logger},
-              8} {
+              16} {
 }
 
 ImageMatchingPlayingField::ImageMatchingPlayingField(
