@@ -90,4 +90,12 @@ TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
     }
 }
 
+TEST_CASE("ImageMatchingPlayingField when there are not matches") {
+    MockScreen screen_{Image{}};
+    std::optional<Image> matcher_call;
+    ImageMatchingPlayingField field{screen_, MockMatcher{matcher_call, {}}, 1};
+    REQUIRE(field.rows() == 0);
+    REQUIRE(field.columns() == 0);
+}
+
 }  // namespace

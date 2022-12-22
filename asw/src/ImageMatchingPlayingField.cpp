@@ -53,10 +53,10 @@ Vector2d<Cell> matches_to_field(
 
 }  // namespace
 
-ImageMatchingPlayingField::ImageMatchingPlayingField()
+ImageMatchingPlayingField::ImageMatchingPlayingField(Logger& logger)
     : ImageMatchingPlayingField{
               di::make_owning<MinesweeperScreen>(),
-              asw::Matcher{},
+              asw::Matcher{logger},
               8} {
 }
 
@@ -67,10 +67,14 @@ ImageMatchingPlayingField::ImageMatchingPlayingField(
     : screen_{std::move(screen)},
       matcher_{std::move(matcher)} {
     auto const grab = screen_->grab();
-    if (grab.has_value()) {
-        auto const matches = matcher_(grab->cspan());
-        field_ = matches_to_field(matches, distance_between_cells);
+    if (not grab.has_value()) {
+        return;
     }
+    auto const matches = matcher_(grab->cspan());
+    if (matches.empty()) {
+        return;
+    }
+    field_ = matches_to_field(matches, distance_between_cells);
 }
 
 size_t ImageMatchingPlayingField::rows() const {
