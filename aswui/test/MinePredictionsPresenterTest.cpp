@@ -28,11 +28,11 @@ class MockMinePredictionsView final : public aswui::MinePredictionsView {
 };
 
 TEST_CASE("MockMinePredictionsView::set()") {
-    static constexpr auto rows = 23;
-    static constexpr auto columns = 56;
     MockMinePredictionsView view;
     aswui::MinePredictionsPresenter presenter{view};
     SECTION("resizes the field") {
+        static constexpr auto rows = 23;
+        static constexpr auto columns = 56;
         presenter.set(asw::PredictionArray<rows, columns>{}.cspan());
         REQUIRE(view.set_row_count_call == rows);
         REQUIRE(view.set_column_count_call == columns);
