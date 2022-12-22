@@ -4,9 +4,11 @@
 #include <format>
 #include <gsl/narrow>
 #include <gsl/util>
+#include <ranges>
 #include <windows.h>
 
 namespace stdr = std::ranges;
+namespace stdv = std::ranges::views;
 
 namespace asw {
 
@@ -14,6 +16,14 @@ namespace {
 
 constexpr int sleep_after_foreground_call_ms = 10;
 constexpr int bit_depth = 32;
+
+}  // namespace
+
+MinesweeperScreen::MinesweeperScreen(di::ptr<Logger> logger)
+    : logger_{std::move(logger)} {
+}
+
+namespace {
 
 HBITMAP capture_fullscreen(HDC hdcScreen, HDC hdc, RECT const& rc) {
     auto const width = rc.right - rc.left;
@@ -75,14 +85,20 @@ std::optional<Image> asw::MinesweeperScreen::grab() const {
         throw std::runtime_error{
                 std::format("GetDIBits return status: {}", status)};
     }
-    auto screen_grab = std::make_optional<Image>(Size{
-            .rows = gsl::narrow_cast<size_t>(bitmap_info.bmiHeader.biHeight),
-            .columns = gsl::narrow_cast<size_t>(bitmap_info.bmiHeader.biWidth) *
-                       4});
-    stdr::transform(
-            buffer, screen_grab->data(), [](RGBQUAD const& quad) -> Color {
-                return {quad.rgbRed, quad.rgbBlue, quad.rgbGreen};
-            });
+    auto const rows = gsl::narrow_cast<size_t>(bitmap_info.bmiHeader.biHeight);
+    auto const columns =
+            gsl::narrow_cast<size_t>(bitmap_info.bmiHeader.biWidth);
+    auto screen_grab =
+            std::make_optional<Image>(Size{.rows = rows, .columns = columns});
+    for (auto row = 0; row < rows; ++row) {
+        for (auto column = 0; column < columns; ++column) {
+            auto const& quad =
+                    buffer[rows * columns - (row * columns + column) - 1];
+            (*screen_grab)(row, columns - column - 1) = {
+                    quad.rgbRed, quad.rgbGreen, quad.rgbBlue};
+        }
+    }
+    logger_->log_image("Minesweeper Classic", *screen_grab);
     return screen_grab;
 }
 
