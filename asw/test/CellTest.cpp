@@ -38,15 +38,13 @@ TEST_CASE("Can use initializer list for filling array") {
     REQUIRE(cells(1, 1) == Cell::Four);
 }
 
-class PredeterminedGenerator final : public asw::PositionGenerator {
+class PredeterminedGenerator {
   public:
     PredeterminedGenerator(std::initializer_list<Position> const& positions)
         : positions_{positions} {
     }
 
-    ~PredeterminedGenerator() override = default;
-
-    Position operator()(Size const&) override {
+    Position operator()(Size const&) {
         return positions_[current_++];
     }
 

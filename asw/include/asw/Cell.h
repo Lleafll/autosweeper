@@ -11,14 +11,22 @@ enum class MineCell { Clear, Mined };
 using MineCellConstSpan = std::experimental::
         mdspan<MineCell const, std::experimental::dextents<size_t, 2>>;
 
-class PositionGenerator {
-  public:
-    virtual ~PositionGenerator() = default;
-    [[nodiscard]] virtual Position operator()(Size const& size) = 0;
-};
+template<class T>
+concept PositionGenerator = requires(T t) {
+                                { t(Size{}) } -> std::convertible_to<Position>;
+                            };
 
-Vector2d<MineCell>
-generate_mines(Size const& size, int count, PositionGenerator&& generator);
+Vector2d<MineCell> generate_mines(
+        Size const& size,
+        int const count,
+        PositionGenerator auto&& generator) {
+    Vector2d<MineCell> mines{size};
+    for (int i = 0; i < count; ++i) {
+        auto const [row, column] = generator(size);
+        mines(row, column) = MineCell::Mined;
+    }
+    return mines;
+}
 
 /**
  * Thin wrapper around generate_mines() with a random generator
