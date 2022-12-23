@@ -140,9 +140,13 @@ build_widget(std::unique_ptr<asw::PlayingField>& field, asw::Logger& logger) {
 
 int main(int argc, char** argv) {
     QApplication const application{argc, argv};
-    aswui::LoggerWidgetQt logger{};
+#ifdef _DEBUG
+    aswui::LoggerWidgetQt logger;
     logger.setWindowFlag(Qt::Window);
     logger.show();
+#else
+    asw::NullLogger logger;
+#endif
     std::unique_ptr<asw::PlayingField> field =
             std::make_unique<asw::InMemoryPlayingField>(
                     asw::generate_random_mines(field_size, mine_count).cspan());
