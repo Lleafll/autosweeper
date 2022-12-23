@@ -1,6 +1,5 @@
 #define CATCH_CONFIG_ENABLE_OPTIONAL_STRINGMAKER
 #include "ImageMatchingPlayingField.h"
-#include "IScreen.h"
 #include "algorithm2d.h"
 #include <catch.hpp>
 
@@ -8,27 +7,30 @@ using namespace asw;
 
 namespace {
 
-class MockScreen final : public IScreen {
+class MockScreen final {
   public:
-    std::optional<Position> click_call = std::nullopt;
-
     MockScreen() = default;
 
-    explicit MockScreen(Image image) : image_{std::move(image)} {
+    explicit MockScreen(
+            Image image,
+            std::optional<Position>* const click_call = nullptr)
+        : image_{std::move(image)},
+          click_call_{click_call} {
     }
 
-    ~MockScreen() override = default;
-
-    [[nodiscard]] std::optional<Image> grab() override {
+    [[nodiscard]] std::optional<Image> grab() {
         return image_;
     }
 
-    void click(Position const& position) override {
-        click_call = position;
+    void click(Position const& position) {
+        if (click_call_ != nullptr) {
+            *click_call_ = position;
+        }
     }
 
   private:
     std::optional<Image> image_ = std::nullopt;
+    std::optional<Position>* click_call_ = nullptr;
 };
 
 struct MockMatcher final {
@@ -44,10 +46,9 @@ struct MockMatcher final {
 };
 
 TEST_CASE("ImageMatchingPlayingField when no image can be detected") {
-    MockScreen screen_;
     std::optional<Image> matcher_call;
     ImageMatchingPlayingField const field{
-            screen_, MockMatcher{matcher_call}, 1};
+            MockScreen{}, MockMatcher{matcher_call}, 1};
     REQUIRE_FALSE(matcher_call.has_value());
     SECTION("rows") {
         REQUIRE(field.rows() == 0);
@@ -65,10 +66,9 @@ TEST_CASE("ImageMatchingPlayingField when no image can be detected") {
 
 TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
     Image const image{{2, 1}, {{0, 1, 2}, {3, 4, 5}}};
-    MockScreen screen_{image};
     std::optional<Image> matcher_call;
     ImageMatchingPlayingField const field{
-            screen_,
+            MockScreen{image},
             MockMatcher{
                     matcher_call,
                     {{{2, 2}, Cell::One},
@@ -99,19 +99,18 @@ TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
 }
 
 TEST_CASE("ImageMatchingPlayingField when there are not matches") {
-    MockScreen screen_{Image{}};
     std::optional<Image> matcher_call;
     ImageMatchingPlayingField const field{
-            screen_, MockMatcher{matcher_call, {}}, 1};
+            MockScreen{Image{}}, MockMatcher{matcher_call, {}}, 1};
     REQUIRE(field.rows() == 0);
     REQUIRE(field.columns() == 0);
 }
 
 TEST_CASE("reveal") {
-    MockScreen screen_{Image{}};
+    std::optional<Position> click_call;
     std::optional<Image> matcher_call;
     ImageMatchingPlayingField field{
-            screen_,
+            MockScreen{Image{}, &click_call},
             MockMatcher{
                     matcher_call,
                     {{{2, 2}, Cell::One},
@@ -119,11 +118,11 @@ TEST_CASE("reveal") {
                      {{10, 2}, Cell::Three}}},
             4};
     field.reveal({0, 0});
-    REQUIRE(screen_.click_call == Position{2, 2});
+    REQUIRE(click_call == Position{2, 2});
     field.reveal({0, 1});
-    REQUIRE(screen_.click_call == Position{6, 2});
+    REQUIRE(click_call == Position{6, 2});
     field.reveal({0, 2});
-    REQUIRE(screen_.click_call == Position{10, 2});
+    REQUIRE(click_call == Position{10, 2});
 }
 
 }  // namespace

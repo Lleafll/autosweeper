@@ -1,14 +1,10 @@
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRA_LEAN
 #include "MinesweeperScreen.h"
+#include "Position.h"
 #include <format>
 #include <gsl/narrow>
-#include <gsl/util>
-#include <ranges>
 #include <windows.h>
-
-namespace stdr = std::ranges;
-namespace stdv = std::ranges::views;
 
 namespace asw {
 

@@ -1,12 +1,6 @@
 #include "ImageMatchingPlayingField.h"
-#include "IScreen.h"
-#include "MinesweeperScreen.h"
-#include "algorithm2d.h"
 #include "find_in_image.h"
-#include <algorithm>
 #include <gsl/narrow>
-
-namespace stdr = std::ranges;
 
 namespace asw {
 
@@ -26,10 +20,15 @@ Bounds find_bounds(std::span<Match const> const matches) {
     static constexpr auto column = [](Match const& match) -> size_t {
         return match.screen_position.column;
     };
+    namespace stdr = std::ranges;
     auto const [bottom, top] = stdr::minmax_element(matches, {}, row);
     auto const [left, right] = stdr::minmax_element(matches, {}, column);
     return {row(*bottom), column(*left), row(*top), column(*right)};
 }
+
+}  // namespace
+
+namespace detail {
 
 std::tuple<Vector2d<Cell>, Position> matches_to_field(
         std::span<Match const> const matches,
@@ -52,62 +51,6 @@ std::tuple<Vector2d<Cell>, Position> matches_to_field(
             std::move(field), {bottom, left});
 }
 
-}  // namespace
-
-ImageMatchingPlayingField::ImageMatchingPlayingField(Logger& logger)
-    : ImageMatchingPlayingField{
-              di::make_owning<MinesweeperScreen>(logger),
-              asw::Matcher{logger},
-              16} {
-}
-
-ImageMatchingPlayingField::ImageMatchingPlayingField(
-        di::ptr<IScreen> screen,
-        Matcher matcher,
-        int const distance_between_cells)
-    : screen_{std::move(screen)},
-      matcher_{std::move(matcher)},
-      distance_between_cells_{distance_between_cells} {
-    update();
-}
-
-size_t ImageMatchingPlayingField::rows() const {
-    return field_.cspan().extent(0);
-}
-
-size_t ImageMatchingPlayingField::columns() const {
-    return field_.cspan().extent(1);
-}
-
-int ImageMatchingPlayingField::mine_count() const {
-    return 0;
-}
-
-Cell ImageMatchingPlayingField::operator()(size_t row, size_t column) const {
-    return field_(row, column);
-}
-
-void ImageMatchingPlayingField::reveal(Position const& position) {
-    screen_->click(
-            {bottom_left_.column + position.column * distance_between_cells_,
-             bottom_left_.row + position.row * distance_between_cells_});
-}
-
-CellConstSpan ImageMatchingPlayingField::cspan() const {
-    return field_.cspan();
-}
-
-void ImageMatchingPlayingField::update() {
-    auto const grab = screen_->grab();
-    if (not grab.has_value()) {
-        return;
-    }
-    auto const matches = matcher_(grab->cspan());
-    if (matches.empty()) {
-        return;
-    }
-    std::tie(field_, bottom_left_) =
-            matches_to_field(matches, distance_between_cells_);
-}
+}  // namespace detail
 
 }  // namespace asw

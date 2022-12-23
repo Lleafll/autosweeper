@@ -82,7 +82,9 @@ build_widget(std::unique_ptr<asw::PlayingField>& field, asw::Logger& logger) {
             field = std::make_unique<asw::InMemoryPlayingField>(
                     asw::generate_random_mines(size, mines).cspan());
         } else {
-            field = std::make_unique<asw::ImageMatchingPlayingField>(logger);
+            field = std::make_unique<
+                    asw::ImageMatchingPlayingField<asw::MinesweeperScreen>>(
+                    asw::MinesweeperScreen{logger}, asw::Matcher{logger}, 16);
         }
         refresh();
     };

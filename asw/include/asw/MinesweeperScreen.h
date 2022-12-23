@@ -1,21 +1,21 @@
 #pragma once
 
-#include "IScreen.h"
 #include "Image.h"
 #include "Logger.h"
-#include "Position.h"
 #include <di/ptr.h>
+#include <optional>
+namespace asw {
+struct Position;
+}  // namespace asw
 
 namespace asw {
 
-class MinesweeperScreen final : public IScreen {
+class MinesweeperScreen final {
   public:
     explicit MinesweeperScreen(di::ptr<Logger> logger);
 
-    ~MinesweeperScreen() override = default;
-
-    [[nodiscard]] std::optional<Image> grab() override;
-    void click(Position const& position) override;
+    [[nodiscard]] std::optional<Image> grab();
+    void click(Position const& position);
 
   private:
     di::ptr<Logger> logger_;
