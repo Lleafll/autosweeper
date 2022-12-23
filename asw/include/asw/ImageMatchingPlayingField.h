@@ -38,7 +38,7 @@ class ImageMatchingPlayingField final : public PlayingField {
     ImageMatchingPlayingField(
             TScreen screen,
             TMatcherFunc matcher,
-            int distance_between_cells)
+            int const distance_between_cells)
         : screen_{std::move(screen)},
           matcher_{std::move(matcher)},
           distance_between_cells_{distance_between_cells} {
