@@ -9,8 +9,7 @@ namespace asw {
 class Logger {
   public:
     template<class T>
-    explicit Logger(T&& t)
-        : self_{std::make_unique<Model<T>>(std::forward<T>(t))} {
+    explicit Logger(T t) : self_{std::make_unique<Model<T>>(std::move(t))} {
     }
 
     void log_image(std::string_view const message, Image const& image) {
@@ -26,9 +25,7 @@ class Logger {
 
     template<typename T>
     struct Model : Concept {
-        template<class U>
-            requires std::is_same_v<T, U>
-        explicit Model(U&& u) : data_{std::forward<U>(u)} {
+        explicit Model(T data) : data_{std::move(data)} {
         }
 
         void
