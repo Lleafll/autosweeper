@@ -14,7 +14,7 @@ namespace asw {
 
 namespace {
 
-constexpr int sleep_after_foreground_call_ms = 10;
+constexpr int sleep_after_foreground_call_ms = 100;
 constexpr int bit_depth = 32;
 
 }  // namespace
