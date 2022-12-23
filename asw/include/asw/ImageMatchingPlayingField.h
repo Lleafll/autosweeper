@@ -18,6 +18,13 @@ concept Screen = requires(T t) {
                      t.click(Position{});
                  };
 
+template<class T>
+concept MatcherFunc = requires(T t) {
+                          {
+                              t(ImageConstSpan{})
+                          } -> std::convertible_to<std::vector<Match>>;
+                      };
+
 namespace detail {
 
 std::tuple<Vector2d<Cell>, Position>
@@ -25,15 +32,12 @@ matches_to_field(std::span<Match const> matches, int distance_between_cells);
 
 }  // namespace detail
 
-template<Screen TScreen = MinesweeperScreen>
+template<Screen TScreen, MatcherFunc TMatcherFunc>
 class ImageMatchingPlayingField final : public PlayingField {
   public:
-    using MatcherFunc =
-            std::function<std::vector<Match>(ImageConstSpan const&)>;
-
     ImageMatchingPlayingField(
             TScreen screen,
-            MatcherFunc matcher,
+            TMatcherFunc matcher,
             int distance_between_cells)
         : screen_{std::move(screen)},
           matcher_{std::move(matcher)},
@@ -85,7 +89,7 @@ class ImageMatchingPlayingField final : public PlayingField {
 
   private:
     TScreen screen_;
-    MatcherFunc matcher_;
+    TMatcherFunc matcher_;
     Vector2d<Cell> field_ = Vector2d<Cell>{{0, 0}, Cell::Hidden};
     int distance_between_cells_;
     Position bottom_left_ = {0, 0};
