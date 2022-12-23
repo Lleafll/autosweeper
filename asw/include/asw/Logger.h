@@ -1,22 +1,51 @@
 #pragma once
 
 #include "Image.h"
+#include <memory>
 #include <string_view>
 
 namespace asw {
 
 class Logger {
   public:
-    virtual ~Logger() = default;
+    template<class T>
+    explicit Logger(T&& t)
+        : self_{std::make_unique<Model<T>>(std::forward<T>(t))} {
+    }
 
-    virtual void log_image(std::string_view message, Image const& image) = 0;
+    void log_image(std::string_view const message, Image const& image) {
+        self_->log_image(message, image);
+    }
+
+  private:
+    struct Concept {
+        virtual ~Concept() = default;
+        virtual void
+        log_image(std::string_view message, Image const& image) = 0;
+    };
+
+    template<typename T>
+    struct Model : Concept {
+        template<class U>
+            requires std::is_same_v<T, U>
+        explicit Model(U&& u) : data_{std::forward<U>(u)} {
+        }
+
+        void
+        log_image(std::string_view const message, Image const& image) override {
+            return data_.log_image(message, image);
+        }
+
+      private:
+        T data_;
+    };
+
+    std::unique_ptr<Concept> self_;
 };
 
-class NullLogger final : public Logger {
+class NullLogger {
   public:
-    ~NullLogger() override = default;
-
-    void log_image(std::string_view const, Image const&) override {
+    void log_image(std::string_view const, Image const&) {
     }
 };
 

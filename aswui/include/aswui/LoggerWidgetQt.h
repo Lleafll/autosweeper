@@ -1,18 +1,18 @@
 #pragma once
 
 #include <QTabWidget>
-#include <asw/Logger.h>
+#include <asw/Image.h>
 
 namespace aswui {
 
-class LoggerWidgetQt final : public QTabWidget, public asw::Logger {
+class LoggerWidgetQt final : public QTabWidget {
     Q_OBJECT
   public:
     using QTabWidget::QTabWidget;
 
     ~LoggerWidgetQt() override = default;
 
-    void log_image(std::string_view message, asw::Image const& image) override;
+    void log_image(std::string_view message, asw::Image const& image);
 };
 
 }  // namespace aswui

@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QComboBox>
 #include <QHBoxLayout>
+#include <QPointer>
 #include <QPushButton>
 #include <QShortcut>
 #include <QSpinBox>
@@ -139,16 +140,36 @@ build_widget(std::unique_ptr<asw::PlayingField>& field, asw::Logger& logger) {
     return widget;
 }
 
+class LoggerWidgetWrapper {
+  public:
+    LoggerWidgetWrapper() {
+        widget->setWindowFlag(Qt::Window);
+        widget->show();
+    }
+
+    void log_image(std::string_view const message, asw::Image const& image) {
+        widget->log_image(message, image);
+    }
+
+  private:
+    struct QObjectDeleter final {
+        void operator()(QObject* const object) const {
+            object->deleteLater();
+        }
+    };
+
+    std::unique_ptr<aswui::LoggerWidgetQt, QObjectDeleter> widget{
+            new aswui::LoggerWidgetQt};
+};
+
 }  // namespace
 
 int main(int argc, char** argv) {
     QApplication const application{argc, argv};
 #ifdef _DEBUG
-    aswui::LoggerWidgetQt logger;
-    logger.setWindowFlag(Qt::Window);
-    logger.show();
+    asw::Logger logger{LoggerWidgetWrapper{}};
 #else
-    asw::NullLogger logger;
+    asw::Logger logger{asw::NullLogger{}};
 #endif
     std::unique_ptr<asw::PlayingField> field =
             std::make_unique<asw::InMemoryPlayingField>(
