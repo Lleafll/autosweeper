@@ -24,9 +24,11 @@ class Logger {
     };
 
     template<typename T>
-    struct Model : Concept {
+    struct Model final : Concept {
         explicit Model(T data) : data_{std::move(data)} {
         }
+
+        ~Model() override = default;
 
         void
         log_image(std::string_view const message, Image const& image) override {

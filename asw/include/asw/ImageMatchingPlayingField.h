@@ -33,7 +33,7 @@ matches_to_field(std::span<Match const> matches, int distance_between_cells);
 }  // namespace detail
 
 template<Screen TScreen, MatcherFunc TMatcherFunc>
-class ImageMatchingPlayingField final : public PlayingField {
+class ImageMatchingPlayingField {
   public:
     ImageMatchingPlayingField(
             TScreen screen,
@@ -45,36 +45,34 @@ class ImageMatchingPlayingField final : public PlayingField {
         update();
     }
 
-    ~ImageMatchingPlayingField() override = default;
-
-    [[nodiscard]] size_t rows() const override {
+    [[nodiscard]] size_t rows() const {
         return field_.cspan().extent(0);
     }
 
-    [[nodiscard]] size_t columns() const override {
+    [[nodiscard]] size_t columns() const {
         return field_.cspan().extent(1);
     }
 
-    [[nodiscard]] int mine_count() const override {
+    [[nodiscard]] int mine_count() const {
         return 0;
     }
 
-    Cell operator()(size_t const row, size_t const column) const override {
+    Cell operator()(size_t const row, size_t const column) const {
         return field_(row, column);
     }
 
-    void reveal(Position const& position) override {
+    void reveal(Position const& position) {
         screen_.click(
                 {bottom_left_.column +
                          position.column * distance_between_cells_,
                  bottom_left_.row + position.row * distance_between_cells_});
     }
 
-    [[nodiscard]] CellConstSpan cspan() const override {
+    [[nodiscard]] CellConstSpan cspan() const {
         return field_.cspan();
     }
 
-    void update() override {
+    void update() {
         auto const grab = screen_.grab();
         if (not grab.has_value()) {
             return;

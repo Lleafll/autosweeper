@@ -20,25 +20,25 @@ constexpr asw::Size field_size{5, 5};
 constexpr int mine_count = 5;
 
 gsl::not_null<std::unique_ptr<QWidget>>
-build_widget(std::unique_ptr<asw::PlayingField>& field, asw::Logger& logger) {
+build_widget(asw::PlayingField& field, asw::Logger& logger) {
     auto widget = std::make_unique<QWidget>();
     auto* const field_selection = new QComboBox{widget.get()};
     field_selection->addItems({u"InMemory"_qs, u"Desktop"_qs});
     auto* const rows_widget = new QSpinBox{widget.get()};
     rows_widget->setMinimum(1);
-    rows_widget->setValue(gsl::narrow_cast<int>(field->rows()));
+    rows_widget->setValue(gsl::narrow_cast<int>(field.rows()));
     auto* const columns_widget = new QSpinBox{widget.get()};
-    columns_widget->setValue(gsl::narrow_cast<int>(field->columns()));
+    columns_widget->setValue(gsl::narrow_cast<int>(field.columns()));
     columns_widget->setMinimum(1);
     auto* const mines_widget = new QSpinBox{widget.get()};
-    mines_widget->setValue(field->mine_count());
+    mines_widget->setValue(field.mine_count());
     mines_widget->setMinimum(1);
     auto* const restart_button = new QPushButton{u"Restart"_qs, widget.get()};
     auto* const auto_solver_button = new QPushButton{u"Next"_qs, widget.get()};
     auto* const field_widget =
-            new aswui::CellConstSpanWidgetQt{field->cspan(), nullptr};
+            new aswui::CellConstSpanWidgetQt{field.cspan(), nullptr};
     auto* const predictions_widget = new aswui::MinePredictionsWidgetQt{
-            asw::predict_mines_field(field->cspan()).cspan(), nullptr};
+            asw::predict_mines_field(field.cspan()).cspan(), nullptr};
     auto* const main_layout = new QVBoxLayout{widget.get()};
     auto* const top_layout = new QHBoxLayout;
     main_layout->addLayout(top_layout);
@@ -53,14 +53,14 @@ build_widget(std::unique_ptr<asw::PlayingField>& field, asw::Logger& logger) {
     lower_layout->addWidget(field_widget);
     lower_layout->addWidget(predictions_widget);
     auto const refresh = [&field, field_widget, predictions_widget]() {
-        field->update();
-        field_widget->set(field->cspan());
+        field.update();
+        field_widget->set(field.cspan());
         predictions_widget->set(
-                asw::predict_mines_field(field->cspan()).cspan());
+                asw::predict_mines_field(field.cspan()).cspan());
     };
     auto const recalculate = [&field,
                               refresh](int const row, int const column) {
-        field->reveal(
+        field.reveal(
                 {.row = gsl::narrow_cast<size_t>(row),
                  .column = gsl::narrow_cast<size_t>(column)});
         refresh();
@@ -80,18 +80,18 @@ build_widget(std::unique_ptr<asw::PlayingField>& field, asw::Logger& logger) {
                 .columns = gsl::narrow_cast<size_t>(columns)};
         auto const mines = mines_widget->value();
         if (field_type == 0) {
-            field = std::make_unique<asw::InMemoryPlayingField>(
-                    asw::generate_random_mines(size, mines).cspan());
+            field = asw::InMemoryPlayingField{
+                    asw::generate_random_mines(size, mines).cspan()};
         } else {
-            field = std::make_unique<asw::ImageMatchingPlayingField<
+            field = asw::ImageMatchingPlayingField<
                     asw::MinesweeperScreen,
-                    asw::Matcher>>(
-                    asw::MinesweeperScreen{logger}, asw::Matcher{logger}, 16);
+                    asw::Matcher>{
+                    asw::MinesweeperScreen{logger}, asw::Matcher{logger}, 16};
         }
         refresh();
     };
     auto const auto_solve = [&field, refresh] {
-        auto const prediction = asw::predict_mines_field(field->cspan());
+        auto const prediction = asw::predict_mines_field(field.cspan());
         auto safe_clicked = false;
         asw::indexed_for_each(
                 prediction.cspan(),
@@ -99,16 +99,16 @@ build_widget(std::unique_ptr<asw::PlayingField>& field, asw::Logger& logger) {
                         asw::Position const& position,
                         asw::Prediction const prediction) {
                     if (prediction == asw::Prediction::Safe) {
-                        field->reveal(position);
+                        field.reveal(position);
                         safe_clicked = true;
                     }
                 });
         if (not safe_clicked) {
             auto break_out = false;
-            for (size_t row = 0; row < field->rows(); ++row) {
-                for (size_t column = 0; column < field->columns(); ++column) {
+            for (size_t row = 0; row < field.rows(); ++row) {
+                for (size_t column = 0; column < field.columns(); ++column) {
                     if (prediction(row, column) == asw::Prediction::Unknown) {
-                        field->reveal({row, column});
+                        field.reveal({row, column});
                         break_out = true;
                         break;
                     }
@@ -171,9 +171,8 @@ int main(int argc, char** argv) {
 #else
     asw::Logger logger{asw::NullLogger{}};
 #endif
-    std::unique_ptr<asw::PlayingField> field =
-            std::make_unique<asw::InMemoryPlayingField>(
-                    asw::generate_random_mines(field_size, mine_count).cspan());
+    asw::PlayingField field{asw::InMemoryPlayingField{
+            asw::generate_random_mines(field_size, mine_count).cspan()}};
     auto main_widget = build_widget(field, logger);
     main_widget->show();
     return QApplication::exec();

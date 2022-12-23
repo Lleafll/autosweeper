@@ -7,21 +7,19 @@
 
 namespace asw {
 
-class InMemoryPlayingField final : public PlayingField {
+class InMemoryPlayingField  {
   public:
     explicit InMemoryPlayingField(MineCellConstSpan const& mines);
 
-    ~InMemoryPlayingField() override = default;
-
-    [[nodiscard]] size_t rows() const override;
-    [[nodiscard]] size_t columns() const override;
-    [[nodiscard]] int mine_count() const override;
-    [[nodiscard]] Cell operator()(size_t row, size_t column) const override;
-    void reveal(Position const& position) override;
-    [[nodiscard]] CellConstSpan cspan() const override;
+    [[nodiscard]] size_t rows() const;
+    [[nodiscard]] size_t columns() const;
+    [[nodiscard]] int mine_count() const;
+    [[nodiscard]] Cell operator()(size_t row, size_t column) const;
+    void reveal(Position const& position);
+    [[nodiscard]] CellConstSpan cspan() const;
+    void update();
 
     bool operator==(InMemoryPlayingField const&) const = default;
-    void update() override;
 
   private:
     size_t rows_;
