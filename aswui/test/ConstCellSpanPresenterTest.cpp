@@ -11,9 +11,9 @@ namespace {
 
 class MockConstCellSpanView {
   public:
-    std::optional<size_t> set_row_count_call = {};
-    std::optional<size_t> set_column_count_call = {};
-    std::vector<std::tuple<int, int, QString>> set_cell_calls = {};
+    std::optional<size_t>& set_row_count_call;
+    std::optional<size_t>& set_column_count_call;
+    std::vector<std::tuple<int, int, QString>>& set_cell_calls;
 
     void set_row_count(int const rows) {
         set_row_count_call = rows;
@@ -31,12 +31,15 @@ class MockConstCellSpanView {
 TEST_CASE("ConstCellSpanPresenter") {
     static constexpr int rows = 12;
     static constexpr int columns = 34;
-    MockConstCellSpanView view{};
-    CellConstSpanPresenter presenter{view};
+    std::optional<size_t> set_row_count_call = {};
+    std::optional<size_t> set_column_count_call = {};
+    std::vector<std::tuple<int, int, QString>> set_cell_calls = {};
+    CellConstSpanPresenter presenter{MockConstCellSpanView{
+            set_row_count_call, set_column_count_call, set_cell_calls}};
     SECTION("set() correctly sets up row and column count") {
         presenter.set(asw::Array2d<asw::Cell, rows, columns>{}.cspan());
-        REQUIRE(view.set_row_count_call == rows);
-        REQUIRE(view.set_column_count_call == columns);
+        REQUIRE(set_row_count_call == rows);
+        REQUIRE(set_column_count_call == columns);
     }
     SECTION("set() correctly sets cells") {
         using enum asw::Cell;
@@ -45,22 +48,21 @@ TEST_CASE("ConstCellSpanPresenter") {
                 Four, Five, Six, Seven,
                 Eight, Hidden, Mine, Empty}  // clang-format on
                               .cspan());
-        std::ranges::sort(view.set_cell_calls);
-        REQUIRE(view.set_cell_calls ==
-                std::vector<std::tuple<int, int, QString>>{
-                        {0, 0, ""},
-                        {0, 1, "1"},
-                        {0, 2, "2"},
-                        {0, 3, "3"},
-                        {1, 0, "4"},
-                        {1, 1, "5"},
-                        {1, 2, "6"},
-                        {1, 3, "7"},
-                        {2, 0, "8"},
-                        {2, 1, "☐"},
-                        {2, 2, "💣"},
-                        {2, 3, ""},
-                });
+        std::ranges::sort(set_cell_calls);
+        REQUIRE(set_cell_calls == std::vector<std::tuple<int, int, QString>>{
+                                          {0, 0, ""},
+                                          {0, 1, "1"},
+                                          {0, 2, "2"},
+                                          {0, 3, "3"},
+                                          {1, 0, "4"},
+                                          {1, 1, "5"},
+                                          {1, 2, "6"},
+                                          {1, 3, "7"},
+                                          {2, 0, "8"},
+                                          {2, 1, "☐"},
+                                          {2, 2, "💣"},
+                                          {2, 3, ""},
+                                  });
     }
 }
 
