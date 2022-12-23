@@ -7,11 +7,10 @@
 
 namespace aswui {
 
-class CellConstSpanWidgetQt::Impl final : public CellConstSpanView {
+class CellConstSpanViewImpl {
   public:
-    explicit Impl(CellConstSpanWidgetQt& widget)
-        : presenter_{*this},
-          table_{new CellsWidgetQt{&widget}} {
+    explicit CellConstSpanViewImpl(CellConstSpanWidgetQt& widget)
+        : table_{new CellsWidgetQt{&widget}} {
         auto* const layout = new QVBoxLayout{&widget};
         layout->addWidget(table_);
         QObject::connect(
@@ -21,33 +20,26 @@ class CellConstSpanWidgetQt::Impl final : public CellConstSpanView {
                 &CellConstSpanWidgetQt::clicked);
     }
 
-    ~Impl() override = default;
-
-    void set(asw::CellConstSpan const& cells) {
-        presenter_.set(cells);
-    }
-
-  private:
-    CellConstSpanPresenter presenter_;
-    gsl::strict_not_null<CellsWidgetQt*> table_;
-
-    void set_row_count(int const rows) override {
+    void set_row_count(int const rows) {
         table_->setRowCount(rows);
     }
 
-    void set_column_count(int const columns) override {
+    void set_column_count(int const columns) {
         table_->setColumnCount(columns);
     }
 
-    void
-    set_cell(int const row, int const column, QString const& text) override {
+    void set_cell(int const row, int const column, QString const& text) {
         table_->setCellText(row, column, text);
     }
+
+  private:
+    gsl::strict_not_null<CellsWidgetQt*> table_;
 };
 
 CellConstSpanWidgetQt::CellConstSpanWidgetQt(QWidget* const parent)
     : QWidget{parent},
-      impl_{std::make_unique<Impl>(*this)} {
+      presenter_{std::make_unique<CellConstSpanPresenter>(
+              CellConstSpanViewImpl{*this})} {
 }
 
 CellConstSpanWidgetQt::CellConstSpanWidgetQt(
@@ -60,7 +52,7 @@ CellConstSpanWidgetQt::CellConstSpanWidgetQt(
 CellConstSpanWidgetQt::~CellConstSpanWidgetQt() = default;
 
 void CellConstSpanWidgetQt::set(asw::CellConstSpan const& cells) {
-    impl_->set(cells);
+    presenter_->set(cells);
 }
 
 }  // namespace aswui

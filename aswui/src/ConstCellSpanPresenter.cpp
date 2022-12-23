@@ -37,8 +37,8 @@ QString to_qstring(asw::Cell const cell) {
 
 }  // namespace
 
-CellConstSpanPresenter::CellConstSpanPresenter(CellConstSpanView& view)
-    : view_{view} {
+CellConstSpanPresenter::CellConstSpanPresenter(CellConstSpanView view)
+    : view_{std::move(view)} {
 }
 
 void CellConstSpanPresenter::set(asw::CellConstSpan const& cells) {

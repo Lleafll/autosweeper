@@ -4,6 +4,9 @@
 #include <asw/Cell.h>
 #include <gsl/pointers>
 #include <memory>
+namespace aswui {
+class CellConstSpanPresenter;
+}  // namespace aswui
 
 namespace aswui {
 
@@ -26,9 +29,7 @@ class CellConstSpanWidgetQt final : public QWidget {
     void clicked(int row, int column);
 
   private:
-    class Impl;
-
-    gsl::not_null<std::unique_ptr<Impl>> impl_;
+    gsl::not_null<std::unique_ptr<aswui::CellConstSpanPresenter>> presenter_;
 };
 
 }  // namespace aswui
