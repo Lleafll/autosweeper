@@ -1,3 +1,6 @@
 [submodule "di_ptr"]
 	path = di_ptr
 	url = https://github.com/Lleafll/di_ptr
+[submodule "boostext-te"]
+	path = boostext-te
+	url = https://github.com/boost-ext/te
