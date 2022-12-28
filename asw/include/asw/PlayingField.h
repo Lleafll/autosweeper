@@ -24,13 +24,6 @@ struct MineCount final : pro::dispatch<int()> {
     }
 };
 
-struct GetCell final : pro::dispatch<Cell(size_t, size_t)> {
-    Cell
-    operator()(auto const& self, size_t const row, size_t const column) const {
-        return self(row, column);
-    }
-};
-
 struct Reveal final : pro::dispatch<void(Position const&)> {
     void operator()(auto& self, Position const& position) {
         self.reveal(position);
@@ -50,6 +43,6 @@ struct Update final : pro::dispatch<void()> {
 };
 
 struct PlayingField final
-    : pro::facade<Rows, Columns, MineCount, GetCell, Reveal, Cspan, Update> {};
+    : pro::facade<Rows, Columns, MineCount, Reveal, Cspan, Update> {};
 
 }  // namespace asw
