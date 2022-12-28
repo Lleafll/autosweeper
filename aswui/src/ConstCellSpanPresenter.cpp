@@ -1,11 +1,7 @@
 #include "CellConstSpanPresenter.h"
 #include <QString>
-#include <asw/algorithm2d.h>
-#include <gsl/narrow>
 
-namespace aswui {
-
-namespace {
+namespace aswui::detail {
 
 QString to_qstring(asw::Cell const cell) {
     switch (cell) {
@@ -35,22 +31,4 @@ QString to_qstring(asw::Cell const cell) {
     abort();
 }
 
-}  // namespace
-
-CellConstSpanPresenter::CellConstSpanPresenter(CellConstSpanView view)
-    : view_{std::move(view)} {
-}
-
-void CellConstSpanPresenter::set(asw::CellConstSpan const& cells) {
-    view_.set_row_count(gsl::narrow_cast<int>(cells.extent(0)));
-    view_.set_column_count(gsl::narrow_cast<int>(cells.extent(1)));
-    asw::indexed_for_each(
-            cells, [this](asw::Position const& i, asw::Cell const cell) {
-                view_.set_cell(
-                        gsl::narrow_cast<int>(i.row),
-                        gsl::narrow_cast<int>(i.column),
-                        to_qstring(cell));
-            });
-}
-
-}  // namespace aswui
+}  // namespace aswui::detail
