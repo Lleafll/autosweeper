@@ -27,10 +27,10 @@ gsl::not_null<std::unique_ptr<QWidget>> build_widget(
     field_selection->addItems({u"InMemory"_qs, u"Desktop"_qs});
     auto* const rows_widget = new QSpinBox{widget.get()};
     rows_widget->setMinimum(1);
-    rows_widget->setValue(gsl::narrow_cast<int>(field.invoke<asw::Rows>()));
+    auto const size = field.invoke<asw::GetSize>();
+    rows_widget->setValue(gsl::narrow_cast<int>(size.rows));
     auto* const columns_widget = new QSpinBox{widget.get()};
-    columns_widget->setValue(
-            gsl::narrow_cast<int>(field.invoke<asw::Columns>()));
+    columns_widget->setValue(gsl::narrow_cast<int>(size.columns));
     columns_widget->setMinimum(1);
     auto* const mines_widget = new QSpinBox{widget.get()};
     mines_widget->setValue(mine_count);
@@ -112,9 +112,9 @@ gsl::not_null<std::unique_ptr<QWidget>> build_widget(
                 });
         if (not safe_clicked) {
             auto break_out = false;
-            for (size_t row = 0; row < field.invoke<asw::Rows>(); ++row) {
-                for (size_t column = 0; column < field.invoke<asw::Columns>();
-                     ++column) {
+            auto const size = field.invoke<asw::GetSize>();
+            for (size_t row = 0; row < size.rows; ++row) {
+                for (size_t column = 0; column < size.columns; ++column) {
                     if (prediction(row, column) == asw::Prediction::Unknown) {
                         field.invoke<asw::Reveal>(asw::Position{row, column});
                         break_out = true;

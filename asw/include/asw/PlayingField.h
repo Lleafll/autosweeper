@@ -2,19 +2,14 @@
 
 #include "Cell.h"
 #include "Position.h"
+#include "Size.h"
 #include <proxy/proxy.h>
 
 namespace asw {
 
-struct Rows final : pro::dispatch<size_t()> {
-    size_t operator()(auto const& self) const {
-        return self.rows();
-    }
-};
-
-struct Columns final : pro::dispatch<size_t()> {
-    size_t operator()(auto const& self) const {
-        return self.columns();
+struct GetSize final : pro::dispatch<Size()> {
+    Size operator()(auto const& self) const {
+        return {self.rows(), self.columns()};
     }
 };
 
@@ -36,7 +31,6 @@ struct Update final : pro::dispatch<void()> {
     }
 };
 
-struct PlayingField final
-    : pro::facade<Rows, Columns, Reveal, Cspan, Update> {};
+struct PlayingField final : pro::facade<GetSize, Reveal, Cspan, Update> {};
 
 }  // namespace asw
