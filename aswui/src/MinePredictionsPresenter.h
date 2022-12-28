@@ -1,30 +1,46 @@
 #pragma once
 
+#include <QString>
+#include <asw/algorithm2d.h>
 #include <asw/predict_mines.h>
-class QString;
+#include <gsl/narrow>
 
 namespace aswui {
 
-class MinePredictionsView {
-  public:
-    virtual ~MinePredictionsView() = default;
+template<class T>
+concept MinePredictionsView = requires(T t) {
+                                  { t.set_row_count(int{}) };
+                                  { t.set_column_count(int{}) };
+                                  { t.set_cell(int{}, int{}, QString{}) };
+                              };
+namespace detail {
 
-  private:
-    virtual void set_row_count(int rows) = 0;
-    virtual void set_column_count(int columns) = 0;
-    virtual void set_cell(int row, int column, QString const& text) = 0;
+QString to_qstring(asw::Prediction prediction);
 
-    friend class MinePredictionsPresenter;
-};
+}  // namespace detail
 
+template<MinePredictionsView T>
 class MinePredictionsPresenter final {
   public:
-    explicit MinePredictionsPresenter(MinePredictionsView& view);
+    explicit MinePredictionsPresenter(T& view) : view_{view} {
+    }
 
-    void set(asw::ConstPredictionSpan const& predictions);
+    void set(asw::ConstPredictionSpan const& predictions) {
+        view_.set_row_count(gsl::narrow_cast<int>(predictions.extent(0)));
+        view_.set_column_count(gsl::narrow_cast<int>(predictions.extent(1)));
+        asw::indexed_for_each(
+                predictions,
+                [this](asw::Position const& i,
+                       asw::Prediction const prediction) {
+                    view_.set_cell(
+                            gsl::narrow_cast<int>(i.row),
+                            gsl::narrow_cast<int>(i.column),
+                            detail::to_qstring(prediction));
+                });
+    }
 
   private:
-    MinePredictionsView& view_;
+    T& view_;
 };
 
 }  // namespace aswui

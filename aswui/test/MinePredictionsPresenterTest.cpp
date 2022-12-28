@@ -4,25 +4,20 @@
 
 namespace {
 
-class MockMinePredictionsView final : public aswui::MinePredictionsView {
-  public:
+struct MockMinePredictionsView {
     std::optional<int> set_row_count_call = {};
     std::optional<int> set_column_count_call = {};
     std::vector<std::tuple<int, int, QString>> set_cell_calls = {};
 
-    ~MockMinePredictionsView() override = default;
-
-  private:
-    void set_row_count(int const rows) override {
+    void set_row_count(int const rows) {
         set_row_count_call = rows;
     }
 
-    void set_column_count(int const columns) override {
+    void set_column_count(int const columns) {
         set_column_count_call = columns;
     }
 
-    void
-    set_cell(int const row, int const column, QString const& text) override {
+    void set_cell(int const row, int const column, QString const& text) {
         set_cell_calls.emplace_back(row, column, text);
     }
 };

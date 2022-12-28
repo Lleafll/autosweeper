@@ -5,11 +5,32 @@
 
 namespace aswui {
 
-class MinePredictionsWidgetQt::Impl final : public MinePredictionsView {
+namespace {
+
+struct MinePredictionsViewImpl {
+    CellsWidgetQt& table;
+
+    void set_row_count(int const rows) {
+        table.setRowCount(rows);
+    }
+
+    void set_column_count(int columns) {
+        table.setColumnCount(columns);
+    }
+
+    void set_cell(int const row, int const column, QString const& text) {
+        table.setCellText(row, column, text);
+    }
+};
+
+}  // namespace
+
+class MinePredictionsWidgetQt::Impl {
   public:
     explicit Impl(MinePredictionsWidgetQt& widget)
-        : presenter_{*this},
-          table_{new CellsWidgetQt{&widget}} {
+        : table_{new CellsWidgetQt{&widget}},
+          view_impl_{*table_},
+          presenter_{view_impl_} {
         auto* const layout = new QVBoxLayout{&widget};
         layout->addWidget(table_);
         QObject::connect(
@@ -19,28 +40,14 @@ class MinePredictionsWidgetQt::Impl final : public MinePredictionsView {
                 &MinePredictionsWidgetQt::clicked);
     }
 
-    ~Impl() override = default;
-
     void set(asw::ConstPredictionSpan const& predictions) {
         presenter_.set(predictions);
     }
 
   private:
-    MinePredictionsPresenter presenter_;
     gsl::strict_not_null<CellsWidgetQt*> table_;
-
-    void set_row_count(int const rows) override {
-        table_->setRowCount(rows);
-    }
-
-    void set_column_count(int columns) override {
-        table_->setColumnCount(columns);
-    }
-
-    void
-    set_cell(int const row, int const column, QString const& text) override {
-        table_->setCellText(row, column, text);
-    }
+    MinePredictionsViewImpl view_impl_;
+    MinePredictionsPresenter<MinePredictionsViewImpl> presenter_;
 };
 
 MinePredictionsWidgetQt::MinePredictionsWidgetQt(QWidget* const parent)
