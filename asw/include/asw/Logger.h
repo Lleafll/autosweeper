@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Image.h"
-#include <memory>
 #include <proxy/proxy.h>
 #include <string_view>
 
