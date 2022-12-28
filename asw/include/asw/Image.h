@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vector2d.h"
+#include "FixedArray2d.h"
 #include <experimental/mdspan>
 
 namespace asw {
@@ -13,7 +13,7 @@ struct Color {
     bool operator==(Color const&) const = default;
 };
 
-using Image = Vector2d<Color>;
+using Image = FixedArray2d<Color>;
 
 using ImageConstSpan = std::experimental::
         mdspan<Color const, std::experimental::dextents<size_t, 2>>;

@@ -30,7 +30,7 @@ Bounds find_bounds(std::span<Match const> const matches) {
 
 namespace detail {
 
-std::tuple<Vector2d<Cell>, Position> matches_to_field(
+std::tuple<FixedArray2d<Cell>, Position> matches_to_field(
         std::span<Match const> const matches,
         int const distance_between_cells) {
     auto const [bottom, left, top, right] = find_bounds(matches);
@@ -42,12 +42,12 @@ std::tuple<Vector2d<Cell>, Position> matches_to_field(
         return gsl::narrow_cast<size_t>(
                 (index - left) / distance_between_cells);
     };
-    Vector2d<Cell> field{{to_row(top) + 1, to_column(right) + 1}, Cell::Hidden};
+    FixedArray2d<Cell> field{{to_row(top) + 1, to_column(right) + 1}, Cell::Hidden};
     for (auto const& match: matches) {
         field(to_row(match.screen_position.row),
               to_column(match.screen_position.column)) = match.cell;
     }
-    return std::make_tuple<Vector2d<Cell>, Position>(
+    return std::make_tuple<FixedArray2d<Cell>, Position>(
             std::move(field), {bottom, left});
 }
 

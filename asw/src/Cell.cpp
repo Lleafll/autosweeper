@@ -20,7 +20,7 @@ class RandomGenerator {
 
 }  // namespace
 
-Vector2d<MineCell> generate_random_mines(Size const& size, int const count) {
+FixedArray2d<MineCell> generate_random_mines(Size const& size, int const count) {
     return generate_mines(size, count, RandomGenerator{});
 }
 

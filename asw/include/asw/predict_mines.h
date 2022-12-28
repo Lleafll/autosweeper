@@ -2,7 +2,7 @@
 
 #include "Array2d.h"
 #include "Cell.h"
-#include "Vector2d.h"
+#include "FixedArray2d.h"
 
 namespace asw {
 
@@ -24,7 +24,7 @@ enum class Prediction {
     DetectedMine
 };
 
-Vector2d<Prediction> predict_mines_field(CellConstSpan const& field);
+FixedArray2d<Prediction> predict_mines_field(CellConstSpan const& field);
 
 template<size_t rows, size_t columns>
 using PredictionArray = Array2d<Prediction, rows, columns>;

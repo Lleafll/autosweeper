@@ -7,22 +7,22 @@
 namespace asw {
 
 template<typename T>
-class Vector2d final {
+class FixedArray2d final {
   public:
     using size_type = size_t;
     using extents_type = std::experimental::dextents<size_type, 2>;
     using Span = std::experimental::mdspan<T, extents_type>;
     using ConstSpan = std::experimental::mdspan<T const, extents_type>;
 
-    Vector2d() = default;
+    FixedArray2d() = default;
 
-    explicit Vector2d(Size const& size, T const& fill = T{})
+    explicit FixedArray2d(Size const& size, T const& fill = T{})
         : rows_{size.rows},
           columns_{size.columns},
           buffer_(rows_ * columns_, fill) {
     }
 
-    Vector2d(Size const& size, std::vector<T> cells)
+    FixedArray2d(Size const& size, std::vector<T> cells)
         : rows_{size.rows},
           columns_{size.columns},
           buffer_{std::move(cells)} {
@@ -65,7 +65,7 @@ class Vector2d final {
         return buffer_.data();
     }
 
-    bool operator==(Vector2d const&) const = default;
+    bool operator==(FixedArray2d const&) const = default;
 
   private:
     size_t rows_ = 0;

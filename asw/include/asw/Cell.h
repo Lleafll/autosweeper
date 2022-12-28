@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Array2d.h"
+#include "FixedArray2d.h"
 #include "Position.h"
-#include "Vector2d.h"
 
 namespace asw {
 
@@ -16,11 +16,11 @@ concept PositionGenerator = requires(T t) {
                                 { t(Size{}) } -> std::convertible_to<Position>;
                             };
 
-Vector2d<MineCell> generate_mines(
+FixedArray2d<MineCell> generate_mines(
         Size const& size,
         int const count,
         PositionGenerator auto&& generator) {
-    Vector2d<MineCell> mines{size};
+    FixedArray2d<MineCell> mines{size};
     for (int i = 0; i < count; ++i) {
         auto const [row, column] = generator(size);
         mines(row, column) = MineCell::Mined;
@@ -31,7 +31,7 @@ Vector2d<MineCell> generate_mines(
 /**
  * Thin wrapper around generate_mines() with a random generator
  */
-Vector2d<MineCell> generate_random_mines(Size const& size, int count);
+FixedArray2d<MineCell> generate_random_mines(Size const& size, int count);
 
 enum class Cell {
     Empty,

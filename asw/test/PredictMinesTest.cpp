@@ -4,9 +4,9 @@
 
 using asw::Array2d;
 using asw::Cell;
+using asw::FixedArray2d;
 using asw::Prediction;
 using asw::Size;
-using asw::Vector2d;
 
 namespace {
 
@@ -14,7 +14,7 @@ TEST_CASE("predict_mines_field") {
     constexpr Array2d<Cell, 2, 2> buffer{// clang-format off
             Cell::Hidden, Cell::One,
             Cell::One,    Cell::One};  // clang-format on
-    auto const prediction = Vector2d<Prediction>{
+    auto const prediction = FixedArray2d<Prediction>{
             Size{2, 2},  // clang-format off
             {Prediction::DetectedMine, Prediction::One,
             Prediction::One,           Prediction::One}};  // clang-format on
@@ -24,7 +24,7 @@ TEST_CASE("predict_mines_field") {
 TEST_CASE("predict_mines_field with revealed empty field") {
     constexpr Array2d<Cell, 1, 3> buffer{
             Cell::Empty, Cell::Hidden, Cell::Hidden};
-    auto const expected = Vector2d<Prediction>{
+    auto const expected = FixedArray2d<Prediction>{
             Size{1, 3},
             {Prediction::Empty, Prediction::Safe, Prediction::Unknown}};
     REQUIRE(predict_mines_field(buffer.cspan()) == expected);
@@ -35,7 +35,7 @@ TEST_CASE("predict_mines_field field between 1 and Clear") {
             Cell::One,    Cell::Hidden, Cell::Empty,
             Cell::Hidden, Cell::Hidden, Cell::Hidden};  // clang-format on
     using enum Prediction;
-    auto const expected = Vector2d<Prediction>{
+    auto const expected = FixedArray2d<Prediction>{
             Size{2, 3},  // clang-format off
             {One,          Safe, Empty,
              DetectedMine, Safe, Safe}};  // clang-format on
@@ -48,7 +48,7 @@ TEST_CASE("predict_mines_field when not completely revealed") {
             Cell::Hidden, Cell::Hidden, Cell::Empty,
             Cell::One,    Cell::One,    Cell::Empty};  // clang-format on
     using enum Prediction;
-    auto const expected = Vector2d<Prediction>{
+    auto const expected = FixedArray2d<Prediction>{
             Size{3, 3},  // clang-format off
             {One,          One,  Empty,
              DetectedMine, Safe, Empty,
@@ -61,7 +61,7 @@ TEST_CASE("predict_mines_field when one cell can be excluded") {
             Cell::Two,    Cell::Hidden, Cell::One,
             Cell::Hidden, Cell::Hidden, Cell::Hidden};  // clang-format on
     using enum Prediction;
-    auto const expected = Vector2d<Prediction>{
+    auto const expected = FixedArray2d<Prediction>{
             Size{2, 3},  // clang-format off
             {Two,          Unsafe, One,
              DetectedMine, Unsafe, Safe}};  // clang-format on
@@ -74,7 +74,7 @@ TEST_CASE("predict_mines_field case") {
             Cell::Hidden, Cell::Hidden, Cell::One,
             Cell::Hidden, Cell::Two,    Cell::One};  // clang-format on
     using enum Prediction;
-    auto const expected = Vector2d<Prediction>{
+    auto const expected = FixedArray2d<Prediction>{
             Size{3, 3},  // clang-format off
             {Two,          Safe,         One,
              DetectedMine, DetectedMine, One,

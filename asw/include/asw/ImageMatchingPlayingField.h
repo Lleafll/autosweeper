@@ -24,7 +24,7 @@ concept MatcherFunc = requires(T t) {
 
 namespace detail {
 
-std::tuple<Vector2d<Cell>, Position>
+std::tuple<FixedArray2d<Cell>, Position>
 matches_to_field(std::span<Match const> matches, int distance_between_cells);
 
 }  // namespace detail
@@ -81,7 +81,7 @@ class ImageMatchingPlayingField {
   private:
     TScreen screen_;
     TMatcherFunc matcher_;
-    Vector2d<Cell> field_ = Vector2d<Cell>{{0, 0}, Cell::Hidden};
+    FixedArray2d<Cell> field_ = FixedArray2d<Cell>{{0, 0}, Cell::Hidden};
     int distance_between_cells_;
     Position bottom_left_ = {0, 0};
 };

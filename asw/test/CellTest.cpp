@@ -4,10 +4,10 @@
 
 using asw::Array2d;
 using asw::Cell;
+using asw::FixedArray2d;
 using asw::MineCell;
 using asw::Position;
 using asw::Size;
-using asw::Vector2d;
 
 namespace {
 
@@ -57,7 +57,7 @@ TEST_CASE("generate_mines without collision") {
     constexpr Size size{4, 4};
     auto const mines = generate_mines(
             size, 3, PredeterminedGenerator{{0, 2}, {1, 2}, {2, 3}});
-    auto expected = Vector2d<MineCell>{size};
+    auto expected = FixedArray2d<MineCell>{size};
     expected(0, 2) = MineCell::Mined;
     expected(1, 2) = MineCell::Mined;
     expected(2, 3) = MineCell::Mined;

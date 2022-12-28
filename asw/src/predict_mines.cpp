@@ -225,9 +225,9 @@ Prediction to_prediction(Cell const cell) {
 
 }  // namespace
 
-Vector2d<Prediction> predict_mines_field(CellConstSpan const& field) {
+FixedArray2d<Prediction> predict_mines_field(CellConstSpan const& field) {
     auto const predictions = predict_mines(field);
-    Vector2d<Prediction> prediction_field{
+    FixedArray2d<Prediction> prediction_field{
             Size{.rows = field.extent(0), .columns = field.extent(1)}};
     indexed_for_each(
             field,
