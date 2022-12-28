@@ -7,15 +7,6 @@ namespace stdex = std::experimental;
 
 namespace {
 
-TEST_CASE("for_each") {
-    std::array const buffer{2, 4, 5, 6};
-    std::vector<int> output;
-    asw::for_each(
-            stdex::mdspan{buffer.data(), 2, 2},
-            [&output](int const value) { output.push_back(value); });
-    REQUIRE(output == std::vector{2, 4, 5, 6});
-}
-
 TEST_CASE("indexed_for_each") {
     std::array const buffer{2, 4, 5, 6};
     std::vector<size_t> rows;
