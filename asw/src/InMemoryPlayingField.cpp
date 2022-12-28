@@ -83,10 +83,6 @@ size_t InMemoryPlayingField::columns() const {
     return columns_;
 }
 
-int InMemoryPlayingField::mine_count() const {
-    return static_cast<int>(std::ranges::count(cells_, Cell::Mine));
-}
-
 Cell InMemoryPlayingField::operator()(size_t const row, size_t const column)
         const {
     return hidden()(row, column);

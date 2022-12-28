@@ -50,10 +50,6 @@ class ImageMatchingPlayingField {
         return field_.cspan().extent(1);
     }
 
-    [[nodiscard]] int mine_count() const {
-        return 0;
-    }
-
     Cell operator()(size_t const row, size_t const column) const {
         return field_(row, column);
     }

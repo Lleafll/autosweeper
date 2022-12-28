@@ -37,12 +37,6 @@ TEST_CASE("Correctly shows mines and proximity") {
     REQUIRE(field(1, 0) == Cell::Mine);
 }
 
-TEST_CASE("Correctly counts mines") {
-    InMemoryPlayingField const field{
-            Array2d<MineCell, 2, 1>{MineCell::Clear, MineCell::Mined}.cspan()};
-    REQUIRE(field.mine_count() == 1);
-}
-
 TEST_CASE("Correctly return rows and columns") {
     InMemoryPlayingField const field{
             Array2d<MineCell, 2, 1>{MineCell::Clear, MineCell::Mined}.cspan()};

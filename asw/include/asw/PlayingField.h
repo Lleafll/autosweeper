@@ -18,12 +18,6 @@ struct Columns final : pro::dispatch<size_t()> {
     }
 };
 
-struct MineCount final : pro::dispatch<int()> {
-    int operator()(auto const& self) const {
-        return self.mine_count();
-    }
-};
-
 struct Reveal final : pro::dispatch<void(Position const&)> {
     void operator()(auto& self, Position const& position) {
         self.reveal(position);
@@ -43,6 +37,6 @@ struct Update final : pro::dispatch<void()> {
 };
 
 struct PlayingField final
-    : pro::facade<Rows, Columns, MineCount, Reveal, Cspan, Update> {};
+    : pro::facade<Rows, Columns, Reveal, Cspan, Update> {};
 
 }  // namespace asw

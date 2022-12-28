@@ -13,7 +13,6 @@ class InMemoryPlayingField  {
 
     [[nodiscard]] size_t rows() const;
     [[nodiscard]] size_t columns() const;
-    [[nodiscard]] int mine_count() const;
     [[nodiscard]] Cell operator()(size_t row, size_t column) const;
     void reveal(Position const& position);
     [[nodiscard]] CellConstSpan cspan() const;

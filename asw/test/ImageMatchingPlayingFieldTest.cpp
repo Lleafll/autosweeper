@@ -56,9 +56,6 @@ TEST_CASE("ImageMatchingPlayingField when no image can be detected") {
     SECTION("columns") {
         REQUIRE(field.columns() == 0);
     }
-    SECTION("mine_count") {
-        REQUIRE(field.mine_count() == 0);
-    }
     SECTION("cspan") {
         REQUIRE(field.cspan().size() == 0);
     }
@@ -81,9 +78,6 @@ TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
     }
     SECTION("columns") {
         REQUIRE(field.columns() == 1);
-    }
-    SECTION("mine_count") {
-        REQUIRE(field.mine_count() == 0);
     }
     SECTION("cspan") {
         REQUIRE(equals(

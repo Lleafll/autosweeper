@@ -33,7 +33,7 @@ gsl::not_null<std::unique_ptr<QWidget>> build_widget(
             gsl::narrow_cast<int>(field.invoke<asw::Columns>()));
     columns_widget->setMinimum(1);
     auto* const mines_widget = new QSpinBox{widget.get()};
-    mines_widget->setValue(field.invoke<asw::MineCount>());
+    mines_widget->setValue(mine_count);
     mines_widget->setMinimum(1);
     auto* const restart_button = new QPushButton{u"Restart"_qs, widget.get()};
     auto* const auto_solver_button = new QPushButton{u"Next"_qs, widget.get()};
