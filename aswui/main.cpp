@@ -101,7 +101,7 @@ gsl::not_null<std::unique_ptr<QWidget>> build_widget(
                 asw::predict_mines_field(field.invoke<asw::Cspan>());
         auto safe_clicked = false;
         asw::indexed_for_each(
-                prediction.cspan(),
+                prediction,
                 [&safe_clicked, &field](
                         asw::Position const& position,
                         asw::Prediction const prediction) {

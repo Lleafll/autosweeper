@@ -10,10 +10,10 @@ class Array2d final {
     static constexpr auto size = rows * columns;
 
   public:
-    using Span = std::experimental::
-            mdspan<T, std::experimental::dextents<size_t, 2>>;
-    using ConstSpan = std::experimental::
-            mdspan<T const, std::experimental::dextents<size_t, 2>>;
+    using size_type = size_t;
+    using extents_type = std::experimental::extents<size_type, rows, columns>;
+    using Span = std::experimental::mdspan<T, extents_type>;
+    using ConstSpan = std::experimental::mdspan<T const, extents_type>;
 
     constexpr explicit Array2d(T const& fill = T{}) {
         std::ranges::fill(buffer_, fill);
@@ -30,6 +30,17 @@ class Array2d final {
     [[nodiscard]] constexpr T const&
     operator()(size_t const row, size_t const column) const {
         return cspan()(row, column);
+    }
+
+    [[nodiscard]] constexpr size_type extent(size_t const r) const {
+        switch (r) {
+            case 0:
+                return rows;
+            case 1:
+                return columns;
+            default:
+                return 0;
+        }
     }
 
     [[nodiscard]] constexpr Span span() {

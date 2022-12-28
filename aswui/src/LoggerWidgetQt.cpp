@@ -9,14 +9,12 @@ namespace aswui {
 namespace {
 
 QPixmap to_pixmap(asw::Image const& image) {
-    auto const rows = image.cspan().extent(0);
-    auto const columns = image.cspan().extent(1);
     QImage qimage{
-            gsl::narrow_cast<int>(columns),
-            gsl::narrow_cast<int>(rows),
+            gsl::narrow_cast<int>(image.extent(1)),
+            gsl::narrow_cast<int>(image.extent(0)),
             QImage::Format_RGB888};
     asw::indexed_for_each(
-            image.cspan(),
+            image,
             [&qimage](asw::Position const& position, asw::Color const& color) {
                 qimage.setPixelColor(
                         gsl::narrow_cast<int>(position.column),

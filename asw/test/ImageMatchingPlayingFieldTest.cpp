@@ -82,8 +82,7 @@ TEST_CASE("ImageMatchingPlayingField when a valid image can be detected") {
     SECTION("cspan") {
         REQUIRE(equals(
                 field.cspan(),
-                Array2d<asw::Cell, 3, 1>{Cell::One, Cell::Two, Cell::Three}
-                        .cspan()));
+                Array2d<asw::Cell, 3, 1>{Cell::One, Cell::Two, Cell::Three}));
     }
     SECTION("operator()") {
         REQUIRE(field(0, 0) == Cell::One);

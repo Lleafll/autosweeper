@@ -9,10 +9,10 @@ namespace asw {
 template<typename T>
 class Vector2d final {
   public:
-    using Span = std::experimental::
-            mdspan<T, std::experimental::dextents<size_t, 2>>;
-    using ConstSpan = std::experimental::
-            mdspan<T const, std::experimental::dextents<size_t, 2>>;
+    using size_type = size_t;
+    using extents_type = std::experimental::dextents<size_type, 2>;
+    using Span = std::experimental::mdspan<T, extents_type>;
+    using ConstSpan = std::experimental::mdspan<T const, extents_type>;
 
     Vector2d() = default;
 
@@ -36,6 +36,17 @@ class Vector2d final {
     [[nodiscard]] T const&
     operator()(size_t const row, size_t const column) const {
         return cspan()(row, column);
+    }
+
+    [[nodiscard]] size_type extent(size_t const r) const {
+        switch (r) {
+            case 0:
+                return rows_;
+            case 1:
+                return columns_;
+            default:
+                return 0;
+        }
     }
 
     [[nodiscard]] Span span() {
