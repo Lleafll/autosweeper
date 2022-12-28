@@ -18,8 +18,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PNGPP_INCLUDE_DIRS})
 find_package(Microsoft.GSL CONFIG REQUIRED)
 find_package(mdspan CONFIG REQUIRED)
 find_package(PNG REQUIRED)
+find_package(proxy CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC di_ptr Microsoft.GSL::GSL std::mdspan
+    PUBLIC Microsoft.GSL::GSL msft_proxy std::mdspan
     PRIVATE PNG::PNG)
 
 add_subdirectory(test)

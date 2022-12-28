@@ -15,7 +15,7 @@ constexpr int bit_depth = 32;
 
 }  // namespace
 
-MinesweeperScreen::MinesweeperScreen(di::ptr<Logger> logger)
+MinesweeperScreen::MinesweeperScreen(pro::proxy<Logger> logger)
     : logger_{std::move(logger)} {
 }
 
@@ -94,7 +94,7 @@ std::optional<Image> asw::MinesweeperScreen::grab() {
                     quad.rgbRed, quad.rgbGreen, quad.rgbBlue};
         }
     }
-    logger_->log_image("Minesweeper Classic", *screen_grab);
+    logger_.invoke<LogImage>("Minesweeper Classic", *screen_grab);
     return screen_grab;
 }
 

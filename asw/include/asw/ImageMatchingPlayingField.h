@@ -6,9 +6,6 @@
 #include "PlayingField.h"
 #include "find_in_image.h"
 #include <optional>
-namespace asw {
-class Logger;
-}  // namespace asw
 
 namespace asw {
 

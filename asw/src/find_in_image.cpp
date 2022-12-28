@@ -36,7 +36,7 @@ find_in_image(ImageConstSpan const& image, ImageConstSpan const& sub_image) {
 
 namespace {
 
-Image load_sub_image(char const* const path, Logger& logger) {
+Image load_sub_image(char const* const path, pro::proxy<Logger>& logger) {
     png::image<png::rgba_pixel> const png{path};
     Image image{{png.get_height(), png.get_width()}};
     for (size_t row = 0; row < png.get_height(); ++row) {
@@ -45,11 +45,11 @@ Image load_sub_image(char const* const path, Logger& logger) {
             image(row, column) = {pixel.red, pixel.green, pixel.blue};
         }
     }
-    logger.log_image(path, image);
+    logger.invoke<LogImage>(path, image);
     return image;
 }
 
-SubImages load_default_sub_images(Logger& logger) {
+SubImages load_default_sub_images(pro::proxy<Logger>& logger) {
     static auto const sub_images = [&logger]() -> SubImages {
         return {load_sub_image("minesweeperclassic/Empty.png", logger),
                 load_sub_image("minesweeperclassic/1.png", logger),
@@ -68,7 +68,7 @@ SubImages load_default_sub_images(Logger& logger) {
 
 }  // namespace
 
-Matcher::Matcher(Logger& logger)
+Matcher::Matcher(pro::proxy<Logger>& logger)
     : sub_images_{load_default_sub_images(logger)} {
 }
 

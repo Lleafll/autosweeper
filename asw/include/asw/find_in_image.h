@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Image.h"
+#include "Logger.h"
 #include <vector>
 namespace asw {
-class Logger;
 struct Match;
 struct Position;
 }  // namespace asw
@@ -32,7 +32,7 @@ class Matcher {
     /**
      * @brief Matches Minesweeper Classic with default subimages
      */
-    explicit Matcher(Logger& logger);
+    explicit Matcher(pro::proxy<Logger>& logger);
 
     explicit Matcher(SubImages sub_images);
 

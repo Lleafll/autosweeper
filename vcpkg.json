@@ -9,6 +9,7 @@
     "magic-enum",
     "mdspan",
     "ms-gsl",
-    "pngpp"
+    "pngpp",
+    "proxy"
   ]
 }

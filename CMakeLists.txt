@@ -11,6 +11,5 @@ elseif (CMAKE_COMPILER_IS_GNUCXX)
 endif ()
 enable_testing()
 
-add_subdirectory(di_ptr)
 add_subdirectory(asw)
 add_subdirectory(aswui)

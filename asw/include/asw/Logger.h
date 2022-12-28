@@ -2,44 +2,20 @@
 
 #include "Image.h"
 #include <memory>
+#include <proxy/proxy.h>
 #include <string_view>
 
 namespace asw {
 
-class Logger {
-  public:
-    template<class T>
-    explicit Logger(T t) : self_{std::make_unique<Model<T>>(std::move(t))} {
+struct LogImage final : pro::dispatch<void(std::string_view, Image const&)> {
+    void
+    operator()(auto& self, std::string_view const message, Image const& image) {
+        self.log_image(message, image);
     }
+};
 
-    void log_image(std::string_view const message, Image const& image) {
-        self_->log_image(message, image);
-    }
-
-  private:
-    struct Concept {
-        virtual ~Concept() = default;
-        virtual void
-        log_image(std::string_view message, Image const& image) = 0;
-    };
-
-    template<typename T>
-    struct Model final : Concept {
-        explicit Model(T data) : data_{std::move(data)} {
-        }
-
-        ~Model() override = default;
-
-        void
-        log_image(std::string_view const message, Image const& image) override {
-            return data_.log_image(message, image);
-        }
-
-      private:
-        T data_;
-    };
-
-    std::unique_ptr<Concept> self_;
+struct Logger final : pro::facade<LogImage> {
+    static constexpr auto minimum_copyability = pro::constraint_level::trivial;
 };
 
 class NullLogger {

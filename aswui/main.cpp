@@ -20,7 +20,7 @@ constexpr asw::Size field_size{5, 5};
 constexpr int mine_count = 5;
 
 gsl::not_null<std::unique_ptr<QWidget>>
-build_widget(asw::PlayingField& field, asw::Logger& logger) {
+build_widget(asw::PlayingField& field, pro::proxy<asw::Logger>& logger) {
     auto widget = std::make_unique<QWidget>();
     auto* const field_selection = new QComboBox{widget.get()};
     field_selection->addItems({u"InMemory"_qs, u"Desktop"_qs});
@@ -140,36 +140,17 @@ build_widget(asw::PlayingField& field, asw::Logger& logger) {
     return widget;
 }
 
-class LoggerWidgetWrapper {
-  public:
-    LoggerWidgetWrapper() {
-        widget->setWindowFlag(Qt::Window);
-        widget->show();
-    }
-
-    void log_image(std::string_view const message, asw::Image const& image) {
-        widget->log_image(message, image);
-    }
-
-  private:
-    struct QObjectDeleter final {
-        void operator()(QObject* const object) const {
-            object->deleteLater();
-        }
-    };
-
-    std::unique_ptr<aswui::LoggerWidgetQt, QObjectDeleter> widget{
-            new aswui::LoggerWidgetQt};
-};
-
 }  // namespace
 
 int main(int argc, char** argv) {
     QApplication const application{argc, argv};
 #ifdef _DEBUG
-    asw::Logger logger{LoggerWidgetWrapper{}};
+    aswui::LoggerWidgetQt logger_widget;
+    logger_widget.setWindowFlag(Qt::Window);
+    logger_widget.show();
+    pro::proxy<asw::Logger> logger{&logger_widget};
 #else
-    asw::Logger logger{asw::NullLogger{}};
+    auto logger = pro::make_proxy<asw::Logger, asw::NullLogger>();
 #endif
     asw::PlayingField field{asw::InMemoryPlayingField{
             asw::generate_random_mines(field_size, mine_count).cspan()}};
