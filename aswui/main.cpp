@@ -19,26 +19,29 @@ namespace {
 constexpr asw::Size field_size{5, 5};
 constexpr int mine_count = 5;
 
-gsl::not_null<std::unique_ptr<QWidget>>
-build_widget(asw::PlayingField& field, pro::proxy<asw::Logger>& logger) {
+gsl::not_null<std::unique_ptr<QWidget>> build_widget(
+        pro::proxy<asw::PlayingField>& field,
+        pro::proxy<asw::Logger>& logger) {
     auto widget = std::make_unique<QWidget>();
     auto* const field_selection = new QComboBox{widget.get()};
     field_selection->addItems({u"InMemory"_qs, u"Desktop"_qs});
     auto* const rows_widget = new QSpinBox{widget.get()};
     rows_widget->setMinimum(1);
-    rows_widget->setValue(gsl::narrow_cast<int>(field.rows()));
+    rows_widget->setValue(gsl::narrow_cast<int>(field.invoke<asw::Rows>()));
     auto* const columns_widget = new QSpinBox{widget.get()};
-    columns_widget->setValue(gsl::narrow_cast<int>(field.columns()));
+    columns_widget->setValue(
+            gsl::narrow_cast<int>(field.invoke<asw::Columns>()));
     columns_widget->setMinimum(1);
     auto* const mines_widget = new QSpinBox{widget.get()};
-    mines_widget->setValue(field.mine_count());
+    mines_widget->setValue(field.invoke<asw::MineCount>());
     mines_widget->setMinimum(1);
     auto* const restart_button = new QPushButton{u"Restart"_qs, widget.get()};
     auto* const auto_solver_button = new QPushButton{u"Next"_qs, widget.get()};
+    auto const field_span = field.invoke<asw::Cspan>();
     auto* const field_widget =
-            new aswui::CellConstSpanWidgetQt{field.cspan(), nullptr};
+            new aswui::CellConstSpanWidgetQt{field_span, nullptr};
     auto* const predictions_widget = new aswui::MinePredictionsWidgetQt{
-            asw::predict_mines_field(field.cspan()).cspan(), nullptr};
+            asw::predict_mines_field(field_span).cspan(), nullptr};
     auto* const main_layout = new QVBoxLayout{widget.get()};
     auto* const top_layout = new QHBoxLayout;
     main_layout->addLayout(top_layout);
@@ -53,16 +56,16 @@ build_widget(asw::PlayingField& field, pro::proxy<asw::Logger>& logger) {
     lower_layout->addWidget(field_widget);
     lower_layout->addWidget(predictions_widget);
     auto const refresh = [&field, field_widget, predictions_widget]() {
-        field.update();
-        field_widget->set(field.cspan());
-        predictions_widget->set(
-                asw::predict_mines_field(field.cspan()).cspan());
+        field.invoke<asw::Update>();
+        auto const field_span = field.invoke<asw::Cspan>();
+        field_widget->set(field_span);
+        predictions_widget->set(asw::predict_mines_field(field_span).cspan());
     };
     auto const recalculate = [&field,
                               refresh](int const row, int const column) {
-        field.reveal(
-                {.row = gsl::narrow_cast<size_t>(row),
-                 .column = gsl::narrow_cast<size_t>(column)});
+        field.invoke<asw::Reveal>(asw::Position{
+                .row = gsl::narrow_cast<size_t>(row),
+                .column = gsl::narrow_cast<size_t>(column)});
         refresh();
     };
     auto const reinitialize_field = [&field,
@@ -80,18 +83,22 @@ build_widget(asw::PlayingField& field, pro::proxy<asw::Logger>& logger) {
                 .columns = gsl::narrow_cast<size_t>(columns)};
         auto const mines = mines_widget->value();
         if (field_type == 0) {
-            field = asw::InMemoryPlayingField{
-                    asw::generate_random_mines(size, mines).cspan()};
+            field = pro::
+                    make_proxy<asw::PlayingField, asw::InMemoryPlayingField>(
+                            asw::generate_random_mines(size, mines).cspan());
         } else {
-            field = asw::ImageMatchingPlayingField<
-                    asw::MinesweeperScreen,
-                    asw::Matcher>{
-                    asw::MinesweeperScreen{logger}, asw::Matcher{logger}, 16};
+            field = pro::make_proxy<
+                    asw::PlayingField,
+                    asw::ImageMatchingPlayingField<
+                            asw::MinesweeperScreen,
+                            asw::Matcher>>(
+                    asw::MinesweeperScreen{logger}, asw::Matcher{logger}, 16);
         }
         refresh();
     };
     auto const auto_solve = [&field, refresh] {
-        auto const prediction = asw::predict_mines_field(field.cspan());
+        auto const prediction =
+                asw::predict_mines_field(field.invoke<asw::Cspan>());
         auto safe_clicked = false;
         asw::indexed_for_each(
                 prediction.cspan(),
@@ -99,16 +106,17 @@ build_widget(asw::PlayingField& field, pro::proxy<asw::Logger>& logger) {
                         asw::Position const& position,
                         asw::Prediction const prediction) {
                     if (prediction == asw::Prediction::Safe) {
-                        field.reveal(position);
+                        field.invoke<asw::Reveal>(position);
                         safe_clicked = true;
                     }
                 });
         if (not safe_clicked) {
             auto break_out = false;
-            for (size_t row = 0; row < field.rows(); ++row) {
-                for (size_t column = 0; column < field.columns(); ++column) {
+            for (size_t row = 0; row < field.invoke<asw::Rows>(); ++row) {
+                for (size_t column = 0; column < field.invoke<asw::Columns>();
+                     ++column) {
                     if (prediction(row, column) == asw::Prediction::Unknown) {
-                        field.reveal({row, column});
+                        field.invoke<asw::Reveal>(asw::Position{row, column});
                         break_out = true;
                         break;
                     }
@@ -152,8 +160,8 @@ int main(int argc, char** argv) {
 #else
     auto logger = pro::make_proxy<asw::Logger, asw::NullLogger>();
 #endif
-    asw::PlayingField field{asw::InMemoryPlayingField{
-            asw::generate_random_mines(field_size, mine_count).cspan()}};
+    auto field = pro::make_proxy<asw::PlayingField, asw::InMemoryPlayingField>(
+            asw::generate_random_mines(field_size, mine_count).cspan());
     auto main_widget = build_widget(field, logger);
     main_widget->show();
     return QApplication::exec();
