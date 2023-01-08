@@ -55,7 +55,7 @@ std::optional<Image> asw::MinesweeperScreen::grab() {
     Sleep(sleep_after_foreground_call_ms);
     auto* const bitmap = capture_fullscreen(hdcScreen, hdc, rc);
     auto const bitmap_cleanup = gsl::finally([&] { DeleteObject(bitmap); });
-    BITMAPINFO bitmap_info{0};
+    BITMAPINFO bitmap_info;
     bitmap_info.bmiHeader.biSize = sizeof(bitmap_info.bmiHeader);
     if (auto const status = GetDIBits(
                 hdc, bitmap, 0, 0, nullptr, &bitmap_info, DIB_RGB_COLORS);
@@ -86,8 +86,8 @@ std::optional<Image> asw::MinesweeperScreen::grab() {
             gsl::narrow_cast<size_t>(bitmap_info.bmiHeader.biWidth);
     auto screen_grab =
             std::make_optional<Image>(Size{.rows = rows, .columns = columns});
-    for (auto row = 0; row < rows; ++row) {
-        for (auto column = 0; column < columns; ++column) {
+    for (auto row = 0; std::cmp_less(row, rows); ++row) {
+        for (auto column = 0; std::cmp_less(column, columns); ++column) {
             auto const& quad =
                     buffer[rows * columns - (row * columns + column) - 1];
             (*screen_grab)(row, columns - column - 1) = {

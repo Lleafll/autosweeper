@@ -33,22 +33,25 @@ namespace detail {
 std::tuple<FixedArray2d<Cell>, Position> matches_to_field(
         std::span<Match const> const matches,
         int const distance_between_cells) {
-    auto const [bottom, left, top, right] = find_bounds(matches);
-    auto const to_row = [bottom, distance_between_cells](size_t const index) {
+    auto const bounds = find_bounds(matches);
+    auto const to_row = [&bounds, distance_between_cells](size_t const index) {
         return gsl::narrow_cast<size_t>(
-                (index - bottom) / distance_between_cells);
+                (index - bounds.bottom) / distance_between_cells);
     };
-    auto const to_column = [left, distance_between_cells](size_t const index) {
+    auto const to_column = [&bounds,
+                            distance_between_cells](size_t const index) {
         return gsl::narrow_cast<size_t>(
-                (index - left) / distance_between_cells);
+                (index - bounds.left) / distance_between_cells);
     };
-    FixedArray2d<Cell> field{{to_row(top) + 1, to_column(right) + 1}, Cell::Hidden};
+    FixedArray2d<Cell> field{
+            {to_row(bounds.top) + 1, to_column(bounds.right) + 1},
+            Cell::Hidden};
     for (auto const& match: matches) {
         field(to_row(match.screen_position.row),
               to_column(match.screen_position.column)) = match.cell;
     }
     return std::make_tuple<FixedArray2d<Cell>, Position>(
-            std::move(field), {bottom, left});
+            std::move(field), {bounds.bottom, bounds.left});
 }
 
 }  // namespace detail
