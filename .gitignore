@@ -404,3 +404,4 @@ FodyWeavers.xsd
 /cmake-build-release/
 /out/
 /CMakeSettings.json
+/cmake-build-release-clang/
