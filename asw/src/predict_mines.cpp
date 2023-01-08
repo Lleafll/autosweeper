@@ -95,7 +95,7 @@ bool is_revealed_and_not_mine(Cell const cell) {
 }
 
 void calculate_overlap(std::list<MinePrediction>& predictions) {
-    for (auto& i: predictions) {
+    for (auto const& i: predictions) {
         for (auto& k: predictions) {
             if (i == k) {
                 continue;
