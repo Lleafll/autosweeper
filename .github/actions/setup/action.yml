@@ -1,0 +1,14 @@
+name: Setup
+description: "Setup environment for Windows"
+
+runs:
+  using: "composite"
+  steps:
+    - name: run-vcpkg
+      uses: lukka/run-vcpkg@v10.6
+      with:
+        vcpkgGitCommitId: a4013afe6d3053e739b37c4cb6b5e64b55611e24
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3.0.0
+      with:
+        version: 6.4.1
