@@ -81,7 +81,10 @@ TEST_CASE("Correctly displays mine field") {
             Hidden, Hidden, Hidden, Hidden, Hidden};  // clang-format on
     for (size_t row = 0; row < field.rows(); ++row) {
         for (size_t column = 0; column < field.columns(); ++column) {
-            INFO(fmt::format("row: {}, column: {}", row, column));
+            INFO(fmt::format(  // NOLINT(misc-const-correctness)
+                    "row: {}, column: {}",
+                    row,
+                    column));
             REQUIRE(field(row, column) == expected(row, column));
         }
     }

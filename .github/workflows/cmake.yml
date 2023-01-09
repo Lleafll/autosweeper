@@ -37,10 +37,23 @@ jobs:
     - uses: ./.github/actions/build
       with:
         configure-flags: /analyze /analyze:only /analyze:external- /external:anglebrackets
+        
+  clang-tidy:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/actions/setup
+    - uses: ./.github/actions/build
+      with: 
+        configure-flags: -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+    - name: Execute clang-tidy
+      run: |
+        cd ${{github.workspace}}/build
+        python "C:\Program Files\LLVM\bin\run-clang-tidy" "^((?!mocs_compilation\.cpp).)*$"
       
   release:
     runs-on: windows-latest
-    needs: [test-msvc, test-clang, analyze-msvc]
+    needs: [test-msvc, test-clang, analyze-msvc, clang-tidy]
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/setup
