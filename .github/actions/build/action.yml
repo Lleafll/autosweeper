@@ -4,14 +4,16 @@ description: "Configures and builds project"
 inputs:
   configure-flags:
     description: "Additional flags passed to CMake during configuration"
-    default: ""
+  build-type:
+    description: "Build type used by CMake"
+    default: Release
 
 runs:
   using: "composite"
   steps:
     - name: Configure CMake
       shell: pwsh
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$Env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_INSTALL_PREFIX="${{github.workspace}}/install" ${{inputs.configure-flags}}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{inputs.build-type}} -DCMAKE_TOOLCHAIN_FILE="$Env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_INSTALL_PREFIX="${{github.workspace}}/install" ${{inputs.configure-flags}}
     - name: Build
       shell: pwsh
-      run: cmake --build ${{github.workspace}}/build --target install --config ${{env.BUILD_TYPE}} -j
+      run: cmake --build ${{github.workspace}}/build --target install --config ${{inputs.build-type}} -j
