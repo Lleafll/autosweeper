@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/setup
-    - uses: actions/build
+    - uses: ./.github/actions/build
       with:
         configure-flags: -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl
     - name: Test
@@ -24,7 +24,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/setup
-    - uses: actions/build
+    - uses: ./.github/actions/build
     - name: Test
       working-directory: ${{github.workspace}}/build
       run: ctest -C ${{env.BUILD_TYPE}}
@@ -35,7 +35,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/setup
-    - uses: actions/build
+    - uses: ./.github/actions/build
     - name: Zip
       run: Compress-Archive install/* autosweeper.zip
     - name: Automatic Releases
