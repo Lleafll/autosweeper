@@ -98,9 +98,6 @@ std::optional<Image> asw::MinesweeperScreen::grab() {
     return screen_grab;
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cppcoreguidelines-pro-type-union-access"
-#pragma ide diagnostic ignored "google-runtime-int"
 void MinesweeperScreen::click(Position const& position) {
     auto* const hwnd = FindWindow(nullptr, "Minesweeper Classic");
     if (hwnd == nullptr) {
@@ -129,25 +126,36 @@ void MinesweeperScreen::click(Position const& position) {
         return {nX, nY};
     };
     auto const click_point = scale_to_point(
-            {rc.left + gsl::narrow_cast<long>(position.row) + 1,
-             rc.top + gsl::narrow_cast<long>(position.column) + 1});
+            {rc.left +
+                     gsl::narrow_cast<long>(  // NOLINT(google-runtime-int)
+                             position.row) +
+                     1,
+             rc.top +
+                     gsl::narrow_cast<long>(  // NOLINT(google-runtime-int)
+                             position.column) +
+                     1});
     auto const return_point = scale_to_point(cursor_start_position);
     std::array<INPUT, 4> mi{};
     mi[0].type = INPUT_MOUSE;
-    mi[0].mi.dx = click_point.x;
-    mi[0].mi.dy = click_point.y;
-    mi[0].mi.dwFlags =
-            MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_MOVE;
-    mi[1].mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK |
-                       MOUSEEVENTF_LEFTDOWN;
-    mi[2].mi.dwFlags =
-            MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_LEFTUP;
-    mi[3].mi.dwFlags =
-            MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_MOVE;
-    mi[3].mi.dx = return_point.x;
-    mi[3].mi.dy = return_point.y;
+    mi[0].mi.dx  // NOLINT(cppcoreguidelines-pro-type-union-access)
+            = click_point.x;
+    mi[0].mi.dy  // NOLINT(cppcoreguidelines-pro-type-union-access)
+            = click_point.y;
+    mi[0].mi.dwFlags  // NOLINT(cppcoreguidelines-pro-type-union-access)
+            = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_MOVE;
+    mi[1].mi.dwFlags  // NOLINT(cppcoreguidelines-pro-type-union-access)
+            = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK |
+              MOUSEEVENTF_LEFTDOWN;
+    mi[2].mi.dwFlags  // NOLINT(cppcoreguidelines-pro-type-union-access)
+            = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK |
+              MOUSEEVENTF_LEFTUP;
+    mi[3].mi.dwFlags  // NOLINT(cppcoreguidelines-pro-type-union-access)
+            = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_MOVE;
+    mi[3].mi.dx  // NOLINT(cppcoreguidelines-pro-type-union-access)
+            = return_point.x;
+    mi[3].mi.dy  // NOLINT(cppcoreguidelines-pro-type-union-access)
+            = return_point.y;
     SendInput(gsl::narrow_cast<UINT>(mi.size()), mi.data(), sizeof(mi[0]));
 }
-#pragma clang diagnostic pop
 
 }  // namespace asw
