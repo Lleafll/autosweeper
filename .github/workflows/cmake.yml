@@ -49,7 +49,7 @@ jobs:
     - name: Execute clang-tidy
       run: |
         cd ${{github.workspace}}/build
-        python "C:\LLVM\bin\run-clang-tidy" -use-color=False "^((?!mocs_compilation\.cpp).)*$"
+        python "C:\Program Files\LLVM\bin\run-clang-tidy" -use-color=False "^((?!mocs_compilation\.cpp).)*$"
       
   release:
     runs-on: windows-latest
