@@ -5,28 +5,28 @@
 #include "find_in_image.h"
 #include <catch.hpp>
 
-using namespace asw;
-
 namespace {
 
 TEST_CASE("Should be empty when sub_image is not present") {
-    static constexpr Array2d<Color, 8, 2> image;
-    static constexpr Array2d<Color, 4, 1> sub_image{
+    static constexpr asw::Array2d<asw::Color, 8, 2> image;
+    static constexpr asw::Array2d<asw::Color, 4, 1> sub_image{
             {0, 0, 0}, {1, 1, 1}, {2, 2, 2}, {3, 3, 3}};
     REQUIRE(find_in_image(image.cspan(), sub_image.cspan()).empty());
 }
 
 TEST_CASE("Should find all positions when sub-image is present") {
-    Array2d<Color, 8, 2> image;
+    static constexpr size_t rows = 8;
+    static constexpr size_t columns = 2;
+    asw::Array2d<asw::Color, rows, columns> image;
     image(0, 1) = {1, 2, 3};
     image(2, 0) = {1, 2, 3};
-    static constexpr Array2d<Color, 1, 1> sub_image{{1, 2, 3}};
+    static constexpr asw::Array2d<asw::Color, 1, 1> sub_image{{1, 2, 3}};
     REQUIRE(find_in_image(image.cspan(), sub_image.cspan()) ==
-            std::vector{Position{0, 1}, Position{2, 0}});
+            std::vector{asw::Position{0, 1}, asw::Position{2, 0}});
 }
 
 TEST_CASE("Matcher correctly finds subimages in image") {
-    Matcher const matcher{
+    asw::Matcher const matcher{
             {{{1, 1}, {{123, 123, 123}}},
              {{1, 1}, {{1, 1, 1}}},
              {{1, 1}, {{2, 2, 2}}},
@@ -38,7 +38,7 @@ TEST_CASE("Matcher correctly finds subimages in image") {
              {{1, 1}, {{8, 8, 8}}},
              {{1, 1}, {{66, 66, 66}}},
              {{1, 1}, {{99, 99, 99}}}}};
-    Image const image{
+    asw::Image const image{
             {11, 1},
             {{123, 123, 123},
              {1, 1, 1},
@@ -51,18 +51,18 @@ TEST_CASE("Matcher correctly finds subimages in image") {
              {8, 8, 8},
              {66, 66, 66},
              {99, 99, 99}}};
-    REQUIRE(matcher(image.cspan()) == std::vector<Match>{
-                                              Match{{0, 0}, Cell::Empty},
-                                              Match{{1, 0}, Cell::One},
-                                              Match{{2, 0}, Cell::Two},
-                                              Match{{3, 0}, Cell::Three},
-                                              Match{{4, 0}, Cell::Four},
-                                              Match{{5, 0}, Cell::Five},
-                                              Match{{6, 0}, Cell::Six},
-                                              Match{{7, 0}, Cell::Seven},
-                                              Match{{8, 0}, Cell::Eight},
-                                              Match{{9, 0}, Cell::Hidden},
-                                              Match{{10, 0}, Cell::Mine}});
+    REQUIRE(matcher(image.cspan()) == std::vector<asw::Match>{
+                                              {{0, 0}, asw::Cell::Empty},
+                                              {{1, 0}, asw::Cell::One},
+                                              {{2, 0}, asw::Cell::Two},
+                                              {{3, 0}, asw::Cell::Three},
+                                              {{4, 0}, asw::Cell::Four},
+                                              {{5, 0}, asw::Cell::Five},
+                                              {{6, 0}, asw::Cell::Six},
+                                              {{7, 0}, asw::Cell::Seven},
+                                              {{8, 0}, asw::Cell::Eight},
+                                              {{9, 0}, asw::Cell::Hidden},
+                                              {{10, 0}, asw::Cell::Mine}});
 }
 
 }  // namespace

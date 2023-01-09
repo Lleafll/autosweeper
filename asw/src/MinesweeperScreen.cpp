@@ -98,6 +98,9 @@ std::optional<Image> asw::MinesweeperScreen::grab() {
     return screen_grab;
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cppcoreguidelines-pro-type-union-access"
+#pragma ide diagnostic ignored "google-runtime-int"
 void MinesweeperScreen::click(Position const& position) {
     auto* const hwnd = FindWindow(nullptr, "Minesweeper Classic");
     if (hwnd == nullptr) {
@@ -145,5 +148,6 @@ void MinesweeperScreen::click(Position const& position) {
     mi[3].mi.dy = return_point.y;
     SendInput(gsl::narrow_cast<UINT>(mi.size()), mi.data(), sizeof(mi[0]));
 }
+#pragma clang diagnostic pop
 
 }  // namespace asw

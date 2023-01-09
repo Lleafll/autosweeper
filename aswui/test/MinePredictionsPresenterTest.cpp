@@ -22,7 +22,8 @@ struct MockMinePredictionsView {
     }
 };
 
-TEST_CASE("MockMinePredictionsView::set()") {
+TEST_CASE(  // NOLINT(readability-function-cognitive-complexity)
+        "MockMinePredictionsView::set()") {
     MockMinePredictionsView view;
     aswui::MinePredictionsPresenter presenter{view};
     SECTION("resizes the field") {
