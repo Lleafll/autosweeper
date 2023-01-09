@@ -53,7 +53,7 @@ jobs:
       
   release:
     runs-on: windows-latest
-    needs: [test-msvc, test-clang, analyze-msvc]
+    needs: [test-msvc, test-clang, analyze-msvc, clang-tidy]
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/setup
