@@ -18,7 +18,7 @@ namespace {
 
 constexpr asw::Size field_size{5, 5};
 constexpr int mine_count = 5;
-constexpr int distance_between_cells = 16;
+constexpr int default_distance_between_cells = 16;
 
 gsl::not_null<std::unique_ptr<QWidget>> build_widget(
         pro::proxy<asw::PlayingField>& field,
@@ -95,7 +95,7 @@ gsl::not_null<std::unique_ptr<QWidget>> build_widget(
                             asw::Matcher>>(
                     asw::MinesweeperScreen{logger},
                     asw::Matcher{logger},
-                    distance_between_cells);
+                    default_distance_between_cells);
         }
         refresh();
     };
