@@ -1,4 +1,5 @@
-name: 'Setup environment for Windows'
+name: Setup
+description: "Setup environment for Windows"
 
 runs:
   using: "composite"
@@ -6,7 +7,7 @@ runs:
     - name: run-vcpkg
       uses: lukka/run-vcpkg@v10.6
       with:
-        vcpkgGitCommitId: ${{env.VCPKG_COMMIT}}
+        vcpkgGitCommitId: a4013afe6d3053e739b37c4cb6b5e64b55611e24
     - name: Install Qt
       uses: jurplel/install-qt-action@v3.0.0
       with:

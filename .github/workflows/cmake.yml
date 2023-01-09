@@ -6,20 +6,15 @@ on:
   pull_request:
     branches: [ "master" ]
 
-env:
-  BUILD_TYPE: Release
-  VCPKG_COMMIT: a4013afe6d3053e739b37c4cb6b5e64b55611e24
-
 jobs:    
   test-clang:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/setup
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE="$Env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
+    - uses: actions/build
+      with:
+        configure-flags: -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl
     - name: Test
       working-directory: ${{github.workspace}}/build
       run: ctest -C ${{env.BUILD_TYPE}}
@@ -29,10 +24,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/setup
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE="$Env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
+    - uses: actions/build
     - name: Test
       working-directory: ${{github.workspace}}/build
       run: ctest -C ${{env.BUILD_TYPE}}
@@ -43,10 +35,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: ./.github/actions/setup
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE="$Env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_INSTALL_PREFIX="${{github.workspace}}/install"
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --target install --config ${{env.BUILD_TYPE}} -j
+    - uses: actions/build
     - name: Zip
       run: Compress-Archive install/* autosweeper.zip
     - name: Automatic Releases
