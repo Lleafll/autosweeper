@@ -8,9 +8,10 @@ on:
 
 env:
   BUILD_TYPE: Release
+  VCPKG_COMMIT: a4013afe6d3053e739b37c4cb6b5e64b55611e24
 
-jobs:
-  test:
+jobs:    
+  test-clang:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
@@ -19,7 +20,29 @@ jobs:
     - name: run-vcpkg
       uses: lukka/run-vcpkg@v10.6
       with:
-        vcpkgGitCommitId: a4013afe6d3053e739b37c4cb6b5e64b55611e24
+        vcpkgGitCommitId: ${{env.VCPKG_COMMIT}}
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3.0.0
+      with:
+        version: 6.4.1
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE="$Env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" -DCMAKE_C_COMPILER=clang-cl -DCMAKE_CXX_COMPILER=clang-cl
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}}
+
+  test-msvc:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: run-vcpkg
+      uses: lukka/run-vcpkg@v10.6
+      with:
+        vcpkgGitCommitId: ${{env.VCPKG_COMMIT}}
     - name: Install Qt
       uses: jurplel/install-qt-action@v3.0.0
       with:
@@ -34,7 +57,7 @@ jobs:
       
   release:
     runs-on: windows-latest
-    needs: test
+    needs: [test-msvc, test-clang]
     steps:
     - uses: actions/checkout@v3
       with:
